@@ -43,7 +43,7 @@
 		<serializationxstreamVersion>0.2.14</serializationxstreamVersion>
 		<uiframeworkVersion>3.15.0</uiframeworkVersion>
 		<kenyacoreVersion>3.0.0</kenyacoreVersion>
-		<kenyauiVersion>3.0.0</kenyauiVersion>
+		<kenyauiVersion>2.0.4</kenyauiVersion>
 		<jodaTimeVersion>2.9.1</jodaTimeVersion>
 		<legacyUiVersion>1.5.0</legacyUiVersion>
 

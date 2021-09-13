@@ -21,4 +21,8 @@
   		    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<context:component-scan base-package="org.openmrs.module.covid19.web.controller" />
+
+	<bean class="org.openmrs.ui.framework.StandardModuleUiConfiguration">
+		<property name="moduleId" value="covid19"/>
+	</bean>
 </beans>
