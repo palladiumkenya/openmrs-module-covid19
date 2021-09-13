@@ -23,7 +23,7 @@ import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.form;
 /**
  * Metadata constants
  */
-//@Component
+@Component
 public class CovidMetadata extends AbstractMetadataBundle {
 	
 	public static final class _EncounterType {
