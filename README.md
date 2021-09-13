@@ -1,9 +1,9 @@
-${moduleName}
+COVID-19 in KenyaEMR
 ==========================
 
 Description
 -----------
-This is a very basic module which can be used as a starting point in creating a new module.
+This  module provides COVID-19 features in KenyaEMR.
 
 Building from Source
 --------------------
