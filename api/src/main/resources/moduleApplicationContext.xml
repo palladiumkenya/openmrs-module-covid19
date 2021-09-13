@@ -55,4 +55,12 @@
             </list>
         </property>
     </bean>
+
+    <bean id="covid.app.provider" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+        <constructor-arg value="covid.app.provider" />
+        <constructor-arg value="Covid-19" />
+        <constructor-arg value="covid19/kpProviderHome.page" />
+        <constructor-arg value="covid19:apps/coronavirus.png" />
+        <constructor-arg value="2001" />
+    </bean>
 </beans>
