@@ -22,32 +22,36 @@ import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndi
  */
 @Component
 public class Covid19VaccinationIndicatorLibrary {
-    @Autowired
-    private Covid19VaccinationCohortLibrary cohortLibrary;
-
-    /**
-     * Number of patients fully vaccinated
-     * @return the indicator
-     */
-    public CohortIndicator fullyVaccinated() {
-        return cohortIndicator("Fully vaccinated", ReportUtils.map(cohortLibrary.fullyVaccinated(), "endDate=${endDate}"));
-    }
-
-    /**
-     * Number of patients partially vaccinated
-     * @return
-     */
-    public  CohortIndicator partiallyVaccinated() {
-        return cohortIndicator("Partially vaccinated", ReportUtils.map(cohortLibrary.partiallyVaccinated(), "endDate=${endDate}"));
-    }
-
-
-    /**
-     * Number of patients not vaccinated
-     * @return the indicator
-     */
-    public CohortIndicator notVaccinated() {
-        return cohortIndicator("Not vaccinated", ReportUtils.map(cohortLibrary.notVaccinated(), "endDate=${endDate}"));
-    }
-
+	
+	@Autowired
+	private Covid19VaccinationCohortLibrary cohortLibrary;
+	
+	/**
+	 * Number of patients fully vaccinated
+	 * 
+	 * @return the indicator
+	 */
+	public CohortIndicator fullyVaccinated() {
+		return cohortIndicator("Fully vaccinated", ReportUtils.map(cohortLibrary.fullyVaccinated(), "endDate=${endDate}"));
+	}
+	
+	/**
+	 * Number of patients partially vaccinated
+	 * 
+	 * @return
+	 */
+	public CohortIndicator partiallyVaccinated() {
+		return cohortIndicator("Partially vaccinated",
+		    ReportUtils.map(cohortLibrary.partiallyVaccinated(), "endDate=${endDate}"));
+	}
+	
+	/**
+	 * Number of patients not vaccinated
+	 * 
+	 * @return the indicator
+	 */
+	public CohortIndicator notVaccinated() {
+		return cohortIndicator("Not vaccinated", ReportUtils.map(cohortLibrary.notVaccinated(), "endDate=${endDate}"));
+	}
+	
 }
