@@ -20,7 +20,7 @@
 	<require_version>1.11.6</require_version>
 
 	<require_modules>
-		<require_module version="${metadatadeployVersion}">org.openmrs.module.metadatadeploy</require_module>
+		<require_module version="${kenyaemrVersion}">org.openmrs.module.kenyaemr</require_module>
 	</require_modules>
 
 	<!-- Extensions -->
