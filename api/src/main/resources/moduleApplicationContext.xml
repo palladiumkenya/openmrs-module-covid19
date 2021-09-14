@@ -61,7 +61,6 @@
          <property name="commonVisitForms">
             <set>
                 <ref bean="covid19.form.covidAssessment"/>
-
             </set>
         </property>
     </bean>
@@ -72,10 +71,11 @@
             <set>
                 <ref bean="kenyaemr.app.clinician" />
                 <ref bean="kenyaemr.app.chart" />
+                <ref bean="covid.app.providerHome"/>
             </set>
         </property>
         <property name="icon" value="kenyaui:forms/generic.png" />
-        <property name="htmlform" value="kenyaemr:covidAssessment.html" />
+        <property name="htmlform" value="covid19:covidAssessment.html" />
         <property name="order" value="201085" />
     </bean>
 

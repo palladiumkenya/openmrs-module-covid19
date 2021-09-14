@@ -7,7 +7,7 @@
 	<name>${project.parent.name}</name>
 	<version>${project.parent.version}</version>
 	<package>org.openmrs.module.covid19</package>
-	<author>Palladium Devs</author>
+	<author>Palladium KEHMIS</author>
 	<description>
 			${project.parent.description}
 	</description>
@@ -18,10 +18,6 @@
 	<!-- /Base Module Properties -->
 	
 	<require_version>1.11.6</require_version>
-
-	<require_modules>
-		<require_module version="${kenyaemrVersion}">org.openmrs.module.kenyaemr</require_module>
-	</require_modules>
 
 	<require_modules>
 		<require_module version="${kenyaemrVersion}">org.openmrs.module.kenyaemr</require_module>
