@@ -93,19 +93,19 @@
             var dateGiven = getValue('date-given.value');
 
 
-            if (encounterDate =="") {
-                getField('encounter-date.error').html('Immunization encounter date should not be empty').show();
-                return false;
-            }else{
-                getField('encounter-date.error').html('Immunization encounter date should not be empty').hide();
-            }
-            var isDateGivenBeforeEncounterDate = moment(moment(moment(dateGiven, 'YYYY-MM-DD').toDate())).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()));
-            if (isDateGivenBeforeEncounterDate) {
-                getField('date-given.error').html('Date given vaccine cannot be before encounter date').show();
-                return false;
-            }else{
-                getField('date-given.error').html('Date given vaccine cannot be before encounter date').hide();
-            }
+//            if (encounterDate =="") {
+//                getField('encounter-date.error').html('Immunization encounter date should not be empty').show();
+//                return false;
+//            }else{
+//                getField('encounter-date.error').html('Immunization encounter date should not be empty').hide();
+//            }
+//            var isDateGivenBeforeEncounterDate = moment(moment(moment(dateGiven, 'YYYY-MM-DD').toDate())).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()));
+//            if (isDateGivenBeforeEncounterDate) {
+//                getField('date-given.error').html('Date given vaccine cannot be before encounter date').show();
+//                return false;
+//            }else{
+//                getField('date-given.error').html('Date given vaccine cannot be before encounter date').hide();
+//            }
 
             return true;
         });
@@ -133,7 +133,7 @@
 				<td> Have you ever been vaccinated
 					<obs conceptId="163100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabel="" style="radio" id="ever-vaccinated"/>
+						 answerLabel="" style="radio" id="patient-vaccinated"/>
 				</td>
 			</tr>
 		</table>
@@ -147,7 +147,7 @@
 						<th>Verified</th>
 					</tr>
 
-			<obsgroup groupingConceptId="1182AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+			<obsgroup groupingConceptId="1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 				<tr class="tr-vaccine-type-1">
 					<td>
 						<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -188,8 +188,7 @@
 					</td>
 				</tr>
 				<br/>
-			</obsgroup>
-			<obsgroup groupingConceptId="1183AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+			<!-- Second dose -->
 				<tr class="tr-vaccine-type-2">
 
 					<td>
@@ -265,7 +264,7 @@
 								<th>Date</th>
 								<th>Verified</th>
 							</tr>
-							<obsgroup groupingConceptId="165632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<obsgroup groupingConceptId="1184AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 								<tr class="vaccine-type-1">
 									<td>
 										<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -312,8 +311,8 @@
 					<td> Have you ever tested positive for COVID -19? </td>
 					<td>
 						<obs conceptId="166638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Positive,Negative,Unknown" style="radio" id="test-result"/>
+							 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes,No" style="radio" id="test-result"/>
 					</td>
 				</tr>
 				<tr>
@@ -321,7 +320,7 @@
 					<td>
 						<obs conceptId="159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="1068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165912AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Symptomatic,Asymptomatic" style="radio" id="covid-status"/>
+							 answerLabels="Yes,No" style="radio" id="covid-status"/>
 					</td>
 				</tr>
 				<tr>
