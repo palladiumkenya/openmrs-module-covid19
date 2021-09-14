@@ -60,22 +60,18 @@
     <bean id="covid19.config.form" class="org.openmrs.module.kenyacore.form.FormConfiguration">
          <property name="commonVisitForms">
             <set>
-                <ref bean="kenyaemr.common.form.covidAssessment"/>
+                <ref bean="covid19.form.covidAssessment"/>
 
             </set>
         </property>
     </bean>
     <!-- Covid assessment form -->
-    <bean id="kenyaemr.common.form.covidAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+    <bean id="covid19.form.covidAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
         <property name="targetUuid" value="86709f36-1490-11ec-82a8-0242ac130003" />
         <property name="apps">
             <set>
-                <ref bean="kenyaemr.app.registration" />
                 <ref bean="kenyaemr.app.clinician" />
                 <ref bean="kenyaemr.app.chart" />
-                <ref bean="kenyaemr.app.hts" />
-                <ref bean="kenyaemr.app.prep" />
-                <ref bean="kenyaemr.app.counselling" />
             </set>
         </property>
         <property name="icon" value="kenyaui:forms/generic.png" />
