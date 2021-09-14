@@ -1,0 +1,363 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+ <style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+	</style>
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+
+	<script>jQuery.noConflict();</script>
+
+	<script type="text/javascript">
+	
+		jQuery().ready(function($){
+
+            jq('#tbl-other-vaccine-1').hide();
+            jq('#tbl-other-vaccine-2').hide();
+
+            //Other vaccine specifications
+            jq('#vaccine-type-1 select').change(otherVaccine1Selected);
+            jq('#vaccine-type-2 select').change(otherVaccine2Selected);
+
+            //JNJ first vaccine specified
+            jq('#vaccine-type-1 select').change(otherJNJSelected);
+
+		});
+
+        var otherVaccine1Selected = function () {
+            var val = jq(this).val();
+            // Specify other
+            if (val == 5622){
+                jq('#tbl-other-vaccine-1').show();
+            }else{
+                jq('#tbl-other-vaccine-1').hide();
+            }
+        }
+        var otherVaccine2Selected = function () {
+            var val = jq(this).val();
+            // Specify other
+            if (val == 5622){
+                jq('#tbl-other-vaccine-2').show();
+            }else{
+                jq('#tbl-other-vaccine-2').hide();
+            }
+        }
+
+        var otherJNJSelected = function () {
+            var val = jq(this).val();
+            // JNJ selected
+            if (val == 166355){
+                jq('.tr-vaccine-type-2 :input').hide();
+            }else{
+                jq('.tr-vaccine-type-2 :input').show();
+            }
+        }
+
+
+        beforeSubmit.push(function() {
+            //Date validations
+            var encounterDate = getValue('encounter-date.value');
+            var dateGiven = getValue('date-given.value');
+
+
+            if (encounterDate =="") {
+                getField('encounter-date.error').html('Immunization encounter date should not be empty').show();
+                return false;
+            }else{
+                getField('encounter-date.error').html('Immunization encounter date should not be empty').hide();
+            }
+            var isDateGivenBeforeEncounterDate = moment(moment(moment(dateGiven, 'YYYY-MM-DD').toDate())).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()));
+            if (isDateGivenBeforeEncounterDate) {
+                getField('date-given.error').html('Date given vaccine cannot be before encounter date').show();
+                return false;
+            }else{
+                getField('date-given.error').html('Date given vaccine cannot be before encounter date').hide();
+            }
+
+            return true;
+        });
+
+	</script>
+
+
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Encounter Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset id="vaccination-history">
+			<legend>
+				Vaccination History
+			</legend>
+		<table class="simple-table">
+			<tr>
+				<td> Have you ever been vaccinated
+					<obs conceptId="163100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabel="" style="radio" id="ever-vaccinated"/>
+				</td>
+			</tr>
+		</table>
+		<table id="tbl-vaccine" class="simple-table">
+			<tr>
+				<table class="simple-table">
+					<tr>
+						<th>Vaccine</th>
+						<th>Dose</th>
+						<th>Date</th>
+						<th>Verified</th>
+					</tr>
+
+			<obsgroup groupingConceptId="1182AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+				<tr class="tr-vaccine-type-1">
+					<td>
+						<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166155AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166157AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                   5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Astrazeneca,
+										   Johnson and Johnson,
+									       Moderna,
+										   Pfizer,
+										   Sputnik,
+										   Sinopharm,
+										   Unknown
+										   Other(Specify)"
+							 style="dropdown" id="vaccine-type-1"/>
+
+						<table id="tbl-other-vaccine-1" style="display: inline-block;" >
+							<tr>
+								<td> Vaccine name :
+									<obs id="other-vaccine-1" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									&#160;&#160;&#160;
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td><obs class="dose" conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	 style="dropdown"	id="dose-field"/></td>
+
+					<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " /></td>
+
+					<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabel="" style="checkbox" id="verified"/>
+					</td>
+				</tr>
+				<br/>
+			</obsgroup>
+			<obsgroup groupingConceptId="1183AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+				<tr class="tr-vaccine-type-2">
+
+					<td>
+						<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166155AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166157AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                   5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Astrazeneca,
+										   Johnson and Johnson,
+									       Moderna,
+										   Pfizer,
+										   Sputnik,
+										   Sinopharm,
+										   Unknown
+										   Other(Specify)"
+							 style="dropdown" id="vaccine-type-2"/>
+						<table id="tbl-other-vaccine-2" style="display: inline-block;">
+							<tr>
+								<td> Vaccine name :
+									<obs id="other-vaccine-2" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									&#160;&#160;&#160;
+								</td>
+							</tr>
+						</table>
+
+					</td>
+					<td><obs class="dose" conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	 style="dropdown"	id="dose-field"/></td>
+
+					<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " /></td>
+
+					<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabel="" style="checkbox" id="verified"/>
+					</td>
+
+				</tr>
+			</obsgroup>
+		</table>
+			</tr>
+
+		</table>
+		<table class="simple-table">
+		<tr>
+			<td> Final Vaccination Status </td>
+		   <td>
+				<obs conceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+					 answerConceptIds="166192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+					 answerLabels="Partially Vaccinated,Fully Vaccinated" style="radio" id="completed"/>
+			</td>
+		</tr>
+		</table>
+		<table class="simple-table">
+			<tr>
+				<td> Have you received a booster COVID -19 dose?   </td>
+			     <td>
+					<obs conceptId="166063AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="Yes,No" style="radio" id="booster-dose"/>
+				</td>
+			</tr>
+			<tr class="vaccine-booster">
+				<table id="tbl-booster" class="simple-table">
+					<tr>
+						<table class="simple-table">
+							<tr>
+								<th>Vaccine</th>
+								<th>Sequence</th>
+								<th>Date</th>
+								<th>Verified</th>
+							</tr>
+							<obsgroup groupingConceptId="165632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<tr class="vaccine-type-1">
+									<td>
+										<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166155AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166157AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   166379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+												                   1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                   5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Astrazeneca,
+										   Johnson and Johnson,
+									       Moderna,
+										   Pfizer,
+										   Sputnik,
+										   Sinopharm,
+										   Unknown
+										   Other(Specify)"
+											 style="dropdown" id="vaccine-type-1-field"/>
+									</td>
+									<td><obs class="dose" conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	 style="dropdown"	id="dose-field"/></td>
+
+									<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false"  labelText=" " /></td>
+
+									<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabel="" style="checkbox" id="verified"/>
+									</td>
+								</tr>
+							</obsgroup>
+						</table>
+					</tr>
+		</table>
+			</tr>
+		</table>
+		</fieldset>
+		<fieldset id="diagnosis-tab">
+			<legend>
+				Diagnosis and management
+			</legend>
+			<table class="simple-table">
+				<tr>
+					<td> Have you ever tested positive for COVID -19? </td>
+					<td>
+						<obs conceptId="166638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Positive,Negative,Unknown" style="radio" id="test-result"/>
+					</td>
+				</tr>
+				<tr>
+					<td> Were you Symptomatic?</td>
+					<td>
+						<obs conceptId="159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165912AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Symptomatic,Asymptomatic" style="radio" id="covid-status"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Date tested  &#160;&#160;&#160;&#160;&#160;&#160;&#160; </td>
+					<td>
+						<obs conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" showTime="false" labelText=" "  />
+					</td>
+				</tr>
+				<tr>
+					<td> Admission status</td>
+					<td>
+						<obs conceptId="162477AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 style="radio" answerLabels="Yes,No" id="admission-status"/>
+					</td>
+				</tr>
+				<tr>
+					<td> Admission location</td>
+					<td>
+						<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 style="radio" answerLabels="Isolation,HDU,ICU" id="admission-location"/>
+					</td>
+				</tr>
+				<tr>
+					<td> COVID-19 Management services offered</td>
+					<td>
+						<obs conceptId="165302"
+							 answerConceptIds="162738AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165932AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 style="dropdown" answerLabels="Supplemental oxygen,Ventilator,Unknown,None" id="support-services"/>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+</div>
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+</htmlform>
