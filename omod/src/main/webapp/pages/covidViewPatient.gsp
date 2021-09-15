@@ -18,6 +18,7 @@
 					${ ui.includeFragment("covid19", "vaccinationAndClinicalManagementHistory", [ patient: currentPatient]) }
 
 					<% if (activeVisit) { %>
+	                ${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: activeVisit ]) }
 					${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: activeVisit ]) }
 					<% } %>
 				</td>

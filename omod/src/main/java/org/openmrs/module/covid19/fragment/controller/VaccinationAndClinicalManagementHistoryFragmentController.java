@@ -35,12 +35,15 @@ import java.util.Set;
  * Covid-19 vaccination and clinical management summary fragment
  */
 public class VaccinationAndClinicalManagementHistoryFragmentController {
-
+	
 	public static final String VACCINATION_HISTORY_GROUPING_CONCEPT = "1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	
 	public static final String VACCINATION_BOOSTER_DOSE_HISTORY_GROUPING_CONCEPT = "1184AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	
 	ObsService obsService = Context.getObsService();
-
+	
 	ConceptService conceptService = Context.getConceptService();
+	
 	SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 	
 	public void controller(FragmentModel model, @FragmentParam("patient") Patient patient) {
@@ -51,11 +54,9 @@ public class VaccinationAndClinicalManagementHistoryFragmentController {
 		    Arrays.asList(covidAssessmentForm), null, null, null, null, false);
 		
 		//Collections.reverse(encounters);
-		
-		List<SimpleObject> encDetails = new ArrayList<SimpleObject>();
 		List<SimpleObject> vaccinationFirstAndSecondDoseList = new ArrayList<SimpleObject>();
 		List<SimpleObject> vaccinationBoosterDoseList = new ArrayList<SimpleObject>();
-
+		
 		for (Encounter e : encounters) {
 			SimpleObject so = extractEncounterData(e);
 			if (so != null) {
@@ -64,7 +65,7 @@ public class VaccinationAndClinicalManagementHistoryFragmentController {
 				if (firstAndSecondDose.size() > 0) {
 					vaccinationFirstAndSecondDoseList.addAll(firstAndSecondDose);
 				}
-
+				
 				if (boosterDose.size() > 0) {
 					vaccinationBoosterDoseList.addAll(boosterDose);
 				}
@@ -74,102 +75,83 @@ public class VaccinationAndClinicalManagementHistoryFragmentController {
 		model.put("firstAndSecondDoseList", vaccinationFirstAndSecondDoseList);
 		model.put("boosterDoseList", vaccinationBoosterDoseList);
 	}
-
+	
 	/**
 	 * Extracts COVID-19 vaccination/exposure data from an encounter
+	 * 
 	 * @param e
 	 * @return
 	 */
 	private SimpleObject extractEncounterData(Encounter e) {
-
+		
 		List<SimpleObject> firstAndSecondDoseVaccineData = new ArrayList<SimpleObject>();
 		List<SimpleObject> boosterDoseVaccineData = new ArrayList<SimpleObject>();
 		// get observations for first and second covid vaccine doses
 		List<Obs> vaccinationObs = obsService.getObservations(
-				Arrays.asList(Context.getPersonService().getPerson(e.getPatient().getPersonId())),
-				Arrays.asList(e),
-				Arrays.asList(conceptService.getConceptByUuid(VACCINATION_HISTORY_GROUPING_CONCEPT)),
-				null,
-				null,
-				null,
-				Arrays.asList("obsId"),
-				null,
-				null,
-				null,
-				null,
-				false
-		);
-
-		for(Obs o: vaccinationObs) {
+		    Arrays.asList(Context.getPersonService().getPerson(e.getPatient().getPersonId())), Arrays.asList(e),
+		    Arrays.asList(conceptService.getConceptByUuid(VACCINATION_HISTORY_GROUPING_CONCEPT)), null, null, null,
+		    Arrays.asList("obsId"), null, null, null, null, false);
+		
+		for (Obs o : vaccinationObs) {
+			System.out.println("Vaccination obs id: " + o.getObsId());
 			SimpleObject data = extractVaccinationHistoryData(o.getGroupMembers());
 			firstAndSecondDoseVaccineData.add(data);
 		}
-
+		
 		// get observations for booster dose
 		List<Obs> vaccinationBoosterObs = obsService.getObservations(
-				Arrays.asList(Context.getPersonService().getPerson(e.getPatient().getPersonId())),
-				Arrays.asList(e),
-				Arrays.asList(conceptService.getConceptByUuid(VACCINATION_BOOSTER_DOSE_HISTORY_GROUPING_CONCEPT)),
-				null,
-				null,
-				null,
-				Arrays.asList("obsId"),
-				null,
-				null,
-				null,
-				null,
-				false
-		);
-
-		for(Obs o: vaccinationBoosterObs) {
+		    Arrays.asList(Context.getPersonService().getPerson(e.getPatient().getPersonId())), Arrays.asList(e),
+		    Arrays.asList(conceptService.getConceptByUuid(VACCINATION_BOOSTER_DOSE_HISTORY_GROUPING_CONCEPT)), null, null,
+		    null, Arrays.asList("obsId"), null, null, null, null, false);
+		
+		for (Obs o : vaccinationBoosterObs) {
 			SimpleObject data = extractVaccinationHistoryData(o.getGroupMembers());
 			boosterDoseVaccineData.add(data);
 		}
-
-		return SimpleObject.create("firstAndSecondDoseData", firstAndSecondDoseVaccineData, "boosterDoseData", boosterDoseVaccineData);
+		
+		return SimpleObject.create("firstAndSecondDoseData", firstAndSecondDoseVaccineData, "boosterDoseData",
+		    boosterDoseVaccineData);
 	}
-
+	
 	/**
 	 * Extracts and organizes covid vaccine grouped observations
+	 * 
 	 * @param groupMembers
 	 * @return
 	 */
 	private SimpleObject extractVaccinationHistoryData(Set<Obs> groupMembers) {
-
+		
 		int vaccineConcept = 984;
-		int	doseConcept = 1418;
+		int doseConcept = 1418;
 		int dateConcept = 1410;
 		int verifiedConcept = 164464;
 		int vaccineVerifiedConceptAns = 164134;
-
+		
 		String vaccineType = null;
 		int vaccinationDose = 0;
 		String vaccinationDate = null;
 		String vaccinationVerified = null;
-
-		for(Obs obs : groupMembers) {
-
-			if (obs.getConcept().getConceptId().equals(doseConcept) ) {
+		
+		for (Obs obs : groupMembers) {
+			
+			if (obs.getConcept().getConceptId().equals(doseConcept)) {
 				vaccinationDose = obs.getValueNumeric().intValue();
-			} else if (obs.getConcept().getConceptId().equals(dateConcept )) {
+			} else if (obs.getConcept().getConceptId().equals(dateConcept)) {
 				vaccinationDate = DATE_FORMAT.format(obs.getValueDatetime());
-			} else if (obs.getConcept().getConceptId().equals(vaccineConcept) ) {
+			} else if (obs.getConcept().getConceptId().equals(vaccineConcept)) {
 				vaccineType = vaccineTypeConverter(obs.getValueCoded());
-			} else if (obs.getConcept().getConceptId().equals(verifiedConcept )) {
+			} else if (obs.getConcept().getConceptId().equals(verifiedConcept)) {
 				vaccinationVerified = obs.getValueCoded().getConceptId().equals(vaccineVerifiedConceptAns) ? "Yes" : "No";
 			}
 		}
-
-			return SimpleObject.create(
-					"vaccineType", vaccineType,
-					"vaccinationDose", vaccinationDose,
-					"vaccinationDate", vaccinationDate,
-					"vaccinationVerified", vaccinationVerified
-			);
+		
+		return SimpleObject.create("vaccineType", vaccineType, "vaccinationDose", vaccinationDose, "vaccinationDate",
+		    vaccinationDate, "vaccinationVerified", vaccinationVerified);
 	}
-
+	
 	/**
 	 * Converter for COVID-19 vaccine types
+	 * 
 	 * @param key
 	 * @return
 	 */
