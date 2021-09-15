@@ -122,6 +122,9 @@
                 var admissionStatus=jq('#admission-status');
                 var oxygenSupplement=jq('#oxygen');
                 var ventilationSupplement=jq('#ventilator');
+                jq("#isolation input[value=165994]").prop("checked", false);
+                jq("#hdu input[value=165995]").prop("checked", false);
+                jq("#icu input[value=161936]").prop("checked", false);
                 getField('date-tested.value').val("");
                 clearHiddenSections([testResult,covidStatus,admissionStatus,oxygenSupplement,ventilationSupplement]);
             }
@@ -454,15 +457,15 @@
 						<td style="text-align: left">
 							<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptId="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabel="Isolation" style="checkbox"/>
+								 answerLabel="Isolation" style="checkbox" id="isolation" />
 							<br/>
 							<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptId="165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabel="HDU" style="checkbox" />
+								 answerLabel="HDU" style="checkbox" id="hdu" />
 							<br/>
 							<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptId="161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabel="ICU" style="checkbox" />
+								 answerLabel="ICU" style="checkbox" id="icu" />
 						</td>
 				</tr>
 				<tr>
