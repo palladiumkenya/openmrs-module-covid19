@@ -13,7 +13,7 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Covid19</name>
-	<description>no description</description>
+	<description>Provides COVID-19 features in KenyaEMR</description>
 
 	<url>https://wiki.openmrs.org/x/FQ4z</url>
 
