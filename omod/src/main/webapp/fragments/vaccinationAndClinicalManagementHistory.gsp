@@ -29,23 +29,21 @@
 
     <fieldset>
     <legend>Vaccination History</legend>
-    <%if (encounters) { %>
+    <%if (firstAndSecondDoseList) { %>
     <table class="simple-table">
 
         <tr>
+            <th align="left">Vaccine</th>
+            <th align="left">Dose</th>
             <th align="left">Date</th>
-            <th align="left">Population Type</th>
-            <th align="left">Strategy</th>
-            <th align="left">Entry Point</th>
-            <th align="left">Final Result</th>
+            <th align="left">Verified</th>
         </tr>
-        <% encounters.each { %>
+        <% firstAndSecondDoseList.each { %>
         <tr>
-            <td>${it.encDate}</td>
-            <td>${it.popType}</td>
-            <td>${it.htsStrategy}</td>
-            <td>${it.entryPoint}</td>
-            <td>${it.finalResult}</td>
+            <td>${it.vaccineType}</td>
+            <td>${it.vaccinationDose}</td>
+            <td>${it.vaccinationDate}</td>
+            <td>${it.vaccinationVerified}</td>
         </tr>
         <% } %>
     </table>
@@ -55,27 +53,24 @@
     <% } %>
 </fieldset>
 
-
-    <br/>
-    <fieldset>
-    <legend>COVID-19 Clinical Management History</legend>
-    <%if (encounters) { %>
+<br/>
+<fieldset>
+    <legend>Vaccination History (Booster)</legend>
+    <%if (boosterDoseList) { %>
     <table class="simple-table">
 
         <tr>
+            <th align="left">Vaccine</th>
+            <th align="left">Dose</th>
             <th align="left">Date</th>
-            <th align="left">Population Type</th>
-            <th align="left">Strategy</th>
-            <th align="left">Entry Point</th>
-            <th align="left">Final Result</th>
+            <th align="left">Verified</th>
         </tr>
-        <% encounters.each { %>
+        <% boosterDoseList.each { %>
         <tr>
-            <td>${it.encDate}</td>
-            <td>${it.popType}</td>
-            <td>${it.htsStrategy}</td>
-            <td>${it.entryPoint}</td>
-            <td>${it.finalResult}</td>
+            <td>${it.vaccineType}</td>
+            <td>${it.vaccinationDose}</td>
+            <td>${it.vaccinationDate}</td>
+            <td>${it.vaccinationVerified}</td>
         </tr>
         <% } %>
     </table>
@@ -83,6 +78,20 @@
         <div>No history found</div>
 
     <% } %>
+</fieldset>
+
+    <br/>
+    <fieldset>
+    <legend>COVID-19 Clinical Management History</legend>
+    <table class="simple-table">
+
+            <tr>
+                <th align="left">Date reported</th>
+                <th align="left">Hospital admission</th>
+                <th align="left">Admission units</th>
+                <th align="left">Clinical Management</th>
+            </tr>
+            </table>
 </fieldset>
 
 
