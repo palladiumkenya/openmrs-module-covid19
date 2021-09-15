@@ -10,61 +10,19 @@
   ~ under the License.
   ~
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
--->
+  -->
 <htmlform>
-
- <style>
-		.simple-table {
-			border: solid 1px #DDEEEE;
-			border-collapse: collapse;
-			border-spacing: 0;
-			font: normal 13px Arial, sans-serif;
-		}
-
-		.simple-table thead th {
-			background-color: #DDEFEF;
-			border: solid 1px #DDEEEE;
-			color: #336B6B;
-			padding: 10px;
-			text-align: left;
-			text-shadow: 1px 1px 1px #fff;
-		}
-
-		.simple-table td {
-			border: solid 1px #DDEEEE;
-			color: #333;
-			padding: 10px;
-			text-shadow: 1px 1px 1px #fff;
-		}
-	</style>
 	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
-
-	<script>jQuery.noConflict();</script>
-
 	<script type="text/javascript">
-
-        var COVID_VELOCITY = "<lookup expression="covid19.CovidVelocityCalculation()" />";
-        var COVID_ASSESSED = COVID_VELOCITY.split(",")[0].split(":")[1];
-//        var FULLY_VACCINATED = COVID_VELOCITY.split(",")[2].split(":")[1];
-//        var PARTIALLY_VACCINATED = COVID_VELOCITY.split(",")[2].split(":")[1];
-//        var COVID_TESTED_POSITIVE = COVID_VELOCITY.split(",")[3].split(":")[1];
-//        var COVID_TESTED_NEGATIVE = COVID_VELOCITY.split(",")[4].split(":")[1];
-//        var COVID_TESTED = COVID_VELOCITY.split(",")[5].split(":")[1];
-
-		jQuery().ready(function($){
-
-            console.log("COVID_VELOCITY ==> "+COVID_VELOCITY );
-            console.log("COVID_ASSESSED ==> "+COVID_ASSESSED );
- //           console.log("FULLY_VACCINATED ==> "+FULLY_VACCINATED );
-//            console.log("PARTIALLY_VACCINATED ==> "+PARTIALLY_VACCINATED );
-//            console.log("COVID_TESTED ==> "+COVID_TESTED );
-//            console.log("COVID_TESTED_POSITIVE ==> "+COVID_TESTED_POSITIVE );
-//            console.log("COVID_TESTED_NEGATIVE ==> "+COVID_TESTED_NEGATIVE );
-
-
-
+		jQuery(function($) {
+            //Defaults
             jq('#tbl-other-vaccine-1').hide();
             jq('#tbl-other-vaccine-2').hide();
+            jq('#tr-vaccine-type-1').hide();
+            jq('#tbl-vaccine-1').hide();
+
+            //Patient Vaccinated
+           // jq("#patient-vaccinated :input[type=radio]").change(onPatientVaccinatedSelectected);
 
             //Other vaccine specifications
             jq('#vaccine-type-1 select').change(otherVaccine1Selected);
@@ -99,10 +57,26 @@
             // JNJ selected
             if (val == 166355){
                 jq('.tr-vaccine-type-2 :input').hide();
+                var secondVaccineType=jq('#vaccine-type-2');
+                var secondVaccineOther=jq('#other-vaccine-2');
+                var secondDose=jq('#dose-2');
+                getField('vaccine-2-date.value').val("");
+                jq("#verified-2 input[value=164134]").prop("checked", false);
+                clearHiddenSections([secondDose,secondVaccineType,secondVaccineOther,secondDose]);
             }else{
                 jq('.tr-vaccine-type-2 :input').show();
             }
         }
+
+//        var onPatientVaccinatedSelectected = function () {
+//            var val = jq(this).val();
+//            // No selected
+//            if (val == 1066){
+//
+//            }else{
+//
+//            }
+//        }
 
 
         beforeSubmit.push(function() {
@@ -111,24 +85,50 @@
             var dateGiven = getValue('date-given.value');
 
 
-//            if (encounterDate =="") {
-//                getField('encounter-date.error').html('Immunization encounter date should not be empty').show();
-//                return false;
-//            }else{
-//                getField('encounter-date.error').html('Immunization encounter date should not be empty').hide();
-//            }
-//            var isDateGivenBeforeEncounterDate = moment(moment(moment(dateGiven, 'YYYY-MM-DD').toDate())).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()));
-//            if (isDateGivenBeforeEncounterDate) {
-//                getField('date-given.error').html('Date given vaccine cannot be before encounter date').show();
-//                return false;
-//            }else{
-//                getField('date-given.error').html('Date given vaccine cannot be before encounter date').hide();
-//            }
-
             return true;
         });
 
+        clearHiddenSections = function(parentObj) {
+            for(var i=0; i &lt; parentObj.length; i++){
+                parentObj[i].find('input[type=radio]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=text]').each(function() {
+                    this.val("");
+                });
+                parentObj[i].find('select').each(function() {
+                    this.selectedIndex =0;
+                });
+            }
+        }
 	</script>
+	<style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+	</style>
 
 
 	<div class="ke-form-header">
@@ -155,8 +155,9 @@
 				</td>
 			</tr>
 		</table>
-		<table id="tbl-vaccine" class="simple-table">
-			<tr>
+		<table class="simple-table" id="tbl-vaccine-1">
+			<tr id="tr-vaccine">
+				<td>
 				<table class="simple-table">
 					<tr>
 						<th>Vaccine</th>
@@ -165,8 +166,8 @@
 						<th>Verified</th>
 					</tr>
 
-			<obsgroup groupingConceptId="1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-				<tr class="tr-vaccine-type-1">
+			     <obsgroup groupingConceptId="1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+			    	<tr class="tr-vaccine-type-1">
 					<td>
 						<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -196,8 +197,7 @@
 							</tr>
 						</table>
 					</td>
-					<td><obs class="dose" conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	 style="dropdown"	id="dose-field"/></td>
-
+					<td><obs class="dose"  conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" answers="1,2" answerLabels="1,2" style="dropdown" /> </td>
 					<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " /></td>
 
 					<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -238,18 +238,19 @@
 						</table>
 
 					</td>
-					<td><obs class="dose" conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	 style="dropdown"	id="dose-field"/></td>
+					<td><obs class="dose"  conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" answers="1,2" answerLabels="1,2" style="dropdown" id="dose-2" /> </td>
 
-					<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " /></td>
+					<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " id="vaccine-2-date" /></td>
 
 					<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabel="" style="checkbox" id="verified"/>
+							 answerLabel="" style="checkbox" id="verified-2"/>
 					</td>
 
 				</tr>
 			</obsgroup>
 		</table>
+				</td>
 			</tr>
 
 		</table>

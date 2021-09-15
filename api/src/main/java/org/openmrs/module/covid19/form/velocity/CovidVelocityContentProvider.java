@@ -10,6 +10,7 @@
 package org.openmrs.module.covid19.form.velocity;
 
 import org.apache.velocity.VelocityContext;
+import org.openmrs.module.covid19.ModuleConstants;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.velocity.VelocityContextContentProvider;
 
@@ -33,7 +34,7 @@ public class CovidVelocityContentProvider implements VelocityContextContentProvi
 	@Override
 	public void populateContext(FormEntrySession session, VelocityContext velocityContext) {
 		
-		velocityContext.put(EmrConstants.MODULE_ID, new CovidVelocityFunctions(session));
+		velocityContext.put(ModuleConstants.MODULE_ID, new CovidVelocityFunctions(session));
 		velocityContext.put("ui", new UiVelocityFunctions(session, ui));
 	}
 }
