@@ -15,6 +15,7 @@ import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.covid19.metadata.CovidMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -25,20 +26,22 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Covid-19 clinical management summary fragment
+ * Covid-19 vaccination and clinical management summary fragment
  */
 public class VaccinationAndClinicalManagementHistoryFragmentController {
-	
+
+	public static final String VACCINATION_HISTORY_GROUPING_CONCEPT = "1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String VACCINATION_BOOSTER_DOSE_HISTORY_GROUPING_CONCEPT = "1184AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	ObsService obsService = Context.getObsService();
+
 	ConceptService conceptService = Context.getConceptService();
-	
-	SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 	
 	public void controller(FragmentModel model, @FragmentParam("patient") Patient patient) {
 		
@@ -47,104 +50,129 @@ public class VaccinationAndClinicalManagementHistoryFragmentController {
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null,
 		    Arrays.asList(covidAssessmentForm), null, null, null, null, false);
 		
-		Collections.reverse(encounters);
+		//Collections.reverse(encounters);
 		
 		List<SimpleObject> encDetails = new ArrayList<SimpleObject>();
-		List<SimpleObject> linkageList = new ArrayList<SimpleObject>();
+		List<SimpleObject> vaccinationFirstAndSecondDoseList = new ArrayList<SimpleObject>();
+		List<SimpleObject> vaccinationBoosterDoseList = new ArrayList<SimpleObject>();
+
 		for (Encounter e : encounters) {
-			SimpleObject o = getEncDetails(e.getObs(), e);
-			encDetails.add(o);
-		}
-		
-		model.put("encounters", encDetails);
-	}
-	
-	SimpleObject getLinkageDetails(Set<Obs> obsList, Encounter e) {
-		
-		Integer facilityLinkedConcept = 162724;
-		Integer upnAssignedConcept = 162053;
-		
-		String facilityLinkedTo = null;
-		String upn = null;
-		
-		for (Obs obs : obsList) {
-			
-			if (obs.getConcept().getConceptId().equals(facilityLinkedConcept)) {
-				facilityLinkedTo = obs.getValueText();
-			} else if (obs.getConcept().getConceptId().equals(upnAssignedConcept)) { // get age
-				upn = String.valueOf(obs.getValueNumeric().intValue());
+			SimpleObject so = extractEncounterData(e);
+			if (so != null) {
+				List<SimpleObject> firstAndSecondDose = (List<SimpleObject>) so.get("firstAndSecondDoseData");
+				List<SimpleObject> boosterDose = (List<SimpleObject>) so.get("boosterDoseData");
+				if (firstAndSecondDose.size() > 0) {
+					vaccinationFirstAndSecondDoseList.addAll(firstAndSecondDose);
+				}
+
+				if (boosterDose.size() > 0) {
+					vaccinationBoosterDoseList.addAll(boosterDose);
+				}
 			}
 		}
 		
-		return SimpleObject.create("facilityLinkedTo", facilityLinkedTo != null ? facilityLinkedTo : "", "upn",
-		    upn != null ? upn : "", "encDate", DATE_FORMAT.format(e.getEncounterDatetime()));
-		
+		model.put("firstAndSecondDoseList", vaccinationFirstAndSecondDoseList);
+		model.put("boosterDoseList", vaccinationBoosterDoseList);
 	}
-	
-	SimpleObject getEncDetails(Set<Obs> obsList, Encounter e) {
-		
-		Integer populationTypeConcept = 164930;
-		Integer htsStrategyConcept = 164956;
-		Integer htsEntryPointConcept = 160540;
-		Integer finalResultConcept = 159427;
-		
-		String populationType = null;
-		String htsStrategy = null;
-		String entryPoint = null;
-		String finalResult = null;
-		
-		for (Obs obs : obsList) {
-			
-			if (obs.getConcept().getConceptId().equals(populationTypeConcept)) {
-				populationType = popTypeConverter(obs.getValueCoded());
-			} else if (obs.getConcept().getConceptId().equals(htsStrategyConcept)) { // get age
-				htsStrategy = htsStrategyConverter(obs.getValueCoded());
-			} else if (obs.getConcept().getConceptId().equals(htsEntryPointConcept)) {
-				entryPoint = vaccineTypeConverter(obs.getValueCoded());
-			} else if (obs.getConcept().getConceptId().equals(finalResultConcept)) { // current HIV status
-				finalResult = hivStatusConverter(obs.getValueCoded());
+
+	/**
+	 * Extracts COVID-19 vaccination/exposure data from an encounter
+	 * @param e
+	 * @return
+	 */
+	private SimpleObject extractEncounterData(Encounter e) {
+
+		List<SimpleObject> firstAndSecondDoseVaccineData = new ArrayList<SimpleObject>();
+		List<SimpleObject> boosterDoseVaccineData = new ArrayList<SimpleObject>();
+		// get observations for first and second covid vaccine doses
+		List<Obs> vaccinationObs = obsService.getObservations(
+				Arrays.asList(Context.getPersonService().getPerson(e.getPatient().getPersonId())),
+				Arrays.asList(e),
+				Arrays.asList(conceptService.getConceptByUuid(VACCINATION_HISTORY_GROUPING_CONCEPT)),
+				null,
+				null,
+				null,
+				Arrays.asList("obsId"),
+				null,
+				null,
+				null,
+				null,
+				false
+		);
+
+		for(Obs o: vaccinationObs) {
+			SimpleObject data = extractVaccinationHistoryData(o.getGroupMembers());
+			firstAndSecondDoseVaccineData.add(data);
+		}
+
+		// get observations for booster dose
+		List<Obs> vaccinationBoosterObs = obsService.getObservations(
+				Arrays.asList(Context.getPersonService().getPerson(e.getPatient().getPersonId())),
+				Arrays.asList(e),
+				Arrays.asList(conceptService.getConceptByUuid(VACCINATION_BOOSTER_DOSE_HISTORY_GROUPING_CONCEPT)),
+				null,
+				null,
+				null,
+				Arrays.asList("obsId"),
+				null,
+				null,
+				null,
+				null,
+				false
+		);
+
+		for(Obs o: vaccinationBoosterObs) {
+			SimpleObject data = extractVaccinationHistoryData(o.getGroupMembers());
+			boosterDoseVaccineData.add(data);
+		}
+
+		return SimpleObject.create("firstAndSecondDoseData", firstAndSecondDoseVaccineData, "boosterDoseData", boosterDoseVaccineData);
+	}
+
+	/**
+	 * Extracts and organizes covid vaccine grouped observations
+	 * @param groupMembers
+	 * @return
+	 */
+	private SimpleObject extractVaccinationHistoryData(Set<Obs> groupMembers) {
+
+		int vaccineConcept = 984;
+		int	doseConcept = 1418;
+		int dateConcept = 1410;
+		int verifiedConcept = 164464;
+		int vaccineVerifiedConceptAns = 164134;
+
+		String vaccineType = null;
+		int vaccinationDose = 0;
+		String vaccinationDate = null;
+		String vaccinationVerified = null;
+
+		for(Obs obs : groupMembers) {
+
+			if (obs.getConcept().getConceptId().equals(doseConcept) ) {
+				vaccinationDose = obs.getValueNumeric().intValue();
+			} else if (obs.getConcept().getConceptId().equals(dateConcept )) {
+				vaccinationDate = DATE_FORMAT.format(obs.getValueDatetime());
+			} else if (obs.getConcept().getConceptId().equals(vaccineConcept) ) {
+				vaccineType = vaccineTypeConverter(obs.getValueCoded());
+			} else if (obs.getConcept().getConceptId().equals(verifiedConcept )) {
+				vaccinationVerified = obs.getValueCoded().getConceptId().equals(vaccineVerifiedConceptAns) ? "Yes" : "No";
 			}
 		}
-		
-		return SimpleObject.create("popType", populationType != null ? populationType : "", "htsStrategy",
-		    htsStrategy != null ? htsStrategy : "", "entryPoint", entryPoint != null ? entryPoint : "", "finalResult",
-		    finalResult != null ? finalResult : "", "encDate", DATE_FORMAT.format(e.getEncounterDatetime()));
-		
+
+			return SimpleObject.create(
+					"vaccineType", vaccineType,
+					"vaccinationDose", vaccinationDose,
+					"vaccinationDate", vaccinationDate,
+					"vaccinationVerified", vaccinationVerified
+			);
 	}
-	
-	String hivStatusConverter(Concept key) {
-		Map<Concept, String> hivStatusList = new HashMap<Concept, String>();
-		hivStatusList.put(conceptService.getConcept(703), "Positive");
-		hivStatusList.put(conceptService.getConcept(664), "Negative");
-		hivStatusList.put(conceptService.getConcept(1405), "Exposed");
-		hivStatusList.put(conceptService.getConcept(1067), "Unknown");
-		hivStatusList.put(conceptService.getConcept(1138), "Inconclusive");
-		return hivStatusList.get(key);
-	}
-	
-	String popTypeConverter(Concept key) {
-		Map<Concept, String> popTypeList = new HashMap<Concept, String>();
-		popTypeList.put(conceptService.getConcept(164928), "General Population");
-		popTypeList.put(conceptService.getConcept(164929), "Key Population");
-		popTypeList.put(conceptService.getConcept(138643), "Priority Population");
-		return popTypeList.get(key);
-		
-	}
-	
-	String htsStrategyConverter(Concept key) {
-		Map<Concept, String> htsStrategyList = new HashMap<Concept, String>();
-		htsStrategyList.put(conceptService.getConcept(164163), "HP:Provider Initiated Testing(PITC)");
-		htsStrategyList.put(conceptService.getConcept(164953), "NP: HTS for non-patients");
-		htsStrategyList.put(conceptService.getConcept(164954), "VI:Integrated VCT Center");
-		htsStrategyList.put(conceptService.getConcept(164955), "Stand Alone VCT Center");
-		htsStrategyList.put(conceptService.getConcept(159938), "Home Based Testing");
-		htsStrategyList.put(conceptService.getConcept(159939), "MO: Mobile Outreach HTS");
-		htsStrategyList.put(conceptService.getConcept(161557), "Index testing");
-		htsStrategyList.put(conceptService.getConcept(5622), "Other");
-		return htsStrategyList.get(key);
-		
-	}
-	
+
+	/**
+	 * Converter for COVID-19 vaccine types
+	 * @param key
+	 * @return
+	 */
 	String vaccineTypeConverter(Concept key) {
 		Map<Concept, String> entryPointList = new HashMap<Concept, String>();
 		entryPointList.put(conceptService.getConcept(166156), "Astrazeneca");
@@ -157,6 +185,4 @@ public class VaccinationAndClinicalManagementHistoryFragmentController {
 		entryPointList.put(conceptService.getConcept(5622), "Other");
 		return entryPointList.get(key);
 	}
-
-	
 }
