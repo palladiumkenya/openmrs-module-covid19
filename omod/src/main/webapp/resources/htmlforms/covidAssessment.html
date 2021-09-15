@@ -14,6 +14,8 @@
 <htmlform>
 	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 	<script type="text/javascript">
+
+        var pAge = parseInt('<lookup expression="patient.age"/>');
 		jQuery(function($) {
             //Defaults
             jq('#tbl-other-vaccine-1').hide();
@@ -21,12 +23,14 @@
             jq('#tr-vaccine-type-1').hide();
             jq('#tbl-vaccine-1').hide();
             jq('#tbl-vaccine-booster').hide();
+            jq('#tbl-test-results').hide();
+            jq('#tbl-positive-results').hide();
 
             //Patient Vaccinated
-            jq("#patient-vaccinated :input[type=radio]").change(onPatientVaccinatedSelectected);
+            jq("#patient-vaccinated :input[type=radio]").change(onPatientVaccinatedSelected);
 
             //Booster vaccine
-            jq("#booster-dose-given :input[type=radio]").change(onBoosterVaccineSelectected);
+            jq("#booster-dose-given :input[type=radio]").change(onBoosterVaccineSelected);
 
             //Other vaccine specifications
             jq('#vaccine-type-1 select').change(otherVaccine1Selected);
@@ -34,6 +38,12 @@
 
             //JNJ first vaccine specified
             jq('#vaccine-type-1 select').change(otherJNJSelected);
+
+            //Test status
+            jq("#test-status :input[type=radio]").change(onTestStatusSelected);
+
+            //Positive Test status
+            jq("#test-result :input[type=radio]").change(onPositiveResultSelected);
 
 		});
 
@@ -72,7 +82,7 @@
             }
         }
 
-        var onPatientVaccinatedSelectected = function () {
+        var onPatientVaccinatedSelected = function () {
             var val = jq(this).val();
             // No selected
             if (val == 1065){
@@ -82,17 +92,50 @@
             }
         }
 
-       var onBoosterVaccineSelectected = function () {
+       var onBoosterVaccineSelected = function () {
                 var val = jq(this).val();
-                // No selected
-                if (val == 1065){
-                    jq('#tbl-vaccine-booster').show();
-                }else{
-                    jq('#tbl-vaccine-booster').hide();
-                }
+           if (val == 1065){
+               jq('#tbl-vaccine-booster').show();
+           }else{
+               jq('#tbl-vaccine-booster').hide();
+
+               var boosterVaccineType=jq('#booster-type');
+               getField('booster-date.value').val("");
+               getField('booster-dose.value').val("");
+               jq("#booster-verified input[value=164134]").prop("checked", false);
+               clearHiddenSections([boosterVaccineType]);
+           }
+         }
+
+        var onTestStatusSelected = function () {
+            var val = jq(this).val();
+            if (val == 1065){
+                jq('#tbl-test-results').show();
             }
+            if (val == 1066){
 
+                jq('#tbl-test-results').hide();
+                jq('#tbl-positive-results').hide();
+                       // clearing hidden sections
+                var testResult=jq('#test-result');
+                var covidStatus=jq('#covid-status');
+                var admissionStatus=jq('#admission-status');
+                var oxygenSupplement=jq('#oxygen');
+                var ventilationSupplement=jq('#ventilator');
+                getField('date-tested.value').val("");
+                clearHiddenSections([testResult,covidStatus,admissionStatus,oxygenSupplement,ventilationSupplement]);
+            }
+        }
 
+        var onPositiveResultSelected = function () {
+            var val = jq(this).val();
+            if (val == 703){
+                jq('#tbl-positive-results').show();
+            }
+            if (val == 664){
+                jq('#tbl-positive-results').hide();
+            }
+        }
 
         beforeSubmit.push(function() {
             //Date validations
@@ -152,11 +195,45 @@
 				<td>Encounter Date: <encounterDate id="encounter-date" showTime="true" /></td>
 				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
 
+				<ifMode mode="EDIT">
+					<script type="text/javascript">
+                        jq(function(){
+
+                            var patientVaccinated = getValue('patient-vaccinated.value');
+                            var boosterGiven = getValue('booster-dose-given.value');
+                            var hasBeenTested = getValue('test-status.value');
+                            var hasBeenTestedPositive = getValue('test-result.value');
+
+                                if (patientVaccinated == 1065){
+                                    jq('#tbl-vaccine-1').show();
+                                }else{
+                                    jq('#tbl-vaccine-1').hide();
+                                }
+
+								if (boosterGiven == 1065){
+                                    jq('#tbl-vaccine-booster').show();
+								}else{
+                                    jq('#tbl-vaccine-booster').hide();
+								}
+
+                            if (hasBeenTested == 1065 &amp;&amp; hasBeenTestedPositive == 703){
+                                    jq('#tbl-test-results').show();
+                                    jq('#tbl-positive-results').show();
+                                }else{
+                                    jq('#tbl-test-results').show();
+                                   // jq('#tbl-positive-results').hide();
+                                }
+
+                        });
+					</script>
+				</ifMode>
+
 			</tr>
 		</table>
 	</div>
 
 	<div class="ke-form-content">
+		<includeIf velocityTest="$patient.age &gt; 17">
 		<fieldset id="vaccination-history">
 			<legend>
 				Vaccination History
@@ -306,21 +383,22 @@
 										   Sinopharm,
 										   Unknown
 										   Other(Specify)"
-											 style="dropdown" id="vaccine-type-1-field"/>
+											 style="dropdown" id="booster-type"/>
 									</td>
-									<td><obs class="dose" conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	 style="dropdown"	id="dose-field"/></td>
+									<td><obs class="dose" conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	 style="dropdown"	id="booster-dose"/></td>
 
-									<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false"  labelText=" " /></td>
+									<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false"  labelText=" " id="booster-date" /></td>
 
 									<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 											 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-											 answerLabel="" style="checkbox" id="verified"/>
+											 answerLabel="" style="checkbox" id="booster-verified"/>
 									</td>
 									</obsgroup>
 								</tr>
 			     </tr>
 		</table>
 		</fieldset>
+		</includeIf>
 		<fieldset id="diagnosis-tab">
 			<legend>
 				Diagnosis and management
@@ -334,6 +412,8 @@
 							 answerLabels="Yes,No" style="radio" id="test-status"/>
 					</td>
 				</tr>
+			</table>
+			<table class="simple-table" id="tbl-test-results">
 				<tr>
 					<td> Test results for COVID -19 </td>
 					<td>
@@ -342,6 +422,8 @@
 							 answerLabels="Positive,Negative" style="radio" id="test-result"/>
 					</td>
 				</tr>
+			</table>
+			<table  class="simple-table" id="tbl-positive-results">
 				<tr>
 					<td> Presentation of Covid-19 </td>
 					<td>
@@ -353,7 +435,7 @@
 				<tr>
 					<td>Date tested  &#160;&#160;&#160;&#160;&#160;&#160;&#160; </td>
 					<td>
-						<obs conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" showTime="false" labelText=" "  />
+						<obs conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" showTime="false" labelText=" " id="date-tested" />
 					</td>
 				</tr>
 				<tr>
