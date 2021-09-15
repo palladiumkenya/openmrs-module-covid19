@@ -42,8 +42,26 @@
 	<script>jQuery.noConflict();</script>
 
 	<script type="text/javascript">
-	
+
+        var COVID_VELOCITY = "<lookup expression="covid19.CovidVelocityCalculation()" />";
+        var COVID_ASSESSED = COVID_VELOCITY.split(",")[0].split(":")[1];
+//        var FULLY_VACCINATED = COVID_VELOCITY.split(",")[2].split(":")[1];
+//        var PARTIALLY_VACCINATED = COVID_VELOCITY.split(",")[2].split(":")[1];
+//        var COVID_TESTED_POSITIVE = COVID_VELOCITY.split(",")[3].split(":")[1];
+//        var COVID_TESTED_NEGATIVE = COVID_VELOCITY.split(",")[4].split(":")[1];
+//        var COVID_TESTED = COVID_VELOCITY.split(",")[5].split(":")[1];
+
 		jQuery().ready(function($){
+
+            console.log("COVID_VELOCITY ==> "+COVID_VELOCITY );
+            console.log("COVID_ASSESSED ==> "+COVID_ASSESSED );
+ //           console.log("FULLY_VACCINATED ==> "+FULLY_VACCINATED );
+//            console.log("PARTIALLY_VACCINATED ==> "+PARTIALLY_VACCINATED );
+//            console.log("COVID_TESTED ==> "+COVID_TESTED );
+//            console.log("COVID_TESTED_POSITIVE ==> "+COVID_TESTED_POSITIVE );
+//            console.log("COVID_TESTED_NEGATIVE ==> "+COVID_TESTED_NEGATIVE );
+
+
 
             jq('#tbl-other-vaccine-1').hide();
             jq('#tbl-other-vaccine-2').hide();
@@ -171,7 +189,7 @@
 
 						<table id="tbl-other-vaccine-1" style="display: inline-block;" >
 							<tr>
-								<td> Vaccine name :
+								<td> Vaccine name
 									<obs id="other-vaccine-1" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 									&#160;&#160;&#160;
 								</td>
@@ -247,7 +265,7 @@
 		</table>
 		<table class="simple-table">
 			<tr>
-				<td> Have you received a booster COVID -19 dose?   </td>
+				<td> Have you received a booster COVID -19 dose   </td>
 			     <td>
 					<obs conceptId="166063AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -260,7 +278,7 @@
 						<table class="simple-table">
 							<tr>
 								<th>Vaccine</th>
-								<th>Sequence</th>
+								<th>Dose No.</th>
 								<th>Date</th>
 								<th>Verified</th>
 							</tr>
@@ -308,19 +326,27 @@
 			</legend>
 			<table class="simple-table">
 				<tr>
-					<td> Have you ever tested positive for COVID -19? </td>
+					<td> Have you ever tested for COVID -19 </td>
 					<td>
-						<obs conceptId="166638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Yes,No" style="radio" id="test-result"/>
+						<obs conceptId="165852AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes,No" style="radio" id="test-status"/>
 					</td>
 				</tr>
 				<tr>
-					<td> Were you Symptomatic?</td>
+					<td> Test results for COVID -19 </td>
+					<td>
+						<obs conceptId="166638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Positive,Negative" style="radio" id="test-result"/>
+					</td>
+				</tr>
+				<tr>
+					<td> Presentation of Covid-19 </td>
 					<td>
 						<obs conceptId="159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="1068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165912AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Yes,No" style="radio" id="covid-status"/>
+							 answerLabels="Symptomatic,Asymptomatic" style="radio" id="covid-status"/>
 					</td>
 				</tr>
 				<tr>
@@ -330,7 +356,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td> Admission status</td>
+					<td> Hospital admission </td>
 					<td>
 						<obs conceptId="162477AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -338,19 +364,36 @@
 					</td>
 				</tr>
 				<tr>
-					<td> Admission location</td>
-					<td>
-						<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 style="radio" answerLabels="Isolation,HDU,ICU" id="admission-location"/>
+					<td> Admission unit</td>
+
+						<td style="text-align: left">
+							<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptId="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabel="Isolation" style="checkbox"/>
+							<br/>
+							<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptId="165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabel="HDU" style="checkbox" />
+							<br/>
+							<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptId="161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabel="ICU" style="checkbox" />
+						</td>
+				</tr>
+				<tr>
+					<td> Did you receive supplemental oxygen</td>
+					<td style="text-align: left">
+						<obs conceptId="165864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes,No" style="radio" id="oxygen"/>
 					</td>
 				</tr>
 				<tr>
-					<td> COVID-19 Management services offered</td>
-					<td>
-						<obs conceptId="165302"
-							 answerConceptIds="162738AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165932AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 style="dropdown" answerLabels="Supplemental oxygen,Ventilator,Unknown,None" id="support-services"/>
+					<td> Were you put on a ventilator</td>
+					<td style="text-align: left">
+						<obs conceptId="165932AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes,No" style="radio" id="ventilator"/>
 					</td>
 				</tr>
 			</table>
