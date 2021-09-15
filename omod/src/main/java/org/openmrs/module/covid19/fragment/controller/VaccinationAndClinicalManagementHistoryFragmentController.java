@@ -100,7 +100,7 @@ public class VaccinationAndClinicalManagementHistoryFragmentController {
 			} else if (obs.getConcept().getConceptId().equals(htsStrategyConcept)) { // get age
 				htsStrategy = htsStrategyConverter(obs.getValueCoded());
 			} else if (obs.getConcept().getConceptId().equals(htsEntryPointConcept)) {
-				entryPoint = entryPointConverter(obs.getValueCoded());
+				entryPoint = vaccineTypeConverter(obs.getValueCoded());
 			} else if (obs.getConcept().getConceptId().equals(finalResultConcept)) { // current HIV status
 				finalResult = hivStatusConverter(obs.getValueCoded());
 			}
@@ -145,25 +145,18 @@ public class VaccinationAndClinicalManagementHistoryFragmentController {
 		
 	}
 	
-	String entryPointConverter(Concept key) {
+	String vaccineTypeConverter(Concept key) {
 		Map<Concept, String> entryPointList = new HashMap<Concept, String>();
-		entryPointList.put(conceptService.getConcept(5485), "In Patient Department(IPD)");
-		entryPointList.put(conceptService.getConcept(160542), "Out Patient Department(OPD)");
-		entryPointList.put(conceptService.getConcept(162181), "Peadiatric Clinic");
-		entryPointList.put(conceptService.getConcept(160552), "Nutrition Clinic");
-		entryPointList.put(conceptService.getConcept(160538), "PMTCT - ANC");
-		entryPointList.put(conceptService.getConcept(160456), "PMTCT - MAT");
-		entryPointList.put(conceptService.getConcept(1623), "PMTCT - PNC");
-		entryPointList.put(conceptService.getConcept(160541), "TB");
-		entryPointList.put(conceptService.getConcept(159940), "VCT");
-		entryPointList.put(conceptService.getConcept(159938), "Home Based Testing");
-		entryPointList.put(conceptService.getConcept(159939), "Mobile Outreach");
-		entryPointList.put(conceptService.getConcept(162223), "VMMC");
-		entryPointList.put(conceptService.getConcept(160546), "STI Clinic");
-		entryPointList.put(conceptService.getConcept(160522), "Emergency");
-		entryPointList.put(conceptService.getConcept(163096), "Community Testing");
+		entryPointList.put(conceptService.getConcept(166156), "Astrazeneca");
+		entryPointList.put(conceptService.getConcept(166355), "Johnson and Johnson");
+		entryPointList.put(conceptService.getConcept(166154), "Moderna");
+		entryPointList.put(conceptService.getConcept(166155), "Pfizer");
+		entryPointList.put(conceptService.getConcept(166157), "Sputnik");
+		entryPointList.put(conceptService.getConcept(166379), "Sinopharm");
+		entryPointList.put(conceptService.getConcept(1067), "Unknown");
 		entryPointList.put(conceptService.getConcept(5622), "Other");
 		return entryPointList.get(key);
 	}
+
 	
 }
