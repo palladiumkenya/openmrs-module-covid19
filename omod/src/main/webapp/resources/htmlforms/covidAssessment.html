@@ -20,9 +20,13 @@
             jq('#tbl-other-vaccine-2').hide();
             jq('#tr-vaccine-type-1').hide();
             jq('#tbl-vaccine-1').hide();
+            jq('#tbl-vaccine-booster').hide();
 
             //Patient Vaccinated
-           // jq("#patient-vaccinated :input[type=radio]").change(onPatientVaccinatedSelectected);
+            jq("#patient-vaccinated :input[type=radio]").change(onPatientVaccinatedSelectected);
+
+            //Booster vaccine
+            jq("#booster-dose-given :input[type=radio]").change(onBoosterVaccineSelectected);
 
             //Other vaccine specifications
             jq('#vaccine-type-1 select').change(otherVaccine1Selected);
@@ -68,15 +72,26 @@
             }
         }
 
-//        var onPatientVaccinatedSelectected = function () {
-//            var val = jq(this).val();
-//            // No selected
-//            if (val == 1066){
-//
-//            }else{
-//
-//            }
-//        }
+        var onPatientVaccinatedSelectected = function () {
+            var val = jq(this).val();
+            // No selected
+            if (val == 1065){
+                jq('#tbl-vaccine-1').show();
+            }else{
+                jq('#tbl-vaccine-1').hide();
+            }
+        }
+
+       var onBoosterVaccineSelectected = function () {
+                var val = jq(this).val();
+                // No selected
+                if (val == 1065){
+                    jq('#tbl-vaccine-booster').show();
+                }else{
+                    jq('#tbl-vaccine-booster').hide();
+                }
+            }
+
 
 
         beforeSubmit.push(function() {
@@ -156,9 +171,6 @@
 			</tr>
 		</table>
 		<table class="simple-table" id="tbl-vaccine-1">
-			<tr id="tr-vaccine">
-				<td>
-				<table class="simple-table">
 					<tr>
 						<th>Vaccine</th>
 						<th>Dose</th>
@@ -249,12 +261,6 @@
 
 				</tr>
 			</obsgroup>
-		</table>
-				</td>
-			</tr>
-
-		</table>
-		<table class="simple-table">
 		<tr>
 			<td> Final Vaccination Status </td>
 		   <td>
@@ -263,28 +269,25 @@
 					 answerLabels="Partially Vaccinated,Fully Vaccinated" style="radio" id="completed"/>
 			</td>
 		</tr>
-		</table>
-		<table class="simple-table">
-			<tr>
+		<tr>
 				<td> Have you received a booster COVID -19 dose   </td>
 			     <td>
 					<obs conceptId="166063AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabels="Yes,No" style="radio" id="booster-dose"/>
+						 answerLabels="Yes,No" style="radio" id="booster-dose-given"/>
 				</td>
 			</tr>
-			<tr class="vaccine-booster">
-				<table id="tbl-booster" class="simple-table">
-					<tr>
-						<table class="simple-table">
+		</table>
+		<table id="tbl-vaccine-booster">
+			<tr>
 							<tr>
 								<th>Vaccine</th>
 								<th>Dose No.</th>
 								<th>Date</th>
 								<th>Verified</th>
 							</tr>
-							<obsgroup groupingConceptId="1184AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-								<tr class="vaccine-type-1">
+								<tr>
+									<obsgroup groupingConceptId="1184AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 									<td>
 										<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 											 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -313,12 +316,9 @@
 											 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 											 answerLabel="" style="checkbox" id="verified"/>
 									</td>
+									</obsgroup>
 								</tr>
-							</obsgroup>
-						</table>
-					</tr>
-		</table>
-			</tr>
+			     </tr>
 		</table>
 		</fieldset>
 		<fieldset id="diagnosis-tab">
