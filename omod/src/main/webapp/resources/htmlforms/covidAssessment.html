@@ -166,6 +166,8 @@
             var patientVaccinated = getValue('patient-vaccinated.value');
             var patientTestStatus = getValue('test-status.value');
             var patientResultStatus = getValue('test-result.value');
+            var vaccinationStatus = getValue('completion-status.value');
+            var boosterStatus = getValue('booster-dose-given.value');
 
             if (pAge &gt; 17 &amp;&amp; patientVaccinated == "") {
                 getField('patient-vaccinated.error').html('Vaccination status should not be empty').show();
@@ -173,6 +175,18 @@
             }else{
                 getField('patient-vaccinated.error').html('Vaccination status should not be empty').hide();
            }
+            if (pAge &gt; 17 &amp;&amp; vaccinationStatus == "") {
+                getField('completion-status.error').html('Final vaccination status should not be empty').show();
+                return false;
+            }else{
+                getField('completion-status.error').html('Final vaccination status should not be empty').hide();
+            }
+            if (pAge &gt; 17 &amp;&amp; boosterStatus == "") {
+                getField('booster-dose-given.error').html('Booster vaccination status should not be empty').show();
+                return false;
+            }else{
+                getField('booster-dose-given.error').html('Booster vaccination status should not be empty').hide();
+            }
             if (patientTestStatus == "") {
                 getField('test-status.error').html('Patient test status should not be empty').show();
                 return false;
@@ -339,7 +353,7 @@
 							</tr>
 						</table>
 					</td>
-					<td><obs class="dose"  conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" answers="1,2" answerLabels="1,2" style="dropdown" /> </td>
+					<td><obs class="dose"  conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" answers="1,2" answerLabels="First,Second" style="dropdown" /> </td>
 					<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " /></td>
 
 					<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -382,7 +396,7 @@
 						</table>
 
 					</td>
-					<td><obs class="dose"  conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" answers="1,2" answerLabels="1,2" style="dropdown" id="dose-2" /> </td>
+					<td><obs class="dose"  conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" answers="1,2" answerLabels="First,Second" style="dropdown" id="dose-2" /> </td>
 
 					<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " id="vaccine-2-date" /></td>
 
@@ -398,7 +412,7 @@
 		   <td>
 				<obs conceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 					 answerConceptIds="166192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					 answerLabels="Partially Vaccinated,Fully Vaccinated" style="radio" id="completed"/>
+					 answerLabels="Partially Vaccinated,Fully Vaccinated" style="radio" id="completion-status"/>
 			</td>
 		</tr>
 		<tr>
