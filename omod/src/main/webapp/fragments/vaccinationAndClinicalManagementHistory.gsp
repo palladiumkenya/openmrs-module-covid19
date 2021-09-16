@@ -82,7 +82,7 @@
 
     <br/>
 <fieldset>
-    <legend>COVID-19 Clinical Management History</legend>
+    <legend>COVID-19 Diagnosis and Clinical Management History</legend>
     <%if (diagnosisAndManagementList) { %>
         <table class="simple-table">
             <tr>
