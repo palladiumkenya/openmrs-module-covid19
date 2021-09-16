@@ -33,17 +33,17 @@
     <table class="simple-table">
 
         <tr>
-            <th align="left">Vaccine</th>
-            <th align="left">Dose</th>
-            <th align="left">Date</th>
-            <th align="left">Verified</th>
+            <th width="25%" align="left">Vaccine</th>
+            <th width="25%" align="left">Dose</th>
+            <th width="25%" align="left">Date</th>
+            <th width="25%" align="left">Verified</th>
         </tr>
         <% firstAndSecondDoseList.each { %>
         <tr>
-            <td>${it.vaccineType}</td>
-            <td>${it.vaccinationDose}</td>
-            <td>${it.vaccinationDate}</td>
-            <td>${it.vaccinationVerified}</td>
+            <td width="25%">${it.vaccineType}</td>
+            <td width="25%">${it.vaccinationDose}</td>
+            <td width="25%">${it.vaccinationDate}</td>
+            <td width="25%">${it.vaccinationVerified ?: it.vaccinationVerified}</td>
         </tr>
         <% } %>
     </table>
@@ -60,17 +60,17 @@
     <table class="simple-table">
 
         <tr>
-            <th align="left">Vaccine</th>
-            <th align="left">Dose</th>
-            <th align="left">Date</th>
-            <th align="left">Verified</th>
+            <th width="25%" align="left">Vaccine</th>
+            <th width="25%" align="left">Sequence</th>
+            <th width="25%" align="left">Date</th>
+            <th width="25%" align="left">Verified</th>
         </tr>
         <% boosterDoseList.each { %>
         <tr>
-            <td>${it.vaccineType}</td>
-            <td>${it.vaccinationDose}</td>
-            <td>${it.vaccinationDate}</td>
-            <td>${it.vaccinationVerified}</td>
+            <td width="25%">${it.vaccineType}</td>
+            <td width="25%">${it.vaccinationDose}</td>
+            <td width="25%">${it.vaccinationDate}</td>
+            <td width="25%">${it.vaccinationVerified ?: it.vaccinationVerified}</td>
         </tr>
         <% } %>
     </table>
@@ -81,17 +81,33 @@
 </fieldset>
 
     <br/>
-    <fieldset>
+<fieldset>
     <legend>COVID-19 Clinical Management History</legend>
-    <table class="simple-table">
-
+    <%if (diagnosisAndManagementList) { %>
+        <table class="simple-table">
             <tr>
-                <th align="left">Date reported</th>
-                <th align="left">Hospital admission</th>
-                <th align="left">Admission units</th>
-                <th align="left">Clinical Management</th>
+                <th align="left">Diagnosis Date</th>
+                <th align="left">Presentation</th>
+                <th align="left">Hospital Admission</th>
+                <th align="left">Admission Units</th>
+                <th align="left">Supplemental Oxygen</th>
+                <th align="left">Ventilator</th>
             </tr>
-            </table>
+            <% diagnosisAndManagementList.each { %>
+            <tr>
+                <td>${it.dateTested}</td>
+                <td>${it.covidPresentation}</td>
+                <td>${it.hospitalAdmission}</td>
+                <td>${it.admissionUnits}</td>
+                <td>${it.supplementalOxygen}</td>
+                <td>${it.ventilator}</td>
+            </tr>
+            <% } %>
+        </table>
+        <% } else {%>
+            <div>No history found</div>
+
+        <% } %>
 </fieldset>
 
 
