@@ -15,6 +15,7 @@
 	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 	<script type="text/javascript">
 
+		var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var pAge = parseInt('<lookup expression="patient.age"/>');
 		jQuery(function($) {
             //Defaults
@@ -38,7 +39,7 @@
             jq('#vaccine-type-2 select').change(otherVaccine2Selected);
 
             //JNJ first vaccine specified
-            jq('#vaccine-type-1 select').change(otherJNJSelected);
+            jq('#vaccine-type-1 select').change(vaccineJNJSelected);
 
             //Test status
             jq("#test-status :input[type=radio]").change(onTestStatusSelected);
@@ -48,6 +49,8 @@
 
             //Admission status
             jq("#admission-status :input[type=radio]").change(onAdmissionStatusSelected);
+
+            recordedCovidAssessmentIndicators();
 
 		});
 
@@ -70,10 +73,13 @@
             }
         }
 
-        var otherJNJSelected = function () {
+        var vaccineJNJSelected = function () {
             var val = jq(this).val();
             // JNJ selected
             if (val == 166355){
+                getField('dose-sequence.value').prop("selectedIndex", 1);
+                jq('#dose-sequence select').prop('disabled', true);
+
                 jq('.tr-vaccine-type-2 :input').hide();
                 var secondVaccineType=jq('#vaccine-type-2');
                 var secondVaccineOther=jq('#other-vaccine-2');
@@ -83,6 +89,8 @@
                 clearHiddenSections([secondDose,secondVaccineType,secondVaccineOther,secondDose]);
             }else{
                 jq('.tr-vaccine-type-2 :input').show();
+                jq('#dose-sequence select').prop('disabled', false);
+                getField('dose-sequence.value').prop("selectedIndex", 0);
             }
         }
 
@@ -159,6 +167,32 @@
             }
         }
 
+       function recordedCovidAssessmentIndicators() {
+           var patientId = <lookup expression="patient.patientId"/>;
+           jq.getJSON('/' + ctxPath + '/covid19/CovidUtils/recordedCovidAssessmentIndicators.action', { patientId: patientId }, function(data) {
+           console.log("Data ==> "+data.vaccinated);
+               if (data.vaccinated === true) {
+                   jq('#further-visits').show();
+                   jq('#first-visit').hide();
+               }else{
+                   jq('#first-visit').show();
+                   jq('#further-visits').hide();
+               }
+               if (data.covidTested === true) {
+                   jq('#further-tests').show();
+                   jq('#first-test').hide();
+               }else{
+                   jq('#first-test').show();
+                   jq('#further-tests').hide();
+               }
+               if (data.fullyVaccinated === true) {
+                   jq("#completion-status input[value=5585]").prop("checked", true);
+               }else{
+                   jq("#completion-status input[value=5585]").prop("checked", false);
+               }
+           });
+       }
+
         beforeSubmit.push(function() {
             //Before submit validations
             pAge = parseInt('<lookup expression="patient.age"/>');
@@ -166,8 +200,11 @@
             var patientVaccinated = getValue('patient-vaccinated.value');
             var patientTestStatus = getValue('test-status.value');
             var patientResultStatus = getValue('test-result.value');
-            var vaccinationStatus = getValue('completion-status.value');
+            var completionStatus = getValue('completion-status.value');
             var boosterStatus = getValue('booster-dose-given.value');
+            var vaccineType = getField('vaccine-type-1.value').val();
+            var doseSequence = getValue('dose-sequence.value');
+            var vaccineDate = getValue('vaccination-date.value');
 
             if (pAge &gt; 17 &amp;&amp; patientVaccinated == "") {
                 getField('patient-vaccinated.error').html('Vaccination status should not be empty').show();
@@ -175,11 +212,29 @@
             }else{
                 getField('patient-vaccinated.error').html('Vaccination status should not be empty').hide();
            }
-            if (pAge &gt; 17 &amp;&amp; vaccinationStatus == "") {
+            if (pAge &gt; 17 &amp;&amp; completionStatus == "") {
                 getField('completion-status.error').html('Final vaccination status should not be empty').show();
                 return false;
             }else{
                 getField('completion-status.error').html('Final vaccination status should not be empty').hide();
+            }
+            if (patientVaccinated == 1065 &amp;&amp; vaccineType == "" ) {
+                getField('vaccine-type-1.error').html('Vaccine type should not be empty').show();
+                return false;
+            }else{
+                getField('vaccine-type-1.error').html('Vaccine type should not be empty').hide();
+            }
+            if (vaccineType != "" &amp;&amp; doseSequence == "" ) {
+                getField('dose-sequence.error').html('Dose should not be empty').show();
+                return false;
+            }else{
+                getField('dose-sequence.error').html('Dose should not be empty').hide();
+            }
+            if (vaccineType != "" &amp;&amp; vaccineDate == "" ) {
+                getField('vaccination-date.error').html('Vaccine date should not be empty').show();
+                return false;
+            }else{
+                getField('vaccination-date.error').html('Vaccine date should not be empty').hide();
             }
             if (pAge &gt; 17 &amp;&amp; boosterStatus == "") {
                 getField('booster-dose-given.error').html('Booster vaccination status should not be empty').show();
@@ -199,6 +254,7 @@
             }else{
                 getField('test-result.error').html('Patient result status should not be empty').hide();
             }
+
             return true;
         });
 
@@ -307,7 +363,15 @@
 			</legend>
 		<table class="simple-table">
 			<tr>
-				<td> Have you ever been vaccinated
+				<td>
+					<div id="first-visit">
+						Have you ever been vaccinated
+					</div>
+					<div id="further-visits">
+						Have you been vaccinated since your last visit
+					</div>
+				</td>
+					<td>
 					<obs conceptId="163100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerLabel="" style="radio" id="patient-vaccinated"/>
@@ -318,7 +382,7 @@
 					<tr>
 						<th>Vaccine</th>
 						<th>Dose</th>
-						<th>Date</th>
+						<th>Date/Estimated</th>
 						<th>Verified</th>
 					</tr>
 
@@ -353,8 +417,8 @@
 							</tr>
 						</table>
 					</td>
-					<td><obs class="dose"  conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" answers="1,2" answerLabels="First,Second" style="dropdown" /> </td>
-					<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " /></td>
+					<td><obs class="dose"  conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" answers="1,2" answerLabels="First,Second" style="dropdown" id="dose-sequence" /> </td>
+					<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " id="vaccination-date"/></td>
 
 					<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -429,7 +493,7 @@
 							<tr>
 								<th>Vaccine</th>
 								<th>Dose No.</th>
-								<th>Date</th>
+								<th>Date/Estimated</th>
 								<th>Verified</th>
 							</tr>
 								<tr>
@@ -474,7 +538,14 @@
 			</legend>
 			<table class="simple-table">
 				<tr>
-					<td> Have you ever tested for COVID -19 </td>
+					<td>
+						<div id="first-test">
+							Have you ever tested for COVID -19
+						</div>
+						<div id="further-tests">
+							Have you tested for COVID -19 since your last visit
+						</div>
+					</td>
 					<td>
 						<obs conceptId="165852AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -494,17 +565,17 @@
 			</table>
 			<table  class="simple-table" id="tbl-positive-results">
 				<tr>
+					<td>Date tested  &#160;&#160;&#160;&#160;&#160;&#160;&#160; </td>
+					<td>
+						<obs conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" showTime="false" labelText=" " id="date-tested" />
+					</td>
+				</tr>
+				<tr>
 					<td> Presentation of Covid-19 </td>
 					<td>
 						<obs conceptId="159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="1068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165912AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerLabels="Symptomatic,Asymptomatic" style="radio" id="covid-status"/>
-					</td>
-				</tr>
-				<tr>
-					<td>Date tested  &#160;&#160;&#160;&#160;&#160;&#160;&#160; </td>
-					<td>
-						<obs conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" showTime="false" labelText=" " id="date-tested" />
 					</td>
 				</tr>
 				<tr>

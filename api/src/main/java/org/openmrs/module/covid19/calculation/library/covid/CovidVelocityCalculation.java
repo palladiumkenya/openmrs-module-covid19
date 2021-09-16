@@ -46,16 +46,16 @@ public class CovidVelocityCalculation extends BaseEmrCalculation {
 		
 		Set<Integer> alive = Filters.alive(cohort, context);
 		//Vaccination
-		Concept VaccinationStatusQuestion = Context.getConceptService().getConcept(164134);
-		Concept PartialVaccinationStatus = Context.getConceptService().getConcept(166192);
-		Concept FullVaccinationStatus = Context.getConceptService().getConcept(5585);
+		Integer VaccinationStatusQuestion = 163100;
+		Integer CompletionStatusQuestion = 164134;
+		Integer PartialVaccinationStatus = 166192;
+		Integer FullVaccinationStatus = 5585;
 		//Covid tests
-		Concept CovidTestQuestion = Context.getConceptService().getConcept(166638);
-		Concept CovidTestPositive = Context.getConceptService().getConcept(703);
-		Concept CovidTestNegative = Context.getConceptService().getConcept(664);
-		
-		CalculationResultMap lastVaccinationStatusObs = Calculations.lastObs(VaccinationStatusQuestion, alive, context);
-		CalculationResultMap lastCovidTestStatusObs = Calculations.lastObs(CovidTestQuestion, alive, context);
+		Integer CovidTestQuestion = 165852;
+		Integer CovidResultQuestion = 166638;
+		Integer CovidTestPositive = 703;
+		Integer CovidTestNegative = 664;
+		Integer YesConcept = 1065;
 		
 		CalculationResultMap ret = new CalculationResultMap();
 		StringBuilder sb = new StringBuilder();
@@ -68,60 +68,49 @@ public class CovidVelocityCalculation extends BaseEmrCalculation {
 			boolean covidTestedPositive = false;
 			boolean covidTestedNegative = false;
 			
-			//vaccination status
-			Concept vaccinationStatus = EmrCalculationUtils.codedObsResultForPatient(lastVaccinationStatusObs, ptId);
-			if (vaccinationStatus != null) {
-				Obs vaccinationObs = EmrCalculationUtils.obsResultForPatient(lastVaccinationStatusObs, ptId);
-				if (vaccinationObs != null && vaccinationObs.getConcept() == VaccinationStatusQuestion) {
-					vaccinated = true;
-				}
-				if (vaccinationObs != null && vaccinationObs.getConcept() == VaccinationStatusQuestion
-				        && vaccinationObs.getValueCoded() == PartialVaccinationStatus) {
-					partiallyVaccinated = true;
-				}
-				if (vaccinationObs != null && vaccinationObs.getConcept() == VaccinationStatusQuestion
-				        && vaccinationObs.getValueCoded() == FullVaccinationStatus) {
-					fullyVaccinated = true;
-				}
-			}
-			//Covid Test status
-			Concept covidTestStatus = EmrCalculationUtils.codedObsResultForPatient(lastCovidTestStatusObs, ptId);
-			if (covidTestStatus != null) {
-				Obs covidTestObs = EmrCalculationUtils.obsResultForPatient(lastCovidTestStatusObs, ptId);
-				if (covidTestObs != null && covidTestObs.getConcept() == CovidTestQuestion) {
-					covidTested = true;
-				}
-				if (covidTestObs != null && covidTestObs.getConcept() == CovidTestQuestion
-				        && covidTestObs.getValueCoded() == CovidTestPositive) {
-					covidTestedPositive = true;
-				}
-				if (covidTestObs != null && covidTestObs.getConcept() == CovidTestQuestion
-				        && covidTestObs.getValueCoded() == CovidTestNegative) {
-					covidTestedNegative = true;
-				}
-			}
-			
+			// Check clients with covid assessment encounter
 			Encounter lastCovidAssessmentEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId),
-			    Context.getEncounterService().getEncounterTypeByUuid("86709f36-1490-11ec-82a8-0242ac130003")); //last covid 19 assessment form
+			    Context.getEncounterService().getEncounterTypeByUuid("86709cfc-1490-11ec-82a8-0242ac130003")); //last covid 19 assessment encounter
 			if (lastCovidAssessmentEncounter != null) {
-				// Has previous covid encounters
 				covidAssessed = true;
+				for (Obs obs : lastCovidAssessmentEncounter.getObs()) {
+					if (obs.getConcept().getConceptId().equals(VaccinationStatusQuestion)
+					        && (obs.getValueCoded().getConceptId().equals(YesConcept))) {
+						vaccinated = true;
+					}
+					if (obs.getConcept().getConceptId().equals(CompletionStatusQuestion)
+					        && (obs.getValueCoded().getConceptId().equals(PartialVaccinationStatus))) {
+						partiallyVaccinated = true;
+					}
+					if (obs.getConcept().getConceptId().equals(CompletionStatusQuestion)
+					        && (obs.getValueCoded().getConceptId().equals(FullVaccinationStatus))) {
+						fullyVaccinated = true;
+					}
+					if (obs.getConcept().getConceptId().equals(CovidTestQuestion)
+					        && (obs.getValueCoded().getConceptId().equals(YesConcept))) {
+						covidTested = true;
+					}
+					if (obs.getConcept().getConceptId().equals(CovidResultQuestion)
+					        && (obs.getValueCoded().getConceptId().equals(CovidTestPositive))) {
+						covidTestedPositive = true;
+					}
+					if (obs.getConcept().getConceptId().equals(CovidResultQuestion)
+					        && (obs.getValueCoded().getConceptId().equals(CovidTestNegative))) {
+						covidTestedNegative = true;
+					}
+					
+				}
+				sb.append("covidAssessed:").append(covidAssessed).append(",");
+				sb.append("vaccinated:").append(vaccinated).append(",");
+				sb.append("fullyVaccinated:").append(fullyVaccinated).append(",");
+				sb.append("partiallyVaccinated:").append(partiallyVaccinated).append(",");
+				sb.append("covidTestedPositive:").append(covidTestedPositive).append(",");
+				sb.append("covidTestedNegative:").append(covidTestedNegative).append(",");
+				sb.append("covidTested:").append(covidTested).append(",");
 			}
-			
-			sb.append("covidAssessed:").append(covidAssessed).append(",");
-			sb.append("vaccinated:").append(vaccinated).append(",");
-			sb.append("fullyVaccinated:").append(fullyVaccinated).append(",");
-			sb.append("partiallyVaccinated:").append(partiallyVaccinated).append(",");
-			sb.append("covidTestedPositive:").append(covidTestedPositive).append(",");
-			sb.append("covidTestedNegative:").append(covidTestedNegative).append(",");
-			sb.append("covidTested:").append(covidTested).append(",");
 			
 			ret.put(ptId, new SimpleResult(sb.toString(), this, context));
 		}
-		
-		log.info("Covid assessmet String ==>" + sb);
 		return ret;
-		
 	}
-	
 }
