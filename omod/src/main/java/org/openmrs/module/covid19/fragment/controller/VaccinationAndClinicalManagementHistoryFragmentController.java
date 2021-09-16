@@ -250,7 +250,7 @@ public class VaccinationAndClinicalManagementHistoryFragmentController {
 		String vaccineType = null;
 		int vaccinationDose = 0;
 		String vaccinationDate = null;
-		String vaccinationVerified = null;
+		String vaccinationVerified = "No";
 		
 		for (Obs obs : groupMembers) {
 			
