@@ -74,7 +74,7 @@
                 <ref bean="covid.app.providerHome"/>
             </set>
         </property>
-        <property name="showIfCalculation" value="org.openmrs.module.covid19.calculation.library.covid.covid19AssessmentCalculation" />
+        <property name="showIfCalculation" value="org.openmrs.module.covid19.calculation.library.covid.EligibleForCovid19AssessmentCalculation" />
         <property name="icon" value="kenyaui:forms/generic.png" />
         <property name="htmlform" value="covid19:covidAssessment.html" />
         <property name="order" value="201085" />
