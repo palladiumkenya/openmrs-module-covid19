@@ -40,28 +40,48 @@ public class Covid19VaccinationReportBuilder extends AbstractReportBuilder {
 	
 	@Override
 	protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
-		return Arrays.asList(new Parameter("endDate", "End Date", Date.class), new Parameter("dateBasedReporting", "",
-		        String.class));
+		return Arrays.asList(new Parameter("startDate", "Start Date", Date.class), new Parameter("endDate", "End Date",
+		        Date.class), new Parameter("dateBasedReporting", "", String.class));
 	}
 	
 	@Override
 	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor,
 	        ReportDefinition reportDefinition) {
-		return Arrays.asList(ReportUtils.map(covid19Vaccination(), "endDate=${endDate}"));
+		return Arrays.asList(ReportUtils.map(covid19Vaccination(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	protected DataSetDefinition covid19Vaccination() {
 		CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
 		cohortDsd.setName("covid19Vaccination");
+		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		String indParams = "endDate=${endDate}";
+		String indParams = "startDate=${startDate},endDate=${endDate}";
 		cohortDsd.setDescription("Covid-19 vaccination report");
-		cohortDsd.addColumn("Fully vaccinated", "",
-		    ReportUtils.map(covid19VaccinationIndicatorLibrary.fullyVaccinated(), indParams), "");
+		
+		cohortDsd.addColumn("On ART 18+ years", "",
+		    ReportUtils.map(covid19VaccinationIndicatorLibrary.onArt18AndAbove(), indParams), "");
 		cohortDsd.addColumn("Partially vaccinated", "",
 		    ReportUtils.map(covid19VaccinationIndicatorLibrary.partiallyVaccinated(), indParams), "");
-		cohortDsd.addColumn("Not vaccinated", "",
-		    ReportUtils.map(covid19VaccinationIndicatorLibrary.notVaccinated(), indParams), "");
+		cohortDsd.addColumn("Fully vaccinated", "",
+		    ReportUtils.map(covid19VaccinationIndicatorLibrary.fullyVaccinated(), indParams), "");
+		
+		cohortDsd.addColumn("Verified 1st Dose", "",
+		    ReportUtils.map(covid19VaccinationIndicatorLibrary.doseOneVerified(), indParams), "");
+		
+		cohortDsd.addColumn("Verified 2nd Dose", "",
+		    ReportUtils.map(covid19VaccinationIndicatorLibrary.doseTwoVerified(), indParams), "");
+		
+		cohortDsd.addColumn("Verified booster dose", "",
+		    ReportUtils.map(covid19VaccinationIndicatorLibrary.boosterDoseVerified(), indParams), "");
+		
+		cohortDsd.addColumn("Ever infected with Covid-19", "",
+		    ReportUtils.map(covid19VaccinationIndicatorLibrary.everInfectedWithCovid19(), indParams), "");
+		
+		cohortDsd.addColumn("Admitted to hospital due to Covid-19", "",
+		    ReportUtils.map(covid19VaccinationIndicatorLibrary.hospitalAdmission(), indParams), "");
+		
+		cohortDsd.addColumn("Died of Covid-19", "",
+		    ReportUtils.map(covid19VaccinationIndicatorLibrary.diedOfCovid19(), indParams), "");
 		
 		return cohortDsd;
 		
