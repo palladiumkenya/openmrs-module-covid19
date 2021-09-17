@@ -33,16 +33,16 @@
     <table class="simple-table">
 
         <tr>
+            <th width="25%" align="left">Date</th>
             <th width="25%" align="left">Vaccine</th>
             <th width="25%" align="left">Dose</th>
-            <th width="25%" align="left">Date</th>
             <th width="25%" align="left">Verified</th>
         </tr>
         <% firstAndSecondDoseList.each { %>
         <tr>
+            <td width="25%">${it.vaccinationDate}</td>
             <td width="25%">${it.vaccineType}</td>
             <td width="25%">${it.vaccinationDose}</td>
-            <td width="25%">${it.vaccinationDate}</td>
             <td width="25%">${it.vaccinationVerified ?: it.vaccinationVerified}</td>
         </tr>
         <% } %>
@@ -60,16 +60,16 @@
     <table class="simple-table">
 
         <tr>
+            <th width="25%" align="left">Date</th>
             <th width="25%" align="left">Vaccine</th>
             <th width="25%" align="left">Sequence</th>
-            <th width="25%" align="left">Date</th>
             <th width="25%" align="left">Verified</th>
         </tr>
         <% boosterDoseList.each { %>
         <tr>
+            <td width="25%">${it.vaccinationDate}</td>
             <td width="25%">${it.vaccineType}</td>
             <td width="25%">${it.vaccinationDose}</td>
-            <td width="25%">${it.vaccinationDate}</td>
             <td width="25%">${it.vaccinationVerified ?: it.vaccinationVerified}</td>
         </tr>
         <% } %>
