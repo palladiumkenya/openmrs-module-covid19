@@ -23,6 +23,7 @@
             jq('#tbl-other-vaccine-2').hide();
             jq('#tr-vaccine-type-1').hide();
             jq('#tbl-vaccine-1').hide();
+            jq('#tbl-completion-status').hide();
             jq('#tbl-vaccine-booster').hide();
             jq('#tbl-test-results').hide();
             jq('#tbl-positive-results').hide();
@@ -96,13 +97,19 @@
 
         var onPatientVaccinatedSelected = function () {
             getField('patient-vaccinated.error').html('Vaccination status should not be empty').hide();
+            var completionStatus = getValue('completion-status.value');
             var val = jq(this).val();
             // No selected
-            if (val == 1065){
+            if (val == 1065 &amp;&amp; completionStatus == 5585){
+                jq('#tbl-vaccine-1').hide();
+                jq('#tbl-completion-status').show();
+            }else if(val == 1065 &amp;&amp; (completionStatus == 166192 || completionStatus == "")){
                 jq('#tbl-vaccine-1').show();
+                jq('#tbl-completion-status').show();
             }else{
                 jq('#tbl-vaccine-1').hide();
-            }
+                jq('#tbl-completion-status').hide();
+			}
         }
 
        var onBoosterVaccineSelected = function () {
@@ -170,7 +177,6 @@
        function recordedCovidAssessmentIndicators() {
            var patientId = <lookup expression="patient.patientId"/>;
            jq.getJSON('/' + ctxPath + '/covid19/CovidUtils/recordedCovidAssessmentIndicators.action', { patientId: patientId }, function(data) {
-           console.log("Data ==> "+data.vaccinated);
                if (data.vaccinated === true) {
                    jq('#further-visits').show();
                    jq('#first-visit').hide();
@@ -187,7 +193,8 @@
                }
                if (data.fullyVaccinated === true) {
                    jq("#completion-status input[value=5585]").prop("checked", true);
-               }else{
+                   jq('#completion-status :input').prop('disabled', true);
+                 }else{
                    jq("#completion-status input[value=5585]").prop("checked", false);
                }
            });
@@ -319,8 +326,10 @@
 
                                 if (patientVaccinated == 1065){
                                     jq('#tbl-vaccine-1').show();
+                                    jq('#tbl-completion-status').show();
                                 }else{
                                     jq('#tbl-vaccine-1').hide();
+                                    jq('#tbl-completion-status').hide();
                                 }
 
 								if (boosterGiven == 1065){
@@ -361,6 +370,7 @@
 			<legend>
 				Vaccination History
 			</legend>
+	<table class="simple-table">
 		<table class="simple-table">
 			<tr>
 				<td>
@@ -471,24 +481,28 @@
 
 				</tr>
 			</obsgroup>
+		</table>
+		<table class="simple-table" id="tbl-completion-status">
 		<tr>
 			<td> Final Vaccination Status </td>
 		   <td>
 				<obs conceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 					 answerConceptIds="166192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 					 answerLabels="Partially Vaccinated,Fully Vaccinated" style="radio" id="completion-status"/>
-			</td>
-		</tr>
-		<tr>
+			 </td>
+	    	</tr>
+		</table>
+		<table class="simple-table" id="tbl-booster">
+			<tr>
 				<td> Have you received a booster COVID -19 dose   </td>
-			     <td>
+				<td>
 					<obs conceptId="166063AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerLabels="Yes,No" style="radio" id="booster-dose-given"/>
 				</td>
 			</tr>
 		</table>
-		<table id="tbl-vaccine-booster">
+	  <table class="simple-table" id="tbl-vaccine-booster">
 			<tr>
 							<tr>
 								<th>Vaccine</th>
@@ -530,6 +544,7 @@
 								</tr>
 			     </tr>
 		</table>
+	</table>
 		</fieldset>
 		</includeIf>
 		<fieldset id="diagnosis-tab">
