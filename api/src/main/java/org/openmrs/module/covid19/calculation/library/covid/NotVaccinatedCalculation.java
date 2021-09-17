@@ -12,6 +12,7 @@ package org.openmrs.module.covid19.calculation.library.covid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Encounter;
+import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -30,20 +31,24 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates show if criteria for covid asssessment : Alive In HIV Above 18 years
+ * Calculates not vaccinated status
  */
-public class covid19AssessmentCalculation extends AbstractPatientCalculation {
+public class NotVaccinatedCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 	
 	/**
 	 * @see PatientFlagCalculation#getFlagMessage()
 	 */
+	@Override
+	public String getFlagMessage() {
+		return "Not covid vaccinated";
+	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(Collection, Map,
 	 *      PatientCalculationContext)
 	 * @should calculate eligibility
 	 */
-	protected static final Log log = LogFactory.getLog(covid19AssessmentCalculation.class);
+	protected static final Log log = LogFactory.getLog(NotVaccinatedCalculation.class);
 	
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
@@ -51,19 +56,35 @@ public class covid19AssessmentCalculation extends AbstractPatientCalculation {
 		
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		
+		//Vaccination
+		Integer VaccinationStatusQuestion = 163100;
+		Integer NoAnswer = 1066;
+		
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
-		PersonService service = Context.getPersonService();
 		CalculationResultMap ret = new CalculationResultMap();
-		
+		PersonService service = Context.getPersonService();
 		for (int ptId : cohort) {
+			boolean notVaccinated = false;
 			boolean eligible = false;
-			
-			if (inHivProgram.contains(ptId) && service.getPerson(ptId).getAge() >= 18) {
+			// Check clients with covid assessment encounter
+			Encounter lastCovidAssessmentEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId),
+			    Context.getEncounterService().getEncounterTypeByUuid("86709cfc-1490-11ec-82a8-0242ac130003")); //last covid 19 assessment encounter
+			if (lastCovidAssessmentEncounter != null) {
+				
+				for (Obs obs : lastCovidAssessmentEncounter.getObs()) {
+					if (obs.getConcept().getConceptId().equals(VaccinationStatusQuestion)
+					        && (obs.getValueCoded().getConceptId().equals(NoAnswer))) {
+						eligible = true;
+					}
+				}
+			} else if (inHivProgram.contains(ptId) && service.getPerson(ptId).getAge() >= 18) {
 				eligible = true;
 			}
+			
 			ret.put(ptId, new BooleanResult(eligible, this));
 		}
 		return ret;
 	}
+	
 }

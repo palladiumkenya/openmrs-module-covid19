@@ -205,6 +205,12 @@
                  }else{
                    jq("#completion-status input[value=5585]").prop("checked", false);
                }
+               if (data.partiallyVaccinated === true) {
+                   jq("#completion-status input[value=166192]").prop("checked", true);
+                   jq('#completion-status :input').prop('disabled', true);
+               }else{
+                   jq("#completion-status input[value=166192]").prop("checked", false);
+               }
            });
        }
 
@@ -456,6 +462,7 @@
 					<td>
 						<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                                       166355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166155AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166157AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -463,6 +470,7 @@
 												                   1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                    5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerLabels="Astrazeneca,
+							               Johnson and Johnson,
 									       Moderna,
 										   Pfizer,
 										   Sputnik,
