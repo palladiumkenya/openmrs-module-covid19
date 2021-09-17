@@ -23,6 +23,7 @@
             jq('#tbl-other-vaccine-2').hide();
             jq('#tr-vaccine-type-1').hide();
             jq('#tbl-vaccine-1').hide();
+            jq('#tbl-vaccine-2').hide();
             jq('#tbl-completion-status').hide();
             jq('#tbl-vaccine-booster').hide();
             jq('#tbl-test-results').hide();
@@ -36,11 +37,8 @@
             jq("#booster-dose-given :input[type=radio]").change(onBoosterVaccineSelected);
 
             //Other vaccine specifications
-            jq('#vaccine-type-1 select').change(otherVaccine1Selected);
-            jq('#vaccine-type-2 select').change(otherVaccine2Selected);
-
-            //JNJ first vaccine specified
-            jq('#vaccine-type-1 select').change(vaccineJNJSelected);
+            jq('#vaccine-type-1 select').change(onVaccine1Selected);
+            jq('#vaccine-type-2 select').change(onVaccine2Selected);
 
             //Test status
             jq("#test-status :input[type=radio]").change(onTestStatusSelected);
@@ -55,31 +53,12 @@
 
 		});
 
-        var otherVaccine1Selected = function () {
+        var onVaccine1Selected = function () {
             var val = jq(this).val();
-            // Specify other
-            if (val == 5622){
-                jq('#tbl-other-vaccine-1').show();
-            }else{
-                jq('#tbl-other-vaccine-1').hide();
-            }
-        }
-        var otherVaccine2Selected = function () {
-            var val = jq(this).val();
-            // Specify other
-            if (val == 5622){
-                jq('#tbl-other-vaccine-2').show();
-            }else{
-                jq('#tbl-other-vaccine-2').hide();
-            }
-        }
-
-        var vaccineJNJSelected = function () {
-            var val = jq(this).val();
+            getField('dose-sequence.value').prop("selectedIndex", 1);
+            jq('#dose-sequence select').prop('disabled', true);
             // JNJ selected
             if (val == 166355){
-                getField('dose-sequence.value').prop("selectedIndex", 1);
-                jq('#dose-sequence select').prop('disabled', true);
 
                 jq('.tr-vaccine-type-2 :input').hide();
                 var secondVaccineType=jq('#vaccine-type-2');
@@ -88,10 +67,24 @@
                 getField('vaccine-2-date.value').val("");
                 jq("#verified-2 input[value=164134]").prop("checked", false);
                 clearHiddenSections([secondDose,secondVaccineType,secondVaccineOther,secondDose]);
+            }
+            // Specify other
+            if (val == 5622){
+                jq('#tbl-other-vaccine-1').show();
             }else{
                 jq('.tr-vaccine-type-2 :input').show();
                 jq('#dose-sequence select').prop('disabled', false);
-                getField('dose-sequence.value').prop("selectedIndex", 0);
+			}
+        }
+        var onVaccine2Selected = function () {
+            var val = jq(this).val();
+            getField('dose-2.value').prop("selectedIndex", 2);
+            jq('#dose-2 select').prop('disabled', true);
+            // Specify other
+            if (val == 5622){
+                jq('#tbl-other-vaccine-2').show();
+            }else{
+                jq('#tbl-other-vaccine-2').hide();
             }
         }
 
@@ -102,12 +95,19 @@
             // No selected
             if (val == 1065 &amp;&amp; completionStatus == 5585){
                 jq('#tbl-vaccine-1').hide();
+                jq('#tbl-vaccine-2').hide();
                 jq('#tbl-completion-status').show();
-            }else if(val == 1065 &amp;&amp; (completionStatus == 166192 || completionStatus == "")){
+            }else if(val == 1065 &amp;&amp; (completionStatus == 166192)){
+                jq('#tbl-vaccine-1').hide();
+                jq('#tbl-vaccine-2').show();
+                jq('#tbl-completion-status').show();
+            }else if(val == 1065 &amp;&amp; (completionStatus == "")){
                 jq('#tbl-vaccine-1').show();
+                jq('#tbl-vaccine-2').show();
                 jq('#tbl-completion-status').show();
             }else{
                 jq('#tbl-vaccine-1').hide();
+                jq('#tbl-vaccine-2').hide();
                 jq('#tbl-completion-status').hide();
 			}
         }
@@ -163,14 +163,22 @@
 
         var onAdmissionStatusSelected = function () {
             var val = jq(this).val();
+            var oxygenSupplement=jq('#oxygen');
+            var ventilationSupplement=jq('#ventilator');
             if (val == 1065){
                 jq('#tbl-admission :input[type=checkbox]').prop('disabled', false);
+                jq('#oxygen :input').prop('disabled', false);
+                jq('#ventilator :input').prop('disabled', false);
             }
             if (val == 1066){
                 jq('#tbl-admission :input[type=checkbox]').prop('disabled', true);
                 jq("#isolation input[value=165994]").prop("checked", false);
                 jq("#hdu input[value=165995]").prop("checked", false);
                 jq("#icu input[value=161936]").prop("checked", false);
+
+                jq('#oxygen :input').prop('disabled', true);
+                jq('#ventilator :input').prop('disabled', true);
+                clearHiddenSections([oxygenSupplement,ventilationSupplement]);
             }
         }
 
@@ -326,9 +334,11 @@
 
                                 if (patientVaccinated == 1065){
                                     jq('#tbl-vaccine-1').show();
+                                    jq('#tbl-vaccine-2').show();
                                     jq('#tbl-completion-status').show();
                                 }else{
                                     jq('#tbl-vaccine-1').hide();
+                                    jq('#tbl-vaccine-2').hide();
                                     jq('#tbl-completion-status').hide();
                                 }
 
@@ -437,6 +447,8 @@
 				</tr>
 		 	</obsgroup>
 				<br/>
+		</table>
+		<table class="simple-table" id="tbl-vaccine-2">
 			<obsgroup groupingConceptId="1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 			<!-- Second dose -->
 				<tr class="tr-vaccine-type-2">
@@ -444,7 +456,6 @@
 					<td>
 						<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-												                   166355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166155AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166157AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -452,7 +463,6 @@
 												                   1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                    5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerLabels="Astrazeneca,
-										   Johnson and Johnson,
 									       Moderna,
 										   Pfizer,
 										   Sputnik,

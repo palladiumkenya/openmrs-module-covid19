@@ -100,13 +100,7 @@ public class CovidVelocityCalculation extends BaseEmrCalculation {
 					}
 					
 				}
-				sb.append("covidAssessed:").append(covidAssessed).append(",");
-				sb.append("vaccinated:").append(vaccinated).append(",");
-				sb.append("fullyVaccinated:").append(fullyVaccinated).append(",");
-				sb.append("partiallyVaccinated:").append(partiallyVaccinated).append(",");
-				sb.append("covidTestedPositive:").append(covidTestedPositive).append(",");
-				sb.append("covidTestedNegative:").append(covidTestedNegative).append(",");
-				sb.append("covidTested:").append(covidTested).append(",");
+				
 			}
 			
 			ret.put(ptId, new SimpleResult(sb.toString(), this, context));
