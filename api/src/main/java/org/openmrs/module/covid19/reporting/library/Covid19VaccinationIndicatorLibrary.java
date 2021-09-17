@@ -32,7 +32,8 @@ public class Covid19VaccinationIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator fullyVaccinated() {
-		return cohortIndicator("Fully vaccinated", ReportUtils.map(cohortLibrary.fullyVaccinated(), "endDate=${endDate}"));
+		return cohortIndicator("Fully vaccinated",
+		    ReportUtils.map(cohortLibrary.fullyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**
@@ -42,7 +43,7 @@ public class Covid19VaccinationIndicatorLibrary {
 	 */
 	public CohortIndicator partiallyVaccinated() {
 		return cohortIndicator("Partially vaccinated",
-		    ReportUtils.map(cohortLibrary.partiallyVaccinated(), "endDate=${endDate}"));
+		    ReportUtils.map(cohortLibrary.partiallyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**
@@ -51,7 +52,8 @@ public class Covid19VaccinationIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator notVaccinated() {
-		return cohortIndicator("Not vaccinated", ReportUtils.map(cohortLibrary.notVaccinated(), "endDate=${endDate}"));
+		return cohortIndicator("Not vaccinated",
+		    ReportUtils.map(cohortLibrary.notVaccinated(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 }

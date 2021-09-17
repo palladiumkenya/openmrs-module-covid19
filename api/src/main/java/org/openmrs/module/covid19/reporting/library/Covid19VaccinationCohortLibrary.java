@@ -55,6 +55,7 @@ public class Covid19VaccinationCohortLibrary {
 		        + "inner join (select c.patient_id from kenyaemr_etl.etl_covid19_assessment c where c.final_vaccination_status = 5585)c\n"
 		        + "on t.patient_id = c.patient_id)v;";
 		cd.setName("fullyVaccinated");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.setQuery(sqlQuery);
 		cd.setDescription("fullyVaccinated");
@@ -96,6 +97,7 @@ public class Covid19VaccinationCohortLibrary {
 		        + "on t.patient_id = c.patient_id)v;";
 		cd.setName("partiallyVaccinated");
 		cd.setQuery(sqlQuery);
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.setDescription("partiallyVaccinated");
 		
@@ -136,6 +138,7 @@ public class Covid19VaccinationCohortLibrary {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
 		cd.setName("notVaccinated");
 		cd.setQuery(sqlQuery);
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.setDescription("notVaccinated");
 		return cd;

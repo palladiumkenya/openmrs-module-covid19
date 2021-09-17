@@ -40,21 +40,24 @@ public class Covid19VaccinationReportBuilder extends AbstractReportBuilder {
 	
 	@Override
 	protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
-		return Arrays.asList(new Parameter("endDate", "End Date", Date.class), new Parameter("dateBasedReporting", "",
-		        String.class));
+		return Arrays.asList(new Parameter("startDate", "Start Date", Date.class), new Parameter("endDate", "End Date",
+		        Date.class), new Parameter("dateBasedReporting", "", String.class));
 	}
 	
 	@Override
 	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor,
 	        ReportDefinition reportDefinition) {
-		return Arrays.asList(ReportUtils.map(covid19Vaccination(), "endDate=${endDate}"));
+		return Arrays.asList(ReportUtils.map(covid19Vaccination(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	protected DataSetDefinition covid19Vaccination() {
 		CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
 		cohortDsd.setName("covid19Vaccination");
+		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		String indParams = "endDate=${endDate}";
+		
+		String indParams = "startDate=${startDate},endDate=${endDate}";
+		
 		cohortDsd.setDescription("Covid-19 vaccination report");
 		cohortDsd.addColumn("Fully vaccinated", "",
 		    ReportUtils.map(covid19VaccinationIndicatorLibrary.fullyVaccinated(), indParams), "");
