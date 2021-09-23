@@ -9,10 +9,8 @@
  */
 package org.openmrs.module.covid19.api.impl;
 
-import org.openmrs.api.APIException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.covid19.Item;
 import org.openmrs.module.covid19.api.Covid19Service;
 import org.openmrs.module.covid19.api.dao.Covid19Dao;
 
@@ -34,19 +32,5 @@ public class Covid19ServiceImpl extends BaseOpenmrsService implements Covid19Ser
 	 */
 	public void setUserService(UserService userService) {
 		this.userService = userService;
-	}
-	
-	@Override
-	public Item getItemByUuid(String uuid) throws APIException {
-		return dao.getItemByUuid(uuid);
-	}
-	
-	@Override
-	public Item saveItem(Item item) throws APIException {
-		if (item.getOwner() == null) {
-			item.setOwner(userService.getUser(1));
-		}
-		
-		return dao.saveItem(item);
 	}
 }
