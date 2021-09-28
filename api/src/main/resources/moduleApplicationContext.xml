@@ -34,7 +34,15 @@
         </property>
         <property name="target">
             <bean class="org.openmrs.module.covid19.api.impl.Covid19ServiceImpl">
-                <property name="dao" ref="covid19.Covid19Dao" />
+                <property name="dao" >
+
+                    <bean class="org.openmrs.module.covid19.api.dao.Covid19Dao">
+                        <property name="sessionFactory">
+                            <ref bean="sessionFactory" />
+
+                        </property>
+                    </bean>
+                </property>
             </bean>
         </property>
         <property name="preInterceptors">
