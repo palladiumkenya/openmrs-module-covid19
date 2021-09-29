@@ -17,6 +17,8 @@
 
 		var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var pAge = parseInt('<lookup expression="patient.age"/>');
+        var firstVaccineManufacture = false;
+
 		jQuery(function($) {
             //Defaults
             jq('#tbl-other-vaccine-1').hide();
@@ -29,6 +31,10 @@
             jq('#tbl-booster').hide();
             jq('#tbl-test-results').hide();
             jq('#tbl-positive-results').hide();
+            jq('#tbl-covid-history').hide();
+            jq('#firstVaccine').hide();
+            jq('#secondVaccine').hide();
+            jq('#boosterVaccine').hide();
             jq('#tbl-admission :input[type=checkbox]').prop('disabled', true);
 
             //Patient Vaccinated
@@ -51,6 +57,7 @@
             jq("#admission-status :input[type=radio]").change(onAdmissionStatusSelected);
 
             recordedCovidAssessmentIndicators();
+            //recordedCovidAssessmentHistory();
 
 
 		});
@@ -81,7 +88,7 @@
         var onVaccine2Selected = function () {
             var val = jq(this).val();
             getField('dose-2.value').prop("selectedIndex", 2);
-            jq('#dose-2 select').prop('disabled', true);
+            //jq('#dose-2 select').prop('disabled', true);
             // Specify other
             if (val == 5622){
                 jq('#tbl-other-vaccine-2').show();
@@ -213,12 +220,54 @@
                }
                if (data.partiallyVaccinated === true) {
                    jq("#completion-status input[value=166192]").prop("checked", true);
-                   jq('#completion-status :input').prop('disabled', true);
+                   jq('#completion-status :input').prop('disabled', false);
+                   firstVaccineManufacture = true;
                }else{
                    jq("#completion-status input[value=166192]").prop("checked", false);
                }
            });
        }
+
+        function recordedCovidAssessmentHistory() {
+            var patientId = <lookup expression="patient.patientId"/>;
+            jq.getJSON('/' + ctxPath + '/covid19/CovidUtils/recordedCovidAssessmentHistory.action', { patientId: patientId }, function(data) {
+                if (data.firstDoseVaccineName != "") {
+                    jq('#tbl-covid-history').show();
+					var firstDoseVaccineName = data.firstDoseVaccineName;
+                    var firstDose = data.firstDose;
+                    var firstDoseDate = data.firstDoseDate;
+                    var secondDoseVaccineName = data.secondDoseVaccineName;
+                    var secondDose = data.secondDose;
+                    var secondDoseDate = data.secondDoseDate;
+                    var boosterDoseVaccineName = data.boosterDoseVaccineName;
+                    var boosterVaccineDose = data.boosterVaccineDose;
+                    var boosterDoseDate = data.boosterDoseDate;
+
+                 // Show history
+                    jq('#firstDoseVaccineName:text').val(firstDoseVaccineName);
+                    jq('#firstDose:text').val(firstDose);
+                    jq('#firstDoseDate:text').val(firstDoseDate);
+                    jq('#firstVaccine').show();
+
+                    if (data.secondDoseVaccineName != "") {
+                        jq('#secondDoseVaccineName:text').val(secondDoseVaccineName);
+                        jq('#secondDose:text').val(secondDose);
+                        jq('#secondDoseDate:text').val(secondDoseDate);
+                        jq('#secondVaccine').show();
+
+                        if (data.boosterDoseVaccineName != "") {
+                            jq('#boosterDoseVaccineName:text').val(boosterDoseVaccineName);
+                            jq('#boosterDose:text').val(boosterVaccineDose);
+                            jq('#boosterDoseDate:text').val(boosterDoseDate);
+                            jq('#boosterVaccine').hide();
+
+                        }
+                    }
+                  }
+
+            });
+        }
+
 
         beforeSubmit.push(function() {
             //Before submit validations
@@ -230,9 +279,13 @@
             var patientResultStatus = getValue('test-result.value');
             var completionStatus = getValue('completion-status.value');
             var boosterStatus = getValue('booster-dose-given.value');
-            var vaccineType = getField('vaccine-type-1.value').val();
+            var vaccineType1 = getField('vaccine-type-1.value').val();
+            var vaccineType2 = getField('vaccine-type-2.value').val();
             var doseSequence = getValue('dose-sequence.value');
+            var doseSequence2 = getValue('dose-2.value');
             var vaccineDate = getValue('vaccination-date.value');
+            var vaccineDate2 = getValue('vaccine-2-date.value');
+
 
             if (pAge &gt; 17 &amp;&amp; patientVaccinated == "") {
                 getField('patient-vaccinated.error').html('Vaccination status should not be empty').show();
@@ -246,24 +299,43 @@
             }else{
                 getField('completion-status.error').html('Final vaccination status should not be empty').hide();
             }
-            if (patientVaccinated == 1065 &amp;&amp; vaccineType == "" ) {
+            if (patientVaccinated == 1065 &amp;&amp; firstVaccineManufacture == false &amp;&amp; vaccineType1 == "") {
                 getField('vaccine-type-1.error').html('Vaccine type should not be empty').show();
                 return false;
             }else{
                 getField('vaccine-type-1.error').html('Vaccine type should not be empty').hide();
             }
-            if (vaccineType != "" &amp;&amp; doseSequence == "" ) {
+            if (patientVaccinated == 1065 &amp;&amp; firstVaccineManufacture == true &amp;&amp; vaccineType2 == "") {
+                getField('vaccine-type-2.error').html('Vaccine type should not be empty').show();
+                return false;
+            }else{
+                getField('vaccine-type-2.error').html('Vaccine type should not be empty').hide();
+            }
+            if (doseSequence == "" &amp;&amp;  firstVaccineManufacture == false &amp;&amp; vaccineType1 != "") {
                 getField('dose-sequence.error').html('Dose should not be empty').show();
                 return false;
             }else{
                 getField('dose-sequence.error').html('Dose should not be empty').hide();
             }
-            if (vaccineType != "" &amp;&amp; vaccineDate == "" ) {
+            if (doseSequence2 == "" &amp;&amp;  firstVaccineManufacture == true &amp;&amp; vaccineType1 != "") {
+                getField('dose-2.error').html('Dose should not be empty').show();
+                return false;
+            }else{
+                getField('dose-2.error').html('Dose should not be empty').hide();
+            }
+            if (vaccineDate == "" &amp;&amp;  firstVaccineManufacture == false &amp;&amp; vaccineType1 != "") {
                 getField('vaccination-date.error').html('Vaccine date should not be empty').show();
                 return false;
             }else{
                 getField('vaccination-date.error').html('Vaccine date should not be empty').hide();
             }
+            if (vaccineDate2 == "" &amp;&amp;  firstVaccineManufacture == true &amp;&amp; vaccineType1 != "") {
+                getField('vaccine-2-date.error').html('Vaccine date should not be empty').show();
+                return false;
+            }else{
+                getField('vaccine-2-date.error').html('Vaccine date should not be empty').hide();
+            }
+
             var isSecondVaccineDateBeforeFirst = moment(moment(moment(vaccine2Date, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(vaccineDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
             if (isSecondVaccineDateBeforeFirst) {
                 getField('vaccine-2-date.error').html('Second vaccination date, should not be before first vaccinaton date').show();
@@ -341,7 +413,13 @@
 			<tr>
 				<td>Encounter Date: <encounterDate id="encounter-date" showTime="true" /></td>
 				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
-
+				<ifMode mode="ENTER">
+					<script type="text/javascript">
+                        jq(function(){
+                            recordedCovidAssessmentHistory();
+                        });
+					</script>
+				</ifMode>
 				<ifMode mode="EDIT">
 					<script type="text/javascript">
                         jq(function(){
@@ -351,6 +429,13 @@
                             var hasBeenTested = getValue('test-status.value');
                             var hasBeenTestedPositive = getValue('test-result.value');
                             var admissionStatus = getValue('admission-status.value');
+                            // Hide vaccination History on edit since its already displayed
+                            jq('#tbl-covid-history').hide();
+                            jq('#firstVaccine').hide();
+                            jq('#secondVaccine').hide();
+                            jq('#boosterVaccine').hide();
+                            jq('#boosterVaccine').hide();
+
 
                                 if (patientVaccinated == 1065){
                                     jq('#tbl-vaccine-1').show();
@@ -415,6 +500,40 @@
 					<obs conceptId="163100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerLabel="" style="radio" id="patient-vaccinated"/>
+				</td>
+			    <td>&#160;&#160;&#160;&#160;</td>
+				<td>
+					<table class="simple-table" id = "tbl-covid-history">
+						<tr>
+							<th colspan="6">
+								Recorded covid-19 assessment indicators
+							</th>
+						</tr>
+						<tr id="firstVaccine">
+							<td>First Vaccine Name</td>
+							<td><input type="text" name="firstDoseVaccineName" id="firstDoseVaccineName" readonly="True" /></td>
+							<td>Dose</td>
+							<td><input type="text" name="firstDose" id="firstDose" readonly="True" /></td>
+							<td>Dose date</td>
+							<td><input type="text" name="firstDoseDate" id="firstDoseDate" readonly="True" /></td>
+						</tr>
+						<tr id="secondVaccine">
+							<td>Second Vaccine Name</td>
+							<td><input type="text" name="secondDoseVaccineName" id="secondDoseVaccineName" readonly="True" /></td>
+							<td>Dose</td>
+							<td><input type="text" name="secondDose" id="secondDose" readonly="True" /></td>
+							<td>Dose date</td>
+							<td><input type="text" name="secondDoseDate" id="secondDoseDate" readonly="True" /></td>
+						</tr>
+						<tr id="boosterVaccine">
+							<td>Booster Vaccine Name</td>
+							<td><input type="text" name="boosterDoseVaccineName" id="boosterDoseVaccineName" readonly="True" /></td>
+							<td>Dose</td>
+							<td><input type="text" name="boosterDose" id="boosterDose" readonly="True" /></td>
+							<td>Dose date</td>
+							<td><input type="text" name="boosterDoseDate" id="boosterDoseDate" readonly="True" /></td>
+						</tr>
+					</table>
 				</td>
 			</tr>
 		</table>
@@ -516,7 +635,7 @@
 		</table>
 		<table class="simple-table" id="tbl-completion-status">
 		<tr>
-			<td> Final Vaccination Status </td>
+			<td> Vaccination Status </td>
 		   <td>
 				<obs conceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 					 answerConceptIds="166192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
