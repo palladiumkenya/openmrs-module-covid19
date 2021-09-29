@@ -26,6 +26,7 @@
             jq('#tbl-vaccine-2').hide();
             jq('#tbl-completion-status').hide();
             jq('#tbl-vaccine-booster').hide();
+            jq('#tbl-booster').hide();
             jq('#tbl-test-results').hide();
             jq('#tbl-positive-results').hide();
             jq('#tbl-admission :input[type=checkbox]').prop('disabled', true);
@@ -50,6 +51,7 @@
             jq("#admission-status :input[type=radio]").change(onAdmissionStatusSelected);
 
             recordedCovidAssessmentIndicators();
+
 
 		});
 
@@ -97,18 +99,22 @@
                 jq('#tbl-vaccine-1').hide();
                 jq('#tbl-vaccine-2').hide();
                 jq('#tbl-completion-status').show();
+                jq('#tbl-booster').show();
             }else if(val == 1065 &amp;&amp; (completionStatus == 166192)){
                 jq('#tbl-vaccine-1').hide();
                 jq('#tbl-vaccine-2').show();
                 jq('#tbl-completion-status').show();
+                jq('#tbl-booster').show();
             }else if(val == 1065 &amp;&amp; (completionStatus == "")){
                 jq('#tbl-vaccine-1').show();
                 jq('#tbl-vaccine-2').show();
                 jq('#tbl-completion-status').show();
+                jq('#tbl-booster').show();
             }else{
                 jq('#tbl-vaccine-1').hide();
                 jq('#tbl-vaccine-2').hide();
                 jq('#tbl-completion-status').hide();
+                jq('#tbl-vaccine-booster').hide();
 			}
         }
 
@@ -205,6 +211,12 @@
                  }else{
                    jq("#completion-status input[value=5585]").prop("checked", false);
                }
+               if (data.partiallyVaccinated === true) {
+                   jq("#completion-status input[value=166192]").prop("checked", true);
+                   jq('#completion-status :input').prop('disabled', true);
+               }else{
+                   jq("#completion-status input[value=166192]").prop("checked", false);
+               }
            });
        }
 
@@ -212,6 +224,7 @@
             //Before submit validations
             pAge = parseInt('<lookup expression="patient.age"/>');
             var encounterDate = getValue('encounter-date.value');
+            var vaccine2Date = getValue('vaccine-2-date.value');
             var patientVaccinated = getValue('patient-vaccinated.value');
             var patientTestStatus = getValue('test-status.value');
             var patientResultStatus = getValue('test-result.value');
@@ -227,7 +240,7 @@
             }else{
                 getField('patient-vaccinated.error').html('Vaccination status should not be empty').hide();
            }
-            if (pAge &gt; 17 &amp;&amp; completionStatus == "") {
+            if (pAge &gt; 17 &amp;&amp; completionStatus == "" &amp;&amp; patientVaccinated == 1065) {
                 getField('completion-status.error').html('Final vaccination status should not be empty').show();
                 return false;
             }else{
@@ -251,7 +264,14 @@
             }else{
                 getField('vaccination-date.error').html('Vaccine date should not be empty').hide();
             }
-            if (pAge &gt; 17 &amp;&amp; boosterStatus == "") {
+            var isSecondVaccineDateBeforeFirst = moment(moment(moment(vaccine2Date, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(vaccineDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+            if (isSecondVaccineDateBeforeFirst) {
+                getField('vaccine-2-date.error').html('Second vaccination date, should not be before first vaccinaton date').show();
+                return false;
+            }else{
+                getField('vaccine-2-date.error').html('Second vaccination date, should not be before first vaccinaton date').hide();
+			}
+            if (pAge &gt; 17 &amp;&amp; boosterStatus == "" &amp;&amp; patientVaccinated == 1065) {
                 getField('booster-dose-given.error').html('Booster vaccination status should not be empty').show();
                 return false;
             }else{
@@ -456,6 +476,7 @@
 					<td>
 						<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                                       166355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166155AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166157AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -463,6 +484,7 @@
 												                   1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                    5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerLabels="Astrazeneca,
+							               Johnson and Johnson,
 									       Moderna,
 										   Pfizer,
 										   Sputnik,
