@@ -99,4 +99,20 @@
             </set></property>
         <property name="template" value="" />
     </bean>
+
+    <bean id="kenyaemr.common.report.clients.diedofCovid19" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+        <property name="targetUuid" value="9b06ff36-212d-11ec-9621-0242ac130002" />
+        <property name="name" value="Clients died of Covid-19" />
+        <property name="description" value="Patients who have died of Covid-19" />
+        <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+
+    </bean>
+
+    <bean id="kenyaemr.common.report.missedAppointmentsDueToCovid19" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+        <property name="targetUuid" value="c8c9bb70-212d-11ec-9621-0242ac130002" />
+        <property name="name" value="Missed appointment due to Covid-19" />
+        <property name="description" value="Patients who missed appointment due to Covid-19" />
+        <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+
+    </bean>
 </beans>
