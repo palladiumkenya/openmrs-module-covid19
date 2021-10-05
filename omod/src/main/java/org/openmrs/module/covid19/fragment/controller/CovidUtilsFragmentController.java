@@ -214,7 +214,7 @@ public class CovidUtilsFragmentController {
 		    "boosterDoseDate", boosterDoseDate
 		
 		);
-
+		
 	}
 	
 	/**
