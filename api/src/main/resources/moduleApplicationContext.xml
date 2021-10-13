@@ -71,6 +71,7 @@
             <set>
                 <ref bean="kenyaemr.app.clinician" />
                 <ref bean="kenyaemr.app.chart" />
+                <ref bean="kenyaemr.app.intake" />
                 <ref bean="covid.app.providerHome"/>
             </set>
         </property>

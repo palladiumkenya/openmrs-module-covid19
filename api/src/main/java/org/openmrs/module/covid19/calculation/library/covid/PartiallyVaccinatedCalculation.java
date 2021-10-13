@@ -39,7 +39,7 @@ public class PartiallyVaccinatedCalculation extends AbstractPatientCalculation i
 	 */
 	@Override
 	public String getFlagMessage() {
-		return "Partially covid vaccinated";
+		return "Partially COVID-19 Vaccinated";
 	}
 	
 	/**
