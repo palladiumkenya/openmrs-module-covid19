@@ -39,7 +39,7 @@ public class FullyVaccinatedCalculation extends AbstractPatientCalculation imple
 	 */
 	@Override
 	public String getFlagMessage() {
-		return "Fully covid vaccinated";
+		return "Fully COVID-19 Vaccinated";
 	}
 	
 	/**
