@@ -40,7 +40,7 @@ public class NotVaccinatedCalculation extends AbstractPatientCalculation impleme
 	 */
 	@Override
 	public String getFlagMessage() {
-		return "Not COVID-19 screened";
+		return "Eligible for COVID-19 Vaccination";
 	}
 	
 	/**

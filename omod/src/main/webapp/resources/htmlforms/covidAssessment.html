@@ -35,7 +35,10 @@
             jq('#firstVaccine').hide();
             jq('#secondVaccine').hide();
             jq('#boosterVaccine').hide();
-            jq('#tbl-admission :input[type=checkbox]').prop('disabled', true);
+            jq('#tbl-admission').hide();
+            jq('#tbl-admission-unit').hide();
+            jq('#tbl-oxygen').hide();
+            jq('#fully-vaccinated').hide();
 
             //Patient Vaccinated
             jq("#patient-vaccinated :input[type=radio]").change(onPatientVaccinatedSelected);
@@ -53,8 +56,8 @@
             //Positive Test status
             jq("#test-result :input[type=radio]").change(onPositiveResultSelected);
 
-            //Admission status
-            jq("#admission-status :input[type=radio]").change(onAdmissionStatusSelected);
+            //Presentation status
+            jq("#presentation-status :input[type=radio]").change(onPresentationStatusSelected);
 
             recordedCovidAssessmentIndicators();
             //recordedCovidAssessmentHistory();
@@ -106,11 +109,13 @@
                 jq('#tbl-vaccine-1').hide();
                 jq('#tbl-vaccine-2').hide();
                 jq('#tbl-completion-status').show();
+                jq('#fully-vaccinated').show();
                 jq('#tbl-booster').show();
             }else if(val == 1065 &amp;&amp; (completionStatus == 166192)){
                 jq('#tbl-vaccine-1').hide();
                 jq('#tbl-vaccine-2').show();
                 jq('#tbl-completion-status').show();
+                jq('#fully-vaccinated').hide();
                 jq('#tbl-booster').show();
             }else if(val == 1065 &amp;&amp; (completionStatus == "")){
                 jq('#tbl-vaccine-1').show();
@@ -152,15 +157,12 @@
                 jq('#tbl-positive-results').hide();
                        // clearing hidden sections
                 var testResult=jq('#test-result');
-                var covidStatus=jq('#covid-status');
+                var presentationStatus=jq('#presentation-status');
                 var admissionStatus=jq('#admission-status');
                 var oxygenSupplement=jq('#oxygen');
-                var ventilationSupplement=jq('#ventilator');
-                jq("#isolation input[value=165994]").prop("checked", false);
-                jq("#hdu input[value=165995]").prop("checked", false);
-                jq("#icu input[value=161936]").prop("checked", false);
+                var admissionUnit=jq('#admission-unit');
                 getField('date-tested.value').val("");
-                clearHiddenSections([testResult,covidStatus,admissionStatus,oxygenSupplement,ventilationSupplement]);
+                clearHiddenSections([testResult,presentationStatus,admissionStatus,oxygenSupplement,admissionUnit]);
             }
         }
 
@@ -174,24 +176,22 @@
             }
         }
 
-        var onAdmissionStatusSelected = function () {
+        var onPresentationStatusSelected = function () {
             var val = jq(this).val();
             var oxygenSupplement=jq('#oxygen');
-            var ventilationSupplement=jq('#ventilator');
-            if (val == 1065){
-                jq('#tbl-admission :input[type=checkbox]').prop('disabled', false);
+            var admissionUnit=jq('#admission-unit');
+            if (val == 1068){
+                jq('#tbl-admission').show();
+                jq('#tbl-admission-unit').show();
+                jq('#tbl-oxygen').show();
                 jq('#oxygen :input').prop('disabled', false);
-                jq('#ventilator :input').prop('disabled', false);
             }
-            if (val == 1066){
-                jq('#tbl-admission :input[type=checkbox]').prop('disabled', true);
-                jq("#isolation input[value=165994]").prop("checked", false);
-                jq("#hdu input[value=165995]").prop("checked", false);
-                jq("#icu input[value=161936]").prop("checked", false);
-
+            if (val == 165912){
+                jq('#tbl-admission').hide();
+                jq('#tbl-admission-unit').hide();
+                jq('#tbl-oxygen').hide();
                 jq('#oxygen :input').prop('disabled', true);
-                jq('#ventilator :input').prop('disabled', true);
-                clearHiddenSections([oxygenSupplement,ventilationSupplement]);
+                clearHiddenSections([oxygenSupplement,admissionUnit]);
             }
         }
 
@@ -295,7 +295,7 @@
                 getField('completion-status.error').html('Final vaccination status should not be empty').show();
                 return false;
             }
-            if (patientVaccinated == 1065 &amp;&amp; firstVaccineManufacture == false &amp;&amp; vaccineType1.val() == "") {
+            if (patientVaccinated == 1065 &amp;&amp; firstVaccineManufacture == false &amp;&amp; vaccineType1.val() == "" &amp;&amp; completionStatus != 5585) {
                 getField('vaccine-type-1.error').html('Vaccine type should not be empty').show();
                 return false;
             }
@@ -401,10 +401,12 @@
                         jq(function(){
 
                             var patientVaccinated = getValue('patient-vaccinated.value');
+                            var completionStatus = getValue('completion-status.value');
                             var boosterGiven = getValue('booster-dose-given.value');
                             var hasBeenTested = getValue('test-status.value');
                             var hasBeenTestedPositive = getValue('test-result.value');
-                            var admissionStatus = getValue('admission-status.value');
+                            var presentationStatus = getValue('presentation-status.value');
+                            var admissionUnit = getValue('admission-unit.value');
                             // Hide vaccination History on edit since its already displayed
                             jq('#tbl-covid-history').hide();
                             jq('#firstVaccine').hide();
@@ -413,14 +415,21 @@
                             jq('#boosterVaccine').hide();
 
 
-                                if (patientVaccinated == 1065){
+                                if (patientVaccinated == 1065 &amp;&amp; completionStatus == 5585){
                                     jq('#tbl-vaccine-1').show();
                                     jq('#tbl-vaccine-2').show();
                                     jq('#tbl-completion-status').show();
-                                }else{
+                                    jq('#fully-vaccinated').show();
+                                }
+                              else if (patientVaccinated == 1065 &amp;&amp; completionStatus == 166192){
+                                jq('#tbl-vaccine-1').show();
+                                jq('#tbl-vaccine-2').show();
+                                jq('#tbl-completion-status').show();
+                            }else{
                                     jq('#tbl-vaccine-1').hide();
                                     jq('#tbl-vaccine-2').hide();
                                     jq('#tbl-completion-status').hide();
+                                    jq('#fully-vaccinated').hide();
                                 }
 
 								if (boosterGiven == 1065){
@@ -437,14 +446,15 @@
                                    // jq('#tbl-positive-results').hide();
                                 }
 
-                            if (admissionStatus == 1065){
-                                jq('#tbl-admission :input[type=checkbox]').prop('disabled', false);
+                            if (presentationStatus == 1068){
+                                jq('#tbl-admission').show();
+                                jq('#tbl-admission-unit').show();
+                                jq('#tbl-oxygen').show();
                             }
-                            if (admissionStatus == 1066){
-                                jq('#tbl-admission :input[type=checkbox]').prop('disabled', true);
-                                jq("#isolation input[value=165994]").prop("checked", false);
-                                jq("#hdu input[value=165995]").prop("checked", false);
-                                jq("#icu input[value=161936]").prop("checked", false);
+                            if (presentationStatus == 165912){
+                                jq('#tbl-admission').hide();
+                                jq('#tbl-admission-unit').hide();
+                                jq('#tbl-oxygen').hide();
                             }
 
                         });
@@ -481,32 +491,23 @@
 				<td>
 					<table class="simple-table" id = "tbl-covid-history">
 						<tr>
-							<th colspan="6">
-								Recorded covid-19 assessment indicators
-							</th>
+							<th>Vaccine</th>
+							<th>Dose</th>
+							<th>Date</th>
 						</tr>
 						<tr id="firstVaccine">
-							<td>First Vaccine Name</td>
 							<td><input type="text" name="firstDoseVaccineName" id="firstDoseVaccineName" readonly="True" /></td>
-							<td>Dose</td>
 							<td><input type="text" name="firstDose" id="firstDose" readonly="True" /></td>
-							<td>Dose date</td>
 							<td><input type="text" name="firstDoseDate" id="firstDoseDate" readonly="True" /></td>
 						</tr>
 						<tr id="secondVaccine">
-							<td>Second Vaccine Name</td>
 							<td><input type="text" name="secondDoseVaccineName" id="secondDoseVaccineName" readonly="True" /></td>
-							<td>Dose</td>
 							<td><input type="text" name="secondDose" id="secondDose" readonly="True" /></td>
-							<td>Dose date</td>
 							<td><input type="text" name="secondDoseDate" id="secondDoseDate" readonly="True" /></td>
 						</tr>
 						<tr id="boosterVaccine">
-							<td>Booster Vaccine Name</td>
 							<td><input type="text" name="boosterDoseVaccineName" id="boosterDoseVaccineName" readonly="True" /></td>
-							<td>Dose</td>
 							<td><input type="text" name="boosterDose" id="boosterDose" readonly="True" /></td>
-							<td>Dose date</td>
 							<td><input type="text" name="boosterDoseDate" id="boosterDoseDate" readonly="True" /></td>
 						</tr>
 					</table>
@@ -617,6 +618,9 @@
 					 answerConceptIds="166192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 					 answerLabels="Partially Vaccinated,Fully Vaccinated" style="radio" id="completion-status"/>
 			 </td>
+			<td>
+				<div id="fully-vaccinated" style="width: 100%; float: left; overflow: auto; text-align: left; background-color: green; color: transparent; padding: 5px"><span>This client is fully COVID-19 vaccinated</span> </div>
+			</td>
 	    	</tr>
 		</table>
 		<table class="simple-table" id="tbl-booster">
@@ -717,10 +721,10 @@
 					<td>
 						<obs conceptId="159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="1068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165912AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Symptomatic,Asymptomatic" style="radio" id="covid-status"/>
+							 answerLabels="Symptomatic,Asymptomatic" style="radio" id="presentation-status"/>
 					</td>
 				</tr>
-				<tr>
+				<tr id="tbl-admission">
 					<td> Hospital admission </td>
 					<td>
 						<obs conceptId="162477AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -728,37 +732,21 @@
 							 style="radio" answerLabels="Yes,No" id="admission-status"/>
 					</td>
 				</tr>
-				<tr id="tbl-admission">
+				<tr id="tbl-admission-unit">
 					<td> Admission unit</td>
 
 						<td style="text-align: left">
 							<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptId="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabel="Isolation" style="checkbox" id="isolation" />
-							<br/>
-							<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptId="165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabel="HDU" style="checkbox" id="hdu" />
-							<br/>
-							<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptId="161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabel="ICU" style="checkbox" id="icu" />
+								 answerConceptIds="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Isolation,HDU,ICU" style="radio" id="admission-unit" />
 						</td>
 				</tr>
-				<tr>
+				<tr id="tbl-oxygen">
 					<td> Did you receive supplemental oxygen</td>
 					<td style="text-align: left">
 						<obs conceptId="165864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerLabels="Yes,No" style="radio" id="oxygen"/>
-					</td>
-				</tr>
-				<tr>
-					<td> Were you put on a ventilator</td>
-					<td style="text-align: left">
-						<obs conceptId="165932AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Yes,No" style="radio" id="ventilator"/>
 					</td>
 				</tr>
 			</table>
