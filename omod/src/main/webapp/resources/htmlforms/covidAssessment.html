@@ -38,7 +38,7 @@
             jq('#tbl-admission').hide();
             jq('#tbl-admission-unit').hide();
             jq('#tbl-oxygen').hide();
-            jq('#fully-vaccinated').hide();
+            jq('#tbl-fully-vaccinated').hide();
 
             //Patient Vaccinated
             jq("#patient-vaccinated :input[type=radio]").change(onPatientVaccinatedSelected);
@@ -58,6 +58,9 @@
 
             //Presentation status
             jq("#presentation-status :input[type=radio]").change(onPresentationStatusSelected);
+
+            //Admision status
+            jq("#admission-status :input[type=radio]").change(onAdmissionStatusSelected);
 
             recordedCovidAssessmentIndicators();
             //recordedCovidAssessmentHistory();
@@ -109,13 +112,13 @@
                 jq('#tbl-vaccine-1').hide();
                 jq('#tbl-vaccine-2').hide();
                 jq('#tbl-completion-status').show();
-                jq('#fully-vaccinated').show();
+                jq('#tbl-fully-vaccinated').show();
                 jq('#tbl-booster').show();
             }else if(val == 1065 &amp;&amp; (completionStatus == 166192)){
                 jq('#tbl-vaccine-1').hide();
                 jq('#tbl-vaccine-2').show();
                 jq('#tbl-completion-status').show();
-                jq('#fully-vaccinated').hide();
+                jq('#tbl-fully-vaccinated').hide();
                 jq('#tbl-booster').show();
             }else if(val == 1065 &amp;&amp; (completionStatus == "")){
                 jq('#tbl-vaccine-1').show();
@@ -195,6 +198,23 @@
             }
         }
 
+        var onAdmissionStatusSelected = function () {
+            var val = jq(this).val();
+            var oxygenSupplement=jq('#oxygen');
+            var admissionUnit=jq('#admission-unit');
+            if (val == 1065){
+                jq('#tbl-admission-unit').show();
+                jq('#tbl-oxygen').show();
+                jq('#oxygen :input').prop('disabled', false);
+            }
+            if (val == 1066){
+                jq('#tbl-admission-unit').hide();
+                jq('#tbl-oxygen').hide();
+                jq('#oxygen :input').prop('disabled', true);
+                clearHiddenSections([oxygenSupplement,admissionUnit]);
+            }
+        }
+
        function recordedCovidAssessmentIndicators() {
            var patientId = <lookup expression="patient.patientId"/>;
            jq.getJSON('/' + ctxPath + '/covid19/CovidUtils/recordedCovidAssessmentIndicators.action', { patientId: patientId }, function(data) {
@@ -213,8 +233,12 @@
                    jq('#further-tests').hide();
                }
                if (data.fullyVaccinated === true) {
+                   jq('#tbl-fully-vaccinated').show();
+                   jq('#tbl-booster').show();
+                   jq('#vaccination-question').hide();
+                   jq('#tbl-completion-status').hide();
                    jq("#completion-status input[value=5585]").prop("checked", true);
-                   jq('#completion-status :input').prop('disabled', true);
+                   jq('#completion-status :input').prop('disabled', false);
                  }else{
                    jq("#completion-status input[value=5585]").prop("checked", false);
                }
@@ -285,9 +309,9 @@
             var doseSequence2 = getValue('dose-2.value');
             var vaccineDate = getValue('vaccination-date.value');
             var vaccineDate2 = getValue('vaccine-2-date.value');
+   console.log("Completion status ==>"+completionStatus);
 
-
-            if (pAge &gt; 17 &amp;&amp; patientVaccinated == "") {
+            if (pAge &gt; 17 &amp;&amp; patientVaccinated == "" &amp;&amp; completionStatus != 5585) {
                 getField('patient-vaccinated.error').html('Vaccination status should not be empty').show();
                 return false;
             }
@@ -326,6 +350,10 @@
                 return false;
             }
             if (pAge &gt; 17 &amp;&amp; boosterStatus == "" &amp;&amp; patientVaccinated == 1065) {
+                getField('booster-dose-given.error').html('Booster vaccination status should not be empty').show();
+                return false;
+            }
+            if (pAge &gt; 17 &amp;&amp; boosterStatus == "" &amp;&amp; completionStatus == 5585) {
                 getField('booster-dose-given.error').html('Booster vaccination status should not be empty').show();
                 return false;
             }
@@ -414,12 +442,12 @@
                             jq('#boosterVaccine').hide();
                             jq('#boosterVaccine').hide();
 
-
-                                if (patientVaccinated == 1065 &amp;&amp; completionStatus == 5585){
+                            console.log("Completion status ==>"+completionStatus);
+                                if (completionStatus == 5585){
                                     jq('#tbl-vaccine-1').show();
                                     jq('#tbl-vaccine-2').show();
                                     jq('#tbl-completion-status').show();
-                                    jq('#fully-vaccinated').show();
+                                    jq('#tbl-fully-vaccinated').show();
                                 }
                               else if (patientVaccinated == 1065 &amp;&amp; completionStatus == 166192){
                                 jq('#tbl-vaccine-1').show();
@@ -429,7 +457,7 @@
                                     jq('#tbl-vaccine-1').hide();
                                     jq('#tbl-vaccine-2').hide();
                                     jq('#tbl-completion-status').hide();
-                                    jq('#fully-vaccinated').hide();
+                                    jq('#tbl-fully-vaccinated').hide();
                                 }
 
 								if (boosterGiven == 1065){
@@ -472,8 +500,31 @@
 				Vaccination History
 			</legend>
 	<table class="simple-table">
+		          <!-- Previously recorded Vaccinations    -->
+				<table class="simple-table" id = "tbl-covid-history">
+					<tr>
+						<th>Vaccine</th>
+						<th>Dose</th>
+						<th>Date</th>
+					</tr>
+					<tr id="firstVaccine">
+						<td><input type="text" name="firstDoseVaccineName" id="firstDoseVaccineName" readonly="True" /></td>
+						<td><input type="text" name="firstDose" id="firstDose" readonly="True" /></td>
+						<td><input type="text" name="firstDoseDate" id="firstDoseDate" readonly="True" /></td>
+					</tr>
+					<tr id="secondVaccine">
+						<td><input type="text" name="secondDoseVaccineName" id="secondDoseVaccineName" readonly="True" /></td>
+						<td><input type="text" name="secondDose" id="secondDose" readonly="True" /></td>
+						<td><input type="text" name="secondDoseDate" id="secondDoseDate" readonly="True" /></td>
+					</tr>
+					<tr id="boosterVaccine">
+						<td><input type="text" name="boosterDoseVaccineName" id="boosterDoseVaccineName" readonly="True" /></td>
+						<td><input type="text" name="boosterDose" id="boosterDose" readonly="True" /></td>
+						<td><input type="text" name="boosterDoseDate" id="boosterDoseDate" readonly="True" /></td>
+					</tr>
+				</table>
 		<table class="simple-table">
-			<tr>
+			<tr id="vaccination-question">
 				<td>
 					<div id="first-visit">
 						Have you ever been vaccinated
@@ -486,32 +537,7 @@
 					<obs conceptId="163100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerLabel="" style="radio" id="patient-vaccinated"/>
-				</td>
-			    <td>&#160;&#160;&#160;&#160;</td>
-				<td>
-					<table class="simple-table" id = "tbl-covid-history">
-						<tr>
-							<th>Vaccine</th>
-							<th>Dose</th>
-							<th>Date</th>
-						</tr>
-						<tr id="firstVaccine">
-							<td><input type="text" name="firstDoseVaccineName" id="firstDoseVaccineName" readonly="True" /></td>
-							<td><input type="text" name="firstDose" id="firstDose" readonly="True" /></td>
-							<td><input type="text" name="firstDoseDate" id="firstDoseDate" readonly="True" /></td>
-						</tr>
-						<tr id="secondVaccine">
-							<td><input type="text" name="secondDoseVaccineName" id="secondDoseVaccineName" readonly="True" /></td>
-							<td><input type="text" name="secondDose" id="secondDose" readonly="True" /></td>
-							<td><input type="text" name="secondDoseDate" id="secondDoseDate" readonly="True" /></td>
-						</tr>
-						<tr id="boosterVaccine">
-							<td><input type="text" name="boosterDoseVaccineName" id="boosterDoseVaccineName" readonly="True" /></td>
-							<td><input type="text" name="boosterDose" id="boosterDose" readonly="True" /></td>
-							<td><input type="text" name="boosterDoseDate" id="boosterDoseDate" readonly="True" /></td>
-						</tr>
-					</table>
-				</td>
+				    </td>
 			</tr>
 		</table>
 		<table class="simple-table" id="tbl-vaccine-1">
@@ -618,14 +644,18 @@
 					 answerConceptIds="166192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 					 answerLabels="Partially Vaccinated,Fully Vaccinated" style="radio" id="completion-status"/>
 			 </td>
-			<td>
-				<div id="fully-vaccinated" style="width: 100%; float: left; overflow: auto; text-align: left; background-color: green; color: transparent; padding: 5px"><span>This client is fully COVID-19 vaccinated</span> </div>
-			</td>
 	    	</tr>
+		</table>
+		<table id="tbl-fully-vaccinated">
+		<tr>
+			<td>
+				<div id="fully-vaccinated" style="width: 100%; float: left; overflow: auto; text-align: left; background-color: green; color: white; padding: 5px"><span>This client is fully COVID-19 vaccinated</span> </div>
+			</td>
+		</tr>
 		</table>
 		<table class="simple-table" id="tbl-booster">
 			<tr>
-				<td> Have you received a booster COVID -19 dose   </td>
+				<td> Have you received a booster COVID -19 dose  </td>
 				<td>
 					<obs conceptId="166063AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
