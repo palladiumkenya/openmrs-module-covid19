@@ -221,9 +221,13 @@
                if (data.vaccinated === true) {
                    jq('#further-visits').show();
                    jq('#first-visit').hide();
+                   jq('#further-visits-booster').show();
+                   jq('#first-visit-booster').hide();
                }else{
                    jq('#first-visit').show();
                    jq('#further-visits').hide();
+                   jq('#first-visit-booster').show();
+                   jq('#further-visits-booster').hide();
                }
                if (data.covidTested === true) {
                    jq('#further-tests').show();
@@ -309,7 +313,6 @@
             var doseSequence2 = getValue('dose-2.value');
             var vaccineDate = getValue('vaccination-date.value');
             var vaccineDate2 = getValue('vaccine-2-date.value');
-   console.log("Completion status ==>"+completionStatus);
 
             if (pAge &gt; 17 &amp;&amp; patientVaccinated == "" &amp;&amp; completionStatus != 5585) {
                 getField('patient-vaccinated.error').html('Vaccination status should not be empty').show();
@@ -442,7 +445,6 @@
                             jq('#boosterVaccine').hide();
                             jq('#boosterVaccine').hide();
 
-                            console.log("Completion status ==>"+completionStatus);
                                 if (completionStatus == 5585){
                                     jq('#tbl-vaccine-1').show();
                                     jq('#tbl-vaccine-2').show();
@@ -655,7 +657,14 @@
 		</table>
 		<table class="simple-table" id="tbl-booster">
 			<tr>
-				<td> Have you received a booster COVID -19 dose  </td>
+				<td>
+					<div id="first-visit-booster">
+						Have you received a booster COVID -19 dose
+					</div>
+					<div id="further-visits-booster">
+						Have you received a booster COVID -19 dose since your last visit
+					</div>
+				</td>
 				<td>
 					<obs conceptId="166063AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
