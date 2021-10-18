@@ -81,6 +81,7 @@
                 var secondDose=jq('#dose-2');
                 getField('vaccine-2-date.value').val("");
                 jq("#verified-2 input[value=164134]").prop("checked", false);
+                jq("#completion-status input[value=5585]").prop("checked", true);    //Fully vaccinated
                 clearHiddenSections([secondDose,secondVaccineType,secondVaccineOther,secondDose]);
             }
             // Specify other
@@ -94,6 +95,7 @@
         var onVaccine2Selected = function () {
             var val = jq(this).val();
             getField('dose-2.value').prop("selectedIndex", 2);
+            jq("#completion-status input[value=5585]").prop("checked", true); //Fully vaccinated
             //jq('#dose-2 select').prop('disabled', true);
             // Specify other
             if (val == 5622){
