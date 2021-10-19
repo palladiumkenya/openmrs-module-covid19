@@ -75,7 +75,7 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition everHospitalised() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where hospital_admimission = 1065 and ever_vaccinated is not null;\n";
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where hospital_admission = 1065 and ever_vaccinated is not null;\n";
 		cd.setName("everHospitalised");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -87,7 +87,7 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition diedDueToCovid() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_program_discontinuation where discontinuation_reason =160034 and death_reason=165609\n"
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_program_discontinuation where discontinuation_reason =160034 and specific_death_cause=165609\n"
 		        + "and visit_date between date(:startDate) and :endDate;";
 		cd.setName("diedDueToCovid");
 		cd.setQuery(sqlQuery);
