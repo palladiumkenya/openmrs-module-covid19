@@ -60,14 +60,14 @@ public class MissedAppointmentDueToCovid19CohortDefinitionEvaluator implements C
 		        + "             de.patient_id                                                                    as started_on_drugs,\n"
 		        + "     t.latest_tracing_date                                                            as latest_trace_date,\n"
 		        + "   t.tracing_outcome                                                                as tracing_outcome,\n"
-		        + "    t.true_status                                                                    as true_stats\n"
+		        + "    t.reason_for_missed_appointment                                                                    as true_stats\n"
 		        + "      from kenyaemr_etl.etl_patient_hiv_followup fup\n"
 		        + "             join kenyaemr_etl.etl_patient_demographics p on p.patient_id = fup.patient_id\n"
 		        + "             join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id = e.patient_id\n"
 		        + "             join (select t.patient_id,\n"
 		        + "                          max(t.visit_date)                                     as latest_tracing_date,\n"
 		        + "                          mid(max(concat(t.visit_date, t.tracing_outcome)), 11) as tracing_outcome,\n"
-		        + "                          mid(max(concat(t.visit_date, t.true_status)), 11)     as true_status\n"
+		        + "                          mid(max(concat(t.visit_date, t.reason_for_missed_appointment)), 11)     as reason_for_missed_appointment\n"
 		        + "                   from kenyaemr_etl.etl_ccc_defaulter_tracing t\n"
 		        + "                   group by t.patient_id)t on e.patient_id = t.patient_id\n"
 		        + "             left outer join kenyaemr_etl.etl_drug_event de\n"
@@ -89,7 +89,7 @@ public class MissedAppointmentDueToCovid19CohortDefinitionEvaluator implements C
 		        + "                  d.effective_disc_date is null)\n"
 		        + "                   and\n"
 		        + "                 (date(latest_vis_date) > date(date_discontinued) and date(latest_tca) > date(date_discontinued) or\n"
-		        + "                  disc_patient is null) and (true_status = 165610 and latest_tracing_date > latest_tca)\n"
+		        + "                  disc_patient is null) and (reason_for_missed_appointment in (165609,165610) and latest_tracing_date > latest_tca)\n"
 		        + "                 )) t;";
 		
 		SqlQueryBuilder builder = new SqlQueryBuilder();
