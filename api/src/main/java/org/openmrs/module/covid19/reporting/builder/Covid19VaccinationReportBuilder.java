@@ -68,6 +68,9 @@ public class Covid19VaccinationReportBuilder extends AbstractReportBuilder {
 		cohortDsd.addColumn("Not vaccinated", "",
 		    ReportUtils.map(covid19VaccinationIndicatorLibrary.notVaccinated(), indParams), "");
 		
+		cohortDsd.addColumn("Unknown vaccination status", "",
+		    ReportUtils.map(covid19VaccinationIndicatorLibrary.unknownVaccinationStatus(), indParams), "");
+		
 		cohortDsd.addColumn("Verified 1st Dose", "",
 		    ReportUtils.map(covid19VaccinationIndicatorLibrary.doseOneVerified(), indParams), "");
 		
