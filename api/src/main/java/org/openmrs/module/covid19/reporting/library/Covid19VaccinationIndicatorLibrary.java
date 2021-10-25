@@ -47,6 +47,16 @@ public class Covid19VaccinationIndicatorLibrary {
 	}
 	
 	/**
+	 * Number of patients not vaccinated for Covid-19
+	 * 
+	 * @return
+	 */
+	public CohortIndicator notVaccinated() {
+		return cohortIndicator("Not vaccinated",
+		    ReportUtils.map(cohortLibrary.onArtNotVaccinatedCovid19(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	
+	/**
 	 * Number of patients on ART and 18+ years old
 	 * 
 	 * @return the indicator
