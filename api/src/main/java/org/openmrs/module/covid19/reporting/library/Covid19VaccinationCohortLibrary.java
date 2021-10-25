@@ -73,6 +73,18 @@ public class Covid19VaccinationCohortLibrary {
 		return cd;
 	}
 	
+	public CohortDefinition unknownCovid19VaccinationStatusSql() {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		String sqlQuery = "select a.patient_id from kenyaemr_etl.etl_covid19_assessment a";
+		cd.setName("unknownCovid19VaccinationStatus;");
+		cd.setQuery(sqlQuery);
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.setDescription("unknownCovid19VaccinationStatus");
+		
+		return cd;
+	}
+	
 	public CohortDefinition everInfected() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
 		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where ever_tested_covid_19_positive = 703 and ever_vaccinated is not null\n"
@@ -193,6 +205,23 @@ public class Covid19VaccinationCohortLibrary {
 		cd.addSearch("notVaccinatedCovid19Sql",
 		    ReportUtils.map(notVaccinatedCovid19Sql(), "startDate=${startDate},endDate=${endDate}"));
 		cd.setCompositionString("txcurr AND notVaccinatedCovid19Sql");
+		return cd;
+	}
+	
+	/**
+	 * Patients On Art and with unknown Covid-19 vaccination status
+	 * 
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onArtUnknownVaccinationStatus() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addSearch("txcurr",
+		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("unknownCovid19VaccinationStatusSql",
+		    ReportUtils.map(unknownCovid19VaccinationStatusSql(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("txcurr AND NOT unknownCovid19VaccinationStatusSql");
 		return cd;
 	}
 	

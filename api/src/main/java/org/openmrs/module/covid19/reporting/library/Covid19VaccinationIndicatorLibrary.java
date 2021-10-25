@@ -57,6 +57,16 @@ public class Covid19VaccinationIndicatorLibrary {
 	}
 	
 	/**
+	 * Number of patients with unknown Covid-19 vaccination status
+	 * 
+	 * @return
+	 */
+	public CohortIndicator unknownVaccinationStatus() {
+		return cohortIndicator("Unknown vaccination status",
+		    ReportUtils.map(cohortLibrary.onArtUnknownVaccinationStatus(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	
+	/**
 	 * Number of patients on ART and 18+ years old
 	 * 
 	 * @return the indicator
