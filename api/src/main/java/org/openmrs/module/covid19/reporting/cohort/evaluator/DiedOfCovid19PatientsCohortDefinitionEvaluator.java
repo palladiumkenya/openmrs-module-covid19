@@ -46,8 +46,8 @@ public class DiedOfCovid19PatientsCohortDefinitionEvaluator implements CohortDef
 			return null;
 		
 		Cohort newCohort = new Cohort();
-		String qry = "select d.patient_id from kenyaemr_etl.etl_patient_program_discontinuation d\n"
-		        + "where d.program_name='HIV' and date(d.date_died) between date(:startDate) and date(:endDate) and d.specific_death_cause = 165609;";
+		String qry = "select patient_id from kenyaemr_etl.etl_patient_program_discontinuation where discontinuation_reason =160034 and specific_death_cause=165609\n"
+		        + " and coalesce(date(date_died),coalesce(date(effective_discontinuation_date),date(visit_date))) between date(:startDate) and date(:endDate);";
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		Date startDate = (Date) context.getParameterValue("startDate");
 		Date endDate = (Date) context.getParameterValue("endDate");

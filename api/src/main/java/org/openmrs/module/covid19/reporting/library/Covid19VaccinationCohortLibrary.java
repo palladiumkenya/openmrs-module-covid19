@@ -113,7 +113,7 @@ public class Covid19VaccinationCohortLibrary {
 	public CohortDefinition diedDueToCovid() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
 		String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_program_discontinuation where discontinuation_reason =160034 and specific_death_cause=165609\n"
-		        + "and visit_date between date(:startDate) and :endDate;";
+		        + "and coalesce(date(date_died),coalesce(date(effective_discontinuation_date),date(visit_date))) between date(:startDate) and date(:endDate);";
 		cd.setName("diedDueToCovid");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
