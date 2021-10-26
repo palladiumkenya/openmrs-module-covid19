@@ -498,43 +498,49 @@
 	</div>
 
 	<div class="ke-form-content">
-		<includeIf velocityTest="$patient.age &gt; 17">
-		<fieldset id="vaccination-history">
+		<fieldset id="tbl-covid-history">
 			<legend>
 				Vaccination History
 			</legend>
-	<table class="simple-table">
 		          <!-- Previously recorded Vaccinations    -->
-				<table class="simple-table" id = "tbl-covid-history">
+				<table class="simple-table">
 					<tr>
-						<th>Vaccine</th>
-						<th>Dose</th>
-						<th>Date</th>
+						<th align="left">Vaccine</th>
+						<th align="left">Dose</th>
+						<th align="left">Date</th>
 					</tr>
 					<tr id="firstVaccine">
-						<td><input type="text" name="firstDoseVaccineName" id="firstDoseVaccineName" readonly="True" /></td>
-						<td><input type="text" name="firstDose" id="firstDose" readonly="True" /></td>
-						<td><input type="text" name="firstDoseDate" id="firstDoseDate" readonly="True" /></td>
+						<td><input type="text" name="firstDoseVaccineName" id="firstDoseVaccineName" readonly="True" style="border: none"/></td>
+						<td><input type="text" name="firstDose" id="firstDose" readonly="True" style="border: none" /></td>
+						<td><input type="text" name="firstDoseDate" id="firstDoseDate" readonly="True"  style="border: none"/></td>
 					</tr>
 					<tr id="secondVaccine">
-						<td><input type="text" name="secondDoseVaccineName" id="secondDoseVaccineName" readonly="True" /></td>
-						<td><input type="text" name="secondDose" id="secondDose" readonly="True" /></td>
-						<td><input type="text" name="secondDoseDate" id="secondDoseDate" readonly="True" /></td>
+						<td><input type="text" name="secondDoseVaccineName" id="secondDoseVaccineName" readonly="True" style="border: none" /></td>
+						<td><input type="text" name="secondDose" id="secondDose" readonly="True"  style="border: none"/></td>
+						<td><input type="text" name="secondDoseDate" id="secondDoseDate" readonly="True" style="border: none" /></td>
 					</tr>
 					<tr id="boosterVaccine">
-						<td><input type="text" name="boosterDoseVaccineName" id="boosterDoseVaccineName" readonly="True" /></td>
-						<td><input type="text" name="boosterDose" id="boosterDose" readonly="True" /></td>
-						<td><input type="text" name="boosterDoseDate" id="boosterDoseDate" readonly="True" /></td>
+						<td><input type="text" name="boosterDoseVaccineName" id="boosterDoseVaccineName" readonly="True" style="border: none" /></td>
+						<td><input type="text" name="boosterDose" id="boosterDose" readonly="True" style="border: none" /></td>
+						<td><input type="text" name="boosterDoseDate" id="boosterDoseDate" readonly="True" style="border: none" /></td>
 					</tr>
 				</table>
+		</fieldset>
+	  <includeIf velocityTest="$patient.age &gt; 17">
+	  <fieldset id="vaccination">
+				   <legend>
+					   Vaccination
+				   </legend>
+	   <table class="simple-table">
+
 		<table class="simple-table">
 			<tr id="vaccination-question">
 				<td>
 					<div id="first-visit">
-						Have you ever been vaccinated
+						Have you ever been vaccinated?
 					</div>
 					<div id="further-visits">
-						Have you been vaccinated since your last visit
+						Have you been vaccinated since your last visit?
 					</div>
 				</td>
 					<td>
@@ -661,10 +667,10 @@
 			<tr>
 				<td>
 					<div id="first-visit-booster">
-						Have you received a booster COVID -19 dose
+						Have you received a booster COVID -19 dose?
 					</div>
 					<div id="further-visits-booster">
-						Have you received a booster COVID -19 dose since your last visit
+						Have you received a booster COVID -19 dose since your last visit?
 					</div>
 				</td>
 				<td>
@@ -727,10 +733,10 @@
 				<tr>
 					<td>
 						<div id="first-test">
-							Have you ever tested for COVID -19
+							Have you ever tested for COVID -19?
 						</div>
 						<div id="further-tests">
-							Have you tested for COVID -19 since your last visit
+							Have you tested for COVID -19 since your last visit?
 						</div>
 					</td>
 					<td>
@@ -783,7 +789,7 @@
 						</td>
 				</tr>
 				<tr id="tbl-oxygen">
-					<td> Did you receive supplemental oxygen</td>
+					<td> Did you receive supplemental oxygen?</td>
 					<td style="text-align: left">
 						<obs conceptId="165864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
