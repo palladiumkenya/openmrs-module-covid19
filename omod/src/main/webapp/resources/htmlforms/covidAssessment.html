@@ -498,35 +498,41 @@
 	</div>
 
 	<div class="ke-form-content">
-		<includeIf velocityTest="$patient.age &gt; 17">
-		<fieldset id="vaccination-history">
+		<fieldset id="tbl-covid-history">
 			<legend>
 				Vaccination History
 			</legend>
-	<table class="simple-table">
 		          <!-- Previously recorded Vaccinations    -->
-				<table class="simple-table" id = "tbl-covid-history">
+				<table class="simple-table">
 					<tr>
-						<th>Vaccine</th>
-						<th>Dose</th>
-						<th>Date</th>
+						<th align="left">Vaccine</th>
+						<th align="left">Dose</th>
+						<th align="left">Date</th>
 					</tr>
 					<tr id="firstVaccine">
-						<td><input type="text" name="firstDoseVaccineName" id="firstDoseVaccineName" readonly="True" /></td>
-						<td><input type="text" name="firstDose" id="firstDose" readonly="True" /></td>
-						<td><input type="text" name="firstDoseDate" id="firstDoseDate" readonly="True" /></td>
+						<td><input type="text" name="firstDoseVaccineName" id="firstDoseVaccineName" readonly="True" style="border: none"/></td>
+						<td><input type="text" name="firstDose" id="firstDose" readonly="True" style="border: none" /></td>
+						<td><input type="text" name="firstDoseDate" id="firstDoseDate" readonly="True"  style="border: none"/></td>
 					</tr>
 					<tr id="secondVaccine">
-						<td><input type="text" name="secondDoseVaccineName" id="secondDoseVaccineName" readonly="True" /></td>
-						<td><input type="text" name="secondDose" id="secondDose" readonly="True" /></td>
-						<td><input type="text" name="secondDoseDate" id="secondDoseDate" readonly="True" /></td>
+						<td><input type="text" name="secondDoseVaccineName" id="secondDoseVaccineName" readonly="True" style="border: none" /></td>
+						<td><input type="text" name="secondDose" id="secondDose" readonly="True"  style="border: none"/></td>
+						<td><input type="text" name="secondDoseDate" id="secondDoseDate" readonly="True" style="border: none" /></td>
 					</tr>
 					<tr id="boosterVaccine">
-						<td><input type="text" name="boosterDoseVaccineName" id="boosterDoseVaccineName" readonly="True" /></td>
-						<td><input type="text" name="boosterDose" id="boosterDose" readonly="True" /></td>
-						<td><input type="text" name="boosterDoseDate" id="boosterDoseDate" readonly="True" /></td>
+						<td><input type="text" name="boosterDoseVaccineName" id="boosterDoseVaccineName" readonly="True" style="border: none" /></td>
+						<td><input type="text" name="boosterDose" id="boosterDose" readonly="True" style="border: none" /></td>
+						<td><input type="text" name="boosterDoseDate" id="boosterDoseDate" readonly="True" style="border: none" /></td>
 					</tr>
 				</table>
+		</fieldset>
+	  <includeIf velocityTest="$patient.age &gt; 17">
+	  <fieldset id="vaccination">
+				   <legend>
+					   Vaccination
+				   </legend>
+	   <table class="simple-table">
+
 		<table class="simple-table">
 			<tr id="vaccination-question">
 				<td>
