@@ -100,8 +100,8 @@
     <!--Reports-->
     <bean id="kenyaemr.hiv.report.covid19vaccination" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
         <property name="targetUuid" value="9952e9d5-b5cf-4c59-ab36-b961c11f6930" />
-        <property name="name" value="Covid-19 Vaccination Report" />
-        <property name="description" value="Covid-19 vaccination report for patients current on ART" />
+        <property name="name" value="Covid-19 Report" />
+        <property name="description" value="Covid-19 report for patients current on ART" />
         <property name="apps">
             <set>
                 <ref bean="kenyaemr.app.reports" />
