@@ -10,7 +10,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>covid19</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<name>Covid19</name>
 	<description>Provides COVID-19 features in KenyaEMR</description>
@@ -44,7 +44,7 @@
 		<uiframeworkVersion>3.3.1</uiframeworkVersion>
 		<kenyacoreVersion>2.4.2</kenyacoreVersion>
 		<kenyauiVersion>2.0.3</kenyauiVersion>
-		<kenyaemrVersion>17.5.1</kenyaemrVersion>
+		<kenyaemrVersion>17.6.0</kenyaemrVersion>
 		<jodaTimeVersion>2.9.1</jodaTimeVersion>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
