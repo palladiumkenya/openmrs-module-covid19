@@ -33,7 +33,7 @@ public class Covid19VaccinationIndicatorLibrary {
 	 */
 	public CohortIndicator fullyVaccinated() {
 		return cohortIndicator("Fully vaccinated",
-		    ReportUtils.map(cohortLibrary.onArtFullyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
+		    ReportUtils.map(cohortLibrary.cicFullyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class Covid19VaccinationIndicatorLibrary {
 	 */
 	public CohortIndicator partiallyVaccinated() {
 		return cohortIndicator("Partially vaccinated",
-		    ReportUtils.map(cohortLibrary.onArtPartiallyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
+		    ReportUtils.map(cohortLibrary.cicPartiallyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public class Covid19VaccinationIndicatorLibrary {
 	 */
 	public CohortIndicator notVaccinated() {
 		return cohortIndicator("Not vaccinated",
-		    ReportUtils.map(cohortLibrary.onArtNotVaccinatedCovid19(), "startDate=${startDate},endDate=${endDate}"));
+		    ReportUtils.map(cohortLibrary.cicNotVaccinatedCovid19(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**
@@ -63,17 +63,17 @@ public class Covid19VaccinationIndicatorLibrary {
 	 */
 	public CohortIndicator unknownVaccinationStatus() {
 		return cohortIndicator("Unknown vaccination status",
-		    ReportUtils.map(cohortLibrary.onArtUnknownVaccinationStatus(), "startDate=${startDate},endDate=${endDate}"));
+		    ReportUtils.map(cohortLibrary.cicUnknownVaccinationStatus(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**
-	 * Number of patients on ART and 18+ years old
+	 * Number of patients cic and 18+ years old
 	 * 
 	 * @return the indicator
 	 */
-	public CohortIndicator onArt18AndAbove() {
-		return cohortIndicator("On ART and 18+ years",
-		    ReportUtils.map(cohortLibrary.onArtAged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+	public CohortIndicator cic18AndAbove() {
+		return cohortIndicator("cic and 18+ years",
+		    ReportUtils.map(cohortLibrary.cicAged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class Covid19VaccinationIndicatorLibrary {
 	 */
 	public CohortIndicator doseOneVerified() {
 		return cohortIndicator("Verified 1st Dose",
-		    ReportUtils.map(cohortLibrary.onArtFirstDoseVerified(), "startDate=${startDate},endDate=${endDate}"));
+		    ReportUtils.map(cohortLibrary.cicFirstDoseVerified(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class Covid19VaccinationIndicatorLibrary {
 	 */
 	public CohortIndicator doseTwoVerified() {
 		return cohortIndicator("Verified 2nd Dose",
-		    ReportUtils.map(cohortLibrary.onArtSecondDoseVerified(), "startDate=${startDate},endDate=${endDate}"));
+		    ReportUtils.map(cohortLibrary.cicSecondDoseVerified(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class Covid19VaccinationIndicatorLibrary {
 	 */
 	public CohortIndicator boosterDoseVerified() {
 		return cohortIndicator("Verified booster Dose",
-		    ReportUtils.map(cohortLibrary.onArtBoosterDoseVerified(), "startDate=${startDate},endDate=${endDate}"));
+		    ReportUtils.map(cohortLibrary.cicBoosterDoseVerified(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public class Covid19VaccinationIndicatorLibrary {
 	 */
 	public CohortIndicator everInfectedWithCovid19() {
 		return cohortIndicator("Ever infected with Covid-19",
-		    ReportUtils.map(cohortLibrary.onArtEverInfected(), "startDate=${startDate},endDate=${endDate}"));
+		    ReportUtils.map(cohortLibrary.cicEverInfected(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**
@@ -123,7 +123,7 @@ public class Covid19VaccinationIndicatorLibrary {
 	 */
 	public CohortIndicator hospitalAdmission() {
 		return cohortIndicator("Admitted to hospital due to Covid-19",
-		    ReportUtils.map(cohortLibrary.onArtEverHospitalised(), "startDate=${startDate},endDate=${endDate}"));
+		    ReportUtils.map(cohortLibrary.cicEverHospitalised(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**
