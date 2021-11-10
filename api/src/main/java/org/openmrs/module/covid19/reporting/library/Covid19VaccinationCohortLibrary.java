@@ -10,6 +10,7 @@
 package org.openmrs.module.covid19.reporting.library;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard.ETLMoh731GreenCardCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -27,7 +28,7 @@ import java.util.Date;
 public class Covid19VaccinationCohortLibrary {
 	
 	@Autowired
-	private DatimCohortLibrary datimCohortLibrary;
+	ETLMoh731GreenCardCohortLibrary etlMoh731GreenCardCohortLibrary;
 	
 	public CohortDefinition fullyVaccinated() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -60,6 +61,31 @@ public class Covid19VaccinationCohortLibrary {
 		return cd;
 	}
 	
+	public CohortDefinition notVaccinatedCovid19Sql() {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		String sqlQuery = "select a.patient_id from kenyaemr_etl.etl_covid19_assessment a group by a.patient_id having\n"
+		        + "            mid(max(concat(a.visit_date,a.ever_vaccinated)),11) is null  or mid(max(concat(a.visit_date,a.ever_vaccinated)),11)=1066;";
+		cd.setName("notVaccinated;");
+		cd.setQuery(sqlQuery);
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.setDescription("notVaccinated");
+		
+		return cd;
+	}
+	
+	public CohortDefinition assessedForCovid19Sql() {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		String sqlQuery = "select a.patient_id from kenyaemr_etl.etl_covid19_assessment a";
+		cd.setName("unknownCovid19VaccinationStatus;");
+		cd.setQuery(sqlQuery);
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.setDescription("unknownCovid19VaccinationStatus");
+		
+		return cd;
+	}
+	
 	public CohortDefinition everInfected() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
 		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where ever_tested_covid_19_positive = 703 and ever_vaccinated is not null\n"
@@ -75,7 +101,7 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition everHospitalised() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where hospital_admimission = 1065 and ever_vaccinated is not null;\n";
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where hospital_admission = 1065 and ever_vaccinated is not null;\n";
 		cd.setName("everHospitalised");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -87,8 +113,8 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition diedDueToCovid() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_program_discontinuation where discontinuation_reason =160034 and death_reason=165609\n"
-		        + "and visit_date between date(:startDate) and :endDate;";
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_program_discontinuation where discontinuation_reason =160034 and specific_death_cause=165609\n"
+		        + "and coalesce(date(date_died),coalesce(date(effective_discontinuation_date),date(visit_date))) between date(:startDate) and date(:endDate);";
 		cd.setName("diedDueToCovid");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -154,79 +180,116 @@ public class Covid19VaccinationCohortLibrary {
 	 * 
 	 * @return the cohort definition
 	 */
-	public CohortDefinition onArtPartiallyVaccinated() {
+	public CohortDefinition cicPartiallyVaccinated() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addSearch("txcurr",
-		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("cic",
+		    ReportUtils.map(etlMoh731GreenCardCohortLibrary.currentlyInCare(), "startDate=${startDate},endDate=${endDate}"));
 		cd.addSearch("partiallyVaccinated",
 		    ReportUtils.map(partiallyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND partiallyVaccinated");
+		cd.setCompositionString("cic AND partiallyVaccinated");
 		return cd;
 	}
 	
 	/**
-	 * Patients OnArt and fully vaccinated
+	 * Patients On Art and not vaccinated
 	 * 
 	 * @return the cohort definition
 	 */
-	public CohortDefinition onArtFullyVaccinated() {
+	public CohortDefinition cicNotVaccinatedCovid19() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addSearch("txcurr",
-		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-		cd.addSearch("fullyVaccinated", ReportUtils.map(fullyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND fullyVaccinated");
+		cd.addSearch("cic",
+		    ReportUtils.map(etlMoh731GreenCardCohortLibrary.currentlyInCare(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("notVaccinatedCovid19Sql",
+		    ReportUtils.map(notVaccinatedCovid19Sql(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("cic AND notVaccinatedCovid19Sql");
 		return cd;
 	}
 	
 	/**
-	 * Patients OnArt and ever infected
+	 * Patients On Art and with unknown Covid-19 vaccination status
 	 * 
 	 * @return the cohort definition
 	 */
-	public CohortDefinition onArtEverInfected() {
+	public CohortDefinition cicUnknownVaccinationStatus() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addSearch("txcurr",
-		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-		cd.addSearch("everInfected", ReportUtils.map(everInfected(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND everInfected");
-		return cd;
-	}
-	
-	/**
-	 * Patients OnArt and ever admitted to hospital due to covid
-	 * 
-	 * @return the cohort definition
-	 */
-	public CohortDefinition onArtEverHospitalised() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addSearch("txcurr",
-		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-		cd.addSearch("everHospitalised", ReportUtils.map(everHospitalised(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND everHospitalised");
-		return cd;
-	}
-	
-	/**
-	 * Patients OnArt and 18 years and above
-	 * 
-	 * @return the cohort definition
-	 */
-	public CohortDefinition onArtAged18AndAbove() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addSearch("txcurr",
-		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("cic",
+		    ReportUtils.map(etlMoh731GreenCardCohortLibrary.currentlyInCare(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("assessedforCovid19",
+		    ReportUtils.map(assessedForCovid19Sql(), "startDate=${startDate},endDate=${endDate}"));
 		cd.addSearch("aged18andAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND aged18andAbove");
+		cd.setCompositionString("cic AND aged18andAbove AND NOT assessedforCovid19");
+		return cd;
+	}
+	
+	/**
+	 * Patients cic and fully vaccinated
+	 * 
+	 * @return the cohort definition
+	 */
+	public CohortDefinition cicFullyVaccinated() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addSearch("cic",
+		    ReportUtils.map(etlMoh731GreenCardCohortLibrary.currentlyInCare(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("fullyVaccinated", ReportUtils.map(fullyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("cic AND fullyVaccinated");
+		return cd;
+	}
+	
+	/**
+	 * Patients cic and ever infected
+	 * 
+	 * @return the cohort definition
+	 */
+	public CohortDefinition cicEverInfected() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addSearch("cic",
+		    ReportUtils.map(etlMoh731GreenCardCohortLibrary.currentlyInCare(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("everInfected", ReportUtils.map(everInfected(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("aged18andAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("cic AND aged18andAbove AND everInfected");
+		return cd;
+	}
+	
+	/**
+	 * Patients cic and ever admitted to hospital due to covid
+	 * 
+	 * @return the cohort definition
+	 */
+	public CohortDefinition cicEverHospitalised() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addSearch("cic",
+		    ReportUtils.map(etlMoh731GreenCardCohortLibrary.currentlyInCare(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("everHospitalised", ReportUtils.map(everHospitalised(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("aged18andAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("cic AND aged18andAbove AND everHospitalised");
+		return cd;
+	}
+	
+	/**
+	 * Patients cic and 18 years and above
+	 * 
+	 * @return the cohort definition
+	 */
+	public CohortDefinition cicAged18AndAbove() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addSearch("cic",
+		    ReportUtils.map(etlMoh731GreenCardCohortLibrary.currentlyInCare(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("aged18andAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("cic AND aged18andAbove");
 		return cd;
 	}
 	
@@ -235,15 +298,15 @@ public class Covid19VaccinationCohortLibrary {
 	 * 
 	 * @return the cohort definition
 	 */
-	public CohortDefinition onArtFirstDoseVerified() {
+	public CohortDefinition cicFirstDoseVerified() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addSearch("txcurr",
-		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("cic",
+		    ReportUtils.map(etlMoh731GreenCardCohortLibrary.currentlyInCare(), "startDate=${startDate},endDate=${endDate}"));
 		cd.addSearch("firstDoseVerified",
 		    ReportUtils.map(firstDoseVerifiedSQl(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND firstDoseVerified");
+		cd.setCompositionString("cic AND firstDoseVerified");
 		return cd;
 	}
 	
@@ -252,15 +315,15 @@ public class Covid19VaccinationCohortLibrary {
 	 * 
 	 * @return the cohort definition
 	 */
-	public CohortDefinition onArtSecondDoseVerified() {
+	public CohortDefinition cicSecondDoseVerified() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addSearch("txcurr",
-		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("cic",
+		    ReportUtils.map(etlMoh731GreenCardCohortLibrary.currentlyInCare(), "startDate=${startDate},endDate=${endDate}"));
 		cd.addSearch("secondDoseVerified",
 		    ReportUtils.map(secondDoseVerifiedSQL(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND secondDoseVerified");
+		cd.setCompositionString("cic AND secondDoseVerified");
 		return cd;
 	}
 	
@@ -269,15 +332,15 @@ public class Covid19VaccinationCohortLibrary {
 	 * 
 	 * @return the cohort definition
 	 */
-	public CohortDefinition onArtBoosterDoseVerified() {
+	public CohortDefinition cicBoosterDoseVerified() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addSearch("txcurr",
-		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("cic",
+		    ReportUtils.map(etlMoh731GreenCardCohortLibrary.currentlyInCare(), "startDate=${startDate},endDate=${endDate}"));
 		cd.addSearch("boosterDoseVerified",
 		    ReportUtils.map(boosterDoseVerifiedSQL(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND boosterDoseVerified");
+		cd.setCompositionString("cic AND boosterDoseVerified");
 		return cd;
 	}
 }
