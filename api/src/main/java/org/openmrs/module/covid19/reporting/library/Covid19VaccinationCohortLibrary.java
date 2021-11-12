@@ -31,11 +31,7 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition fullyVaccinated() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment\n"
-		        + "group by patient_id\n"
-		        + "having mid(max(concat(visit_date,final_vaccination_status)),11) = 5585 and mid(max(concat(visit_date,ever_vaccinated)),11) is not null\n"
-		        + "and mid(max(concat(visit_date,date(second_dose_date))),11) between date(:startDate) and :endDate \n"
-		        + "or (mid(max(concat(visit_date,first_vaccine_type)),11)= 166355 and mid(max(concat(visit_date,date(first_dose_date))),11) between date(:startDate) and :endDate);\n";
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment a where a.final_vaccination_status = 5585 and a.visit_date <= date(:endDate)";
 		cd.setName("fullyVaccinated");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -47,10 +43,9 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition partiallyVaccinated() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment\n"
-		        + "group by patient_id\n"
-		        + "having mid(max(concat(visit_date,final_vaccination_status)),11) = 166192 and mid(max(concat(visit_date,ever_vaccinated)),11) is not null\n"
-		        + "and mid(max(concat(visit_date,date(first_dose_date))),11) between date(:startDate) and :endDate and mid(max(concat(visit_date,first_vaccine_type)),11) <> 166355;\n";
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment group by patient_id\n"
+		        + "        having mid(max(concat(visit_date,final_vaccination_status)),11) = 166192\n"
+		        + "        and max(visit_date) <= date(:endDate);";
 		cd.setName("partiallyVaccinated;");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -60,34 +55,21 @@ public class Covid19VaccinationCohortLibrary {
 		return cd;
 	}
 	
-	public CohortDefinition notVaccinatedCovid19Sql() {
+	public CohortDefinition covid19AssessedPatients() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select a.patient_id from kenyaemr_etl.etl_covid19_assessment a group by a.patient_id having\n"
-		        + "            mid(max(concat(a.visit_date,a.ever_vaccinated)),11) is null  or mid(max(concat(a.visit_date,a.ever_vaccinated)),11)=1066;";
-		cd.setName("notVaccinated;");
+		String sqlQuery = "select a.patient_id from kenyaemr_etl.etl_covid19_assessment a;";
+		cd.setName("covid19AssessedPatients;");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.setDescription("notVaccinated");
-		
-		return cd;
-	}
-	
-	public CohortDefinition unknownCovid19VaccinationStatusSql() {
-		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select a.patient_id from kenyaemr_etl.etl_covid19_assessment a";
-		cd.setName("unknownCovid19VaccinationStatus;");
-		cd.setQuery(sqlQuery);
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.setDescription("unknownCovid19VaccinationStatus");
+		cd.setDescription("covid19AssessedPatients");
 		
 		return cd;
 	}
 	
 	public CohortDefinition everInfected() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where ever_tested_covid_19_positive = 703 and ever_vaccinated is not null\n"
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where ever_tested_covid_19_positive = 703 and ever_vaccinated is not null and visit_date <= date(:endDate)\n"
 		        + "group by patient_id;";
 		cd.setName("everInfected;");
 		cd.setQuery(sqlQuery);
@@ -100,7 +82,7 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition everHospitalised() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where hospital_admission = 1065 and ever_vaccinated is not null;\n";
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where hospital_admission = 1065 and visit_date <= date(:endDate);\n";
 		cd.setName("everHospitalised");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -113,7 +95,7 @@ public class Covid19VaccinationCohortLibrary {
 	public CohortDefinition diedDueToCovid() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
 		String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_program_discontinuation where discontinuation_reason =160034 and specific_death_cause=165609\n"
-		        + "and coalesce(date(date_died),coalesce(date(effective_discontinuation_date),date(visit_date))) between date(:startDate) and date(:endDate);";
+		        + "and coalesce(date(date_died),coalesce(date(effective_discontinuation_date),date(visit_date))) <= date(:endDate);";
 		cd.setName("diedDueToCovid");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -137,8 +119,8 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition firstDoseVerifiedSQl() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = " select patient_id from kenyaemr_etl.etl_covid19_assessment where first_vaccination_verified = 164134 and ever_vaccinated is not null and\n"
-		        + "        first_dose_date between date(:startDate) and :endDate;";
+		String sqlQuery = " select patient_id from kenyaemr_etl.etl_covid19_assessment where first_vaccination_verified = 164134 and\n"
+		        + "        visit_date <= date(:endDate);";
 		cd.setName("firstDose");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -150,8 +132,8 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition secondDoseVerifiedSQL() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where second_vaccination_verified = 164134 and ever_vaccinated is not null and\n"
-		        + "        second_dose_date between date(:startDate) and :endDate;";
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where second_vaccination_verified = 164134 and\n"
+		        + "        visit_date <= date(:endDate);";
 		cd.setName("secondDose");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -163,8 +145,8 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition boosterDoseVerifiedSQL() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = " select patient_id from kenyaemr_etl.etl_covid19_assessment where booster_dose_verified = 164134 and ever_vaccinated is not null and\n"
-		        + "        date_taken_booster_vaccine between date(:startDate) and :endDate;";
+		String sqlQuery = " select patient_id from kenyaemr_etl.etl_covid19_assessment where booster_dose_verified = 164134 and\n"
+		        + "        visit_date <= date(:endDate);";
 		cd.setName("boosterDose");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -187,7 +169,8 @@ public class Covid19VaccinationCohortLibrary {
 		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
 		cd.addSearch("partiallyVaccinated",
 		    ReportUtils.map(partiallyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND partiallyVaccinated");
+		cd.addSearch("aged18AndAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("txcurr AND aged18AndAbove AND partiallyVaccinated");
 		return cd;
 	}
 	
@@ -202,9 +185,11 @@ public class Covid19VaccinationCohortLibrary {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addSearch("txcurr",
 		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-		cd.addSearch("notVaccinatedCovid19Sql",
-		    ReportUtils.map(notVaccinatedCovid19Sql(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND notVaccinatedCovid19Sql");
+		cd.addSearch("partiallyVaccinated",
+		    ReportUtils.map(partiallyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("fullyVaccinated", ReportUtils.map(fullyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("aged18AndAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("txcurr AND aged18AndAbove AND NOT (partiallyVaccinated OR fullyVaccinated)");
 		return cd;
 	}
 	
@@ -219,9 +204,10 @@ public class Covid19VaccinationCohortLibrary {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addSearch("txcurr",
 		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-		cd.addSearch("unknownCovid19VaccinationStatusSql",
-		    ReportUtils.map(unknownCovid19VaccinationStatusSql(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND NOT unknownCovid19VaccinationStatusSql");
+		cd.addSearch("covid19AssessedPatients",
+		    ReportUtils.map(covid19AssessedPatients(), "startDate=${startDate},endDate=${endDate}"));
+		cd.addSearch("aged18AndAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("txcurr AND aged18AndAbove AND NOT covid19AssessedPatients");
 		return cd;
 	}
 	
@@ -237,7 +223,8 @@ public class Covid19VaccinationCohortLibrary {
 		cd.addSearch("txcurr",
 		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
 		cd.addSearch("fullyVaccinated", ReportUtils.map(fullyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND fullyVaccinated");
+		cd.addSearch("aged18AndAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("txcurr AND aged18AndAbove AND fullyVaccinated");
 		return cd;
 	}
 	
@@ -253,7 +240,8 @@ public class Covid19VaccinationCohortLibrary {
 		cd.addSearch("txcurr",
 		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
 		cd.addSearch("everInfected", ReportUtils.map(everInfected(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND everInfected");
+		cd.addSearch("aged18AndAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("txcurr AND aged18AndAbove AND everInfected");
 		return cd;
 	}
 	
@@ -269,7 +257,8 @@ public class Covid19VaccinationCohortLibrary {
 		cd.addSearch("txcurr",
 		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
 		cd.addSearch("everHospitalised", ReportUtils.map(everHospitalised(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND everHospitalised");
+		cd.addSearch("aged18AndAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("txcurr AND aged18AndAbove AND everHospitalised");
 		return cd;
 	}
 	
@@ -302,7 +291,8 @@ public class Covid19VaccinationCohortLibrary {
 		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
 		cd.addSearch("firstDoseVerified",
 		    ReportUtils.map(firstDoseVerifiedSQl(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND firstDoseVerified");
+		cd.addSearch("aged18andAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("txcurr AND aged18andAbove AND firstDoseVerified");
 		return cd;
 	}
 	
@@ -319,7 +309,8 @@ public class Covid19VaccinationCohortLibrary {
 		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
 		cd.addSearch("secondDoseVerified",
 		    ReportUtils.map(secondDoseVerifiedSQL(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND secondDoseVerified");
+		cd.addSearch("aged18andAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("txcurr AND aged18andAbove AND secondDoseVerified");
 		return cd;
 	}
 	
@@ -336,7 +327,8 @@ public class Covid19VaccinationCohortLibrary {
 		    ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
 		cd.addSearch("boosterDoseVerified",
 		    ReportUtils.map(boosterDoseVerifiedSQL(), "startDate=${startDate},endDate=${endDate}"));
-		cd.setCompositionString("txcurr AND boosterDoseVerified");
+		cd.addSearch("aged18andAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+		cd.setCompositionString("txcurr AND aged18andAbove AND boosterDoseVerified");
 		return cd;
 	}
 }
