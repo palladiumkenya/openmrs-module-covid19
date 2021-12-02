@@ -55,12 +55,41 @@
             </list>
         </property>
     </bean>
+
+    <!-- ===================== Program ===================== -->
+
+	<bean id="kenyaemr.covid.treatment.program" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="117093ea-5355-11ec-bf63-0242ac130002" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.EligibleForHivProgramCalculation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.covid.treatment.form.enrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.covid.treatment.form.outcome" />
+		<property name="visitForms" >
+			<set>
+			</set>
+		</property>
+	
+		<property name="reports">
+			<set>
+
+			</set>
+		</property>
+		<property name="fragments">
+			<map>
+				<entry key="enrollment-summary" value="kenyaemr:program/covid/covidInitiationSummary" />
+				<entry key="care-panel" value="kenyaemr:program/covid/covidCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/covid/covidOutcomeSummary" />
+			</map>
+		</property>
+		<property name="order" value="300" />
+	</bean>
+
     <!-- ===================== Configurations ===================== -->
 
     <bean id="covid19.config.form" class="org.openmrs.module.kenyacore.form.FormConfiguration">
          <property name="commonVisitForms">
             <set>
                 <ref bean="covid19.form.covidAssessment"/>
+                <ref bean="kenyaemr.covid.screening.form"/>
             </set>
         </property>
     </bean>
@@ -88,6 +117,62 @@
         <constructor-arg value="covid19:apps/coronavirus.png" />
         <constructor-arg value="2001" />
     </bean>
+
+    <!-- added for egpaf-->
+
+    <bean id="kenyaemr.covid.screening.form" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="117092aa-5355-11ec-bf63-0242ac130002" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="covid19:covidScreening.html" />
+		<property name="order" value="201005" />
+	</bean>
+
+    <bean id="kenyaemr.covid.treatment.form.enrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="9a5d57b6-739a-11ea-bc55-0242ac130003" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="covid19:covidTreatmentEnrollment.html" />
+		<property name="order" value="201005" />
+	</bean>
+
+    <bean id="kenyaemr.covid.treatment.form.followup" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="33a3aab6-73ae-11ea-bc55-0242ac130003" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="covid19:covidTreatmentFollowup.html" />
+		<property name="order" value="201005" />
+	</bean>
+
+    <bean id="kenyaemr.covid.treatment.form.outcome" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="9a5d58c4-739a-11ea-bc55-0242ac130003" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="covid19:covidTreatmentOutcome.html" />
+		<property name="order" value="201005" />
+	</bean>
+
+    <!-- end of egpaf forms-->
 
     <!--Reports-->
     <bean id="kenyaemr.hiv.report.covid19vaccination" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">

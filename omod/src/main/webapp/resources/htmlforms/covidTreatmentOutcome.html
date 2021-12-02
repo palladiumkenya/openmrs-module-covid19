@@ -1,0 +1,168 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+  <htmlform>
+	<script type="text/javascript">
+
+        var tranferredOutConcept = 159492;
+        var referredConcept = 164165;
+        var dischargedConcept = 1692;
+		jq(document).ready(function(){
+            getField('discReason.value').change(fillDetails);
+
+		});
+
+        function fillDetails() {
+            var discontReason = getValue('discReason.value');
+            if (discontReason == tranferredOutConcept) {
+                jq('#transferred').show();
+                jq('#referred').hide();
+                jq('#discharged').hide();
+                clearSections(jq('#referred'));
+                clearSections(jq('#discharged'));
+            } else if (discontReason == referredConcept) {
+                jq('#transferred').hide();
+                jq('#referred').show();
+                jq('#discharged').hide();
+                clearSections(jq('#transferred'));
+                clearSections(jq('#discharged'));
+            } else if (discontReason == dischargedConcept) {
+                jq('#transferred').hide();
+                jq('#referred').hide();
+                jq('#discharged').show();
+                clearSections(jq('#referred'));
+                clearSections(jq('#transferred'));
+            } else {
+                jq('#transferred').hide();
+                jq('#referred').hide();
+                jq('#discharged').hide();
+                clearSections(jq('#referred'));
+                clearSections(jq('#discharged'));
+                clearSections(jq('#transferred'));
+			}
+
+        }
+
+        //Clear hidden sections
+        clearSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
+	</script>
+
+
+
+	<div class="ke-form-header">
+		<ifMode mode="EDIT">
+			<script type="text/javascript">
+                jq(function(){
+                    showHideReferralDetails();
+                    showHideTransferredOutDetails();
+                    showHideDischargedDetails();
+                });
+
+                function showHideReferralDetails() {
+                    if (getValue('discReason.value') == 164165) {
+                        jq('#referred').show();
+                    }else{
+                        jq('#referred').hide();
+                    }
+                }
+
+                function showHideTransferredOutDetails() {
+                    if (getValue('obs-other-symptom.value') == 159492) {
+                        jq('#transferred').show();
+                    }else{
+                        jq('#transferred').hide();
+                    }
+                }
+
+                function showHideDischargedDetails() {
+                    if (getValue('obs-other-symptom.value') == 1692) {
+                        jq('#discharged').show();
+                    }else{
+                        jq('#discharged').hide();
+                    }
+                }
+			</script>
+		</ifMode>
+		<table width="100%">
+			<tr>
+				<td align="left">Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td style="display: none">Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+			</tr>
+		</table>
+	</div>
+	<div class="ke-form-content">
+		<fieldset>
+			<legend>COVID Quarantine Discontinuation</legend>
+			<table>
+				<tr>
+					<td>Reason for discontinuation:</td>
+					<td><obs id="discReason" conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164165AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA "
+							 answerLabels="Transferred out,Referral, Discharged" style="dropdown" labelText=""  showDate="false"/></td>
+
+				</tr>
+				<tr></tr>
+				<tr></tr>
+				<tr id="transferred" style="display: none">
+					<td>Transfer to Facility:</td>
+					<td ><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+					<td></td>
+					<td></td>
+				</tr>
+
+				<tr id="referred" style="display: none">
+					<td>Reason for referral:</td>
+					<td ><obs conceptId="159623AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							  answerConceptIds="162747AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							  answerLabels="Cormobidity management,Covid treatment" labelText=" " style="radio"/></td>
+					<td>Facility referred to:</td>
+					<td><obs conceptId="161562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+				</tr>
+
+				<tr id="discharged" style="display: none">
+					<td>Reason for discharge:</td>
+					<td ><obs conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							  answerConceptIds="126311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							  answerLabels="Home quarantine,End of quarantine" labelText=" " style="radio"/></td>
+				</tr>
+				<tr></tr>
+				<tr></tr>
+				<tr>
+					<td>Comments:</td>
+					<td ><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="5" cols="50"/></td>
+				</tr>
+			</table>
+		</fieldset>
+
+	</div>
+
+	<completeProgram programId="117093ea-5355-11ec-bf63-0242ac130002" />
+
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>
