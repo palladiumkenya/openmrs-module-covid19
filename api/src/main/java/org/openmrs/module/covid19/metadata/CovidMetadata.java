@@ -34,6 +34,11 @@ public class CovidMetadata extends AbstractMetadataBundle {
 	public static final class _Form {
 		
 		public static final String COVID_19_ASSESSMENT_FORM = "86709f36-1490-11ec-82a8-0242ac130003";
+		
+		public static final String COVID_19_PROGRAM_ENROLLMENT_FORM = "0fe60b26-8648-438b-afea-8841dcd993c6";
+		
+		public static final String COVID_OUTCOME = "8f4e3e83-c597-47ad-8999-b788e8255d20";
+		
 	}
 	
 	@Override
