@@ -26,7 +26,7 @@
     <div class="ke-form-header">
         <table width="100%">
             <tr>
-                <td align="left">Followup Date:
+                <td align="left">Screening Date:
                     <encounterDate id="encounter-date" showTime="true" />
                 </td>
             </tr>
@@ -37,61 +37,241 @@
 
 
         <fieldset>
-            <legend>Patient Symptoms</legend>
+            <legend>General information</legend>
             <table>
                 <tr>
-                    <td>Temperature</td>
-                    <td>
-                        <obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> &#176;C
-                    </td>
-                </tr>
+					<td>Screening Department</td>
+					<td colspan="3">
+						<obs id="entry-point" style="radio" answerSeparator=" "
+							 conceptId="164918AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1623AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5483AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162049AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="ANC,PNC,FP,CWC,OPD,CCC,TB"
+							 required="true"
+						/>
+					</td>
+				</tr>
                 <tr>
-                    <td>Fever (38 degrees celcius or higher), felt feverish, or had chills?</td>
+                    <td>Is the patient HIV+?</td>
                     <td>
-                        <obs conceptId="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
-                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                             answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" />
                     </td>
                 </tr>
                 <tr>
-                    <td>Cough</td>
+                    <td>Is the patient currently on TB treatment?</td>
                     <td>
-                        <obs conceptId="143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                        <obs conceptId="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No"/>
                     </td>
                 </tr>
                 <tr>
-                    <td>Difficulty breathing</td>
+                    <td>Is the patient pregnant?</td>
                     <td>
 
-                        <obs conceptId="164441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                        <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" />
                     </td>
                 </tr>
-                <tr>
-                    <td>Sore throat</td>
-                    <td>
-                        <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
-                             answerConceptIds="158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Yes,No"  />
-                    </td>
-                </tr>
-
                 <tr></tr>
                 <tr></tr>
             </table>
         </fieldset>
         <fieldset>
-            <legend>Referral to Hospital</legend>
+            <legend>Patient Symptoms</legend>
+
+            <table class="simple-table">
+			<tr id="vaccination-question">
+				<td>Have you ever been vaccinated?</td>
+                <td>
+                <obs conceptId="163100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        answerLabel="" style="radio" id="patient-vaccinated"/>
+                </td>
+			</tr>
+
+            <tr>
+                <td> Vaccination Status </td>
+                <td>
+                    <obs conceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        answerConceptIds="166192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        answerLabels="Partially Vaccinated,Fully Vaccinated" style="radio" id="completion-status"/>
+                </td>
+	    	</tr>
+
+            <tr>
+					<td>
+						<div id="first-test">
+							Have you ever tested for COVID -19?
+						</div>
+						<div id="further-tests">
+							Have you tested for COVID -19 since your last visit?
+						</div>
+					</td>
+					<td>
+						<obs conceptId="165852AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes,No" style="radio" id="test-status"/>
+					</td>
+			</tr>
+            <tr>
+					<td>Date tested  &#160;&#160;&#160;&#160;&#160;&#160;&#160; </td>
+					<td>
+						<obs conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" showTime="false" labelText=" " id="date-tested" />
+					</td>
+				</tr>
+		</table>
+        </fieldset>
+        <fieldset id="patient-symptoms">
+            <legend>Patient Symptoms</legend>
             <table>
                 <tr>
-                    <td>Client Referred to hospital</td>
+                    <td>History of fever / chills (&gt;38&#176;C)</td>
                     <td>
-                        <obs conceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
-                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Yes,No,N/A" />
+                        <obs conceptId="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="fever"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"/>
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                    <td>General Weakness</td>
+                    <td>
+                        <obs conceptId="122943AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="weakness"
+                             answerConceptIds="5226AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Cough</td>
+                    <td>
+                        <obs conceptId="143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "  id="cough"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"/>
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                    <td>Sore throat</td>
+                    <td>
+                        <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="sore-throat"
+                             answerConceptIds="158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Runny nose</td>
+                    <td>
+                        <obs conceptId="163336AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="runny-nose"
+                             answerConceptIds="113224AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"/>
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                    <td>Shortness of breath</td>
+                    <td>
+                        <obs conceptId="164441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "   id="short-breath"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Diarrhoea</td>
+                    <td>
+                        <obs conceptId="142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "     id="diarrhoea"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"/>
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                    <td>Nausea/vomiting</td>
+                    <td>
+                        <obs conceptId="122983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="vomiting"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Headache</td>
+                    <td>
+                        <obs conceptId="5219AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="headache"
+                             answerConceptIds="139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"
+                        />
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                    <td>Irritability/confusion</td>
+                    <td>
+                        <obs conceptId="6023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="confusion"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Mascular pain</td>
+                    <td>
+                        <obs conceptId="160388AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "   id="muscular-pain"
+                             answerConceptIds="133632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"
+                        />
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                    <td>Chest pain</td>
+                    <td>
+                        <obs conceptId="1123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="chest-pain"
+                             answerConceptIds="120749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Abdominal pain</td>
+                    <td>
+                        <obs conceptId="1125AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "     id="abdominal-pain"
+                             answerConceptIds="151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"
+                        />
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                    <td>Joint pain</td>
+                    <td>
+                        <obs conceptId="160687AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="joint-pain"
+                             answerConceptIds="80AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Other</td>
+                    <td>
+                        <obs id="obs-other-symptom" conceptId="1838AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                             answerConceptIds="139548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels=""/>
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                    <td id="specify-symptoms"> Other (specify)
+                        <obs id ="obs-specify-symptoms" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  />
+                    </td>
+                </tr>
+
+                <tr id="onset-date">
+                    <td>
+                        Date of onset of symptoms:
+                    </td>
+                    <td>
+                        <obs id="date-onset-of-symptoms" conceptId="1730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             showTime="false"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Eligibility for testing</legend>
+            <table>
+                <tr>
+                    <td>Eligible for COVID-19 test</td>
+                    <td>
+                        <obs conceptId="165087" labelText=" "
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No" />
                     </td>
                 </tr>
             </table>

@@ -49,6 +49,9 @@ public class CovidMetadata extends AbstractMetadataBundle {
 		public static final String COVID_TREATMENT_OUTCOME = "33a3a7be-73ae-11ea-bc55-0242ac130003";
 		
 		public static final String COVID_TREATMENT_FOLLOWUP = "33a3a8e0-73ae-11ea-bc55-0242ac130003";
+		
+		public static final String COVID_TESTING = "820cbccc-54cd-11ec-bf63-0242ac130002";
+		
 	}
 	
 	public static final class _Form {
@@ -59,6 +62,8 @@ public class CovidMetadata extends AbstractMetadataBundle {
 		public static final String COVID_SCREENING = "117092aa-5355-11ec-bf63-0242ac130002";
 		
 		public static final String COVID_TREATMENT_ENROLLMENT = "9a5d57b6-739a-11ea-bc55-0242ac130003";
+		
+		public static final String COVID_TESTING = "820cbf10-54cd-11ec-bf63-0242ac130002";
 		
 		public static final String COVID_TREATMENT_FOLLOWUP = "33a3aab6-73ae-11ea-bc55-0242ac130003";
 		
@@ -87,6 +92,9 @@ public class CovidMetadata extends AbstractMetadataBundle {
 		install(encounterType("COVID-19 Outcome Encounter", "An encounter for recording COVID-19 treatment outcome",
 		    _EncounterType.COVID_TREATMENT_OUTCOME));
 		
+		install(encounterType("COVID-19 Testing", "An encounter for recording COVID-19 test information",
+		    _EncounterType.COVID_TESTING));
+		
 		install(form("COVID-19 Assessment form", null, _EncounterType.COVID_19_ASSESSMENT, "1",
 		    _Form.COVID_19_ASSESSMENT_FORM));
 		
@@ -100,7 +108,9 @@ public class CovidMetadata extends AbstractMetadataBundle {
 		install(form("COVID-19 Treatment Outcome", "COVID-19 Treatment outcome form ",
 		    _EncounterType.COVID_TREATMENT_OUTCOME, "1", _Form.COVID_TREATMENT_OUTCOME));
 		
-		install(program("COVID-19 Treatment Program", "COVID-19 Treatment Program", _Concept.COVID_TREATMENT,
+		install(form("COVID-19 Testing", "COVID-19 Testing ", _EncounterType.COVID_TESTING, "1", _Form.COVID_TESTING));
+		
+		install(program("COVID-19 Treatment", "COVID-19 Treatment Program", _Concept.COVID_TREATMENT,
 		    _Program.COVID_TREATMENT));
 		
 	}

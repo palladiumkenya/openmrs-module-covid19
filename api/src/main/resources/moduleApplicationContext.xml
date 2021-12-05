@@ -90,6 +90,7 @@
             <set>
                 <ref bean="covid19.form.covidAssessment"/>
                 <ref bean="kenyaemr.covid.screening.form"/>
+                <ref bean="kenyaemr.covid.testing.form"/>
             </set>
         </property>
     </bean>
@@ -130,6 +131,19 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="covid19:covidScreening.html" />
+		<property name="order" value="201005" />
+	</bean>
+
+    <bean id="kenyaemr.covid.testing.form" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="820cbf10-54cd-11ec-bf63-0242ac130002" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="covid19:covidTesting.html" />
 		<property name="order" value="201005" />
 	</bean>
 

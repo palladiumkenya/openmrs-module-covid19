@@ -1,0 +1,214 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+
+-->
+<htmlform>
+
+    <macros>
+        <macro key="countryNames" value="Afghanistan, Äland Islands, Albania, Algeria, American Samoa, Andorra, Angola, Anguilla, Antarctica, Antigua and Barbuda, Argentina, Armenia, Aruba, Australia, Austria, Azerbaijan, Bahamas, Bahrain, Bangladesh, Barbados, Belarus, Belgium, Belize, Benin, Bermuda, Bhutan, Bolivia, Sint Eustatius and Saba Bonaire, Bosnia and Herzegovina, Botswana, Bouvet Island, Brazil, British Indian Ocean Territory, Brunei Darussalam, Bulgaria, Burkina Faso, Burundi, Cabo Verde, Cambodia, Cameroon, Canada, Cayman Islands, Central African Republic, Chad, Chile, China, Christmas Island, Cocos (Keeling) Islands, Colombia, Comoros, Congo, Congo, Democratic Republic of the, Cook Islands, Costa Rica, C√¥te d'Ivoire, Croatia, Cuba, Cura√ßao, Cyprus, Czechia, Denmark, Djibouti, Dominica, Dominican Republic, Ecuador, Egypt, El Salvador, Equatorial Guinea, Eritrea, Estonia, Eswatini, Ethiopia, Falkland Islands (Malvinas), Faroe Islands, Fiji, Finland, France, French Guiana, French Polynesia, French Southern Territories, Gabon, Gambia, Georgia, Germany, Ghana, Gibraltar, Greece, Greenland, Grenada, Guadeloupe, Guam, Guatemala, Guernsey, Guinea, Guinea-Bissau, Guyana, Haiti, Heard Island and McDonald Islands, Holy See, Honduras, Hong Kong, Hungary, Iceland, India, Indonesia, Iran, Iraq, Ireland, Isle of Man, Israel, Italy, Jamaica, Japan, Jersey, Jordan, Kazakhstan, Kenya, Kiribati, Democratic People's Republic of Korea, Republic of Korea, Kuwait, Kyrgyzstan, Lao People's Democratic Republic, Latvia, Lebanon, Lesotho, Liberia, Libya, Liechtenstein, Lithuania, Luxembourg, Macao, Madagascar, Malawi, Malaysia, Maldives, Mali, Malta, Marshall Islands, Martinique, Mauritania, Mauritius, Mayotte, Mexico, Micronesia, Moldova, Monaco, Mongolia, Montenegro, Montserrat, Morocco, Mozambique, Myanmar, Namibia, Nauru, Nepal, Netherlands, New Caledonia, New Zealand, Nicaragua, Niger, Nigeria, Niue, Norfolk Island, North Macedonia, Northern Mariana Islands, Norway, Oman, Pakistan, Palau, Palestine, Panama, Papua New Guinea, Paraguay, Peru, Philippines, Pitcairn, Poland, Portugal, Puerto Rico, Qatar, Réunion, Romania, Russian Federation, Rwanda, Saint Barthélemy, Saint Helena, Ascension and Tristan da Cunha, Saint Kitts and Nevis, Saint Lucia, Saint Martin, Saint Pierre and Miquelon, Saint Vincent and the Grenadines, Samoa, San Marino, Sao Tome and Principe, Saudi Arabia, Senegal, Serbia, Seychelles, Sierra Leone, Singapore, Sint Maarten, Slovakia, Slovenia, Solomon Islands, Somalia, South Africa, South Georgia and the South Sandwich Islands, South Sudan, Spain, Sri Lanka, Sudan, Suriname, Svalbard and Jan Mayen, Sweden, Switzerland, Syrian Arab Republic, Taiwan, Tajikistan, Tanzania, Thailand, Timor-Leste, Togo, Tokelau, Tonga, Trinidad and Tobago, Tunisia, Turkey, Turkmenistan, Turks and Caicos Islands, Tuvalu, Uganda, Ukraine, United Arab Emirates, United Kingdom of Great Britain and Northern Ireland, United States of America, United States Minor Outlying Islands, Uruguay, Uzbekistan, Vanuatu, Venezuela, Viet Nam, Virgin Islands (British), Virgin Islands (U.S.), Wallis and Futuna, Western Sahara, Yemen, Zambia, Zimbabwe"/>
+        <macro key="countyNames" value="Nairobi,Mombasa,Kilifi,Kwale,Homa-Bay,Kisumu,Migori,Kisii,Uasin-Gishu,Bomet,Busia,Kiambu,Nyeri,Muranga,Kirinyaga,Nyandarua,Machakos,Kitui,Makueni,Embu,Meru,Isiolo,Marsabit,Turkana,Mandera,Lamu,West Pokot,Bungoma,Vihiga,Kakamega,Siaya,Nyamira,Kericho,Trans Nzoia,Nakuru,Laikipia,Tharaka Nith,Garissa,Taita Taveta,Tana River,Samburu,Elgeyo Marakwet,Nandi,Baringo,Narok,Kajiado,Wajir" />
+        <macro key="subCountyList" value="Select County"/>
+        <macro key="wardList" value="Select Sub-County"/>
+      </macros>
+
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+
+    <style>
+
+
+        .disabled {
+            color: #ebebe4;
+    </style>
+
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <td align="left">Screening Date:
+                    <encounterDate id="encounter-date" showTime="true" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+
+
+        <fieldset>
+            <legend>General information</legend>
+            <table>
+                <tr>
+					<td>Nationality</td>
+					<td colspan="3">
+					</td>
+				</tr>
+                <tr>
+					<td>Passport/ID Number</td>
+					<td colspan="3">
+                        <obs id="national_identification" conceptId="163084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+                <tr>
+                    <td>Sample type</td>
+                    <td>
+                        <obs conceptId="159959AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                             answerConceptIds="163364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162614AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1004AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1001AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="NP swab,OP swab,NP/OP swab,Spatum,Serum" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Reason for testing</td>
+                    <td>
+                        <obs conceptId="164126AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                             answerConceptIds="165850AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1143AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Symptomatic contact with confirmed case,Health care worker,Prison remand,High risk client in health facility,Outbreak investigation"/>
+                    </td>
+                </tr>
+                <tr></tr>
+                <tr></tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Ag-RDT Testing</legend>
+
+            <table class="simple-table">
+                <obsgroup groupingConceptId="165852AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
+                    <tr>
+                        <td>Date Ag-RDT Test</td>
+                        <td>
+                        <obs conceptId="162078AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Type of case</td>
+                        <td>
+                        <obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162081AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                style="radio" id="patient-vaccinated"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Assay kit name</td>
+                        <td>
+                        <obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Type of Ag-RDT test</td>
+                        <td>
+                        <obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Lot No.</td>
+                        <td>
+                        <obs conceptId="166455AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Lot expiry date</td>
+                        <td>
+                        <obs conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Antigen Result</td>
+                        <td>
+                            <obs conceptId="166638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                             answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Negative,Positive,Invalid,Not done"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Is the patient symptomatic for COVID-19?</td>
+                        <td>
+                            <obs required="true" id="symptomatic" conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  labelText=" "
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Action taken</td>
+                        <td>
+                            <obs required="true" id="rdt-action-taken" conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  labelText=" "
+                             answerConceptIds="159494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165093"
+                             style="radio" answerLabels="Referred to clinician,Referred for PCR,Preventive counseling"/>
+                        </td>
+                    </tr>
+                </obsgroup>
+		    </table>
+        </fieldset>
+        <fieldset>
+            <legend>PCR Testing</legend>
+
+            <table class="simple-table">
+                <obsgroup groupingConceptId="165611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                    <tr>
+                        <td>Case ID</td>
+                        <td>
+                        <obs conceptId="162576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>
+                        <obs conceptId="162725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Date of sample collection</td>
+                        <td>
+                        <obs conceptId="162078AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Date result received</td>
+                        <td>
+                        <obs conceptId="162079AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Type of case</td>
+                        <td>
+                        <obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162081AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                style="radio" id="patient-vaccinated"/>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>PCR Result</td>
+                        <td>
+                            <obs conceptId="166638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                             answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Negative,Positive,Invalid,Not done"/>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Action taken</td>
+                        <td>
+                            <obs required="true" id="rdt-action-taken" conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  labelText=" "
+                             answerConceptIds="159494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165093"
+                             style="radio" answerLabels="Referred to clinician,Preventive counseling"/>
+                        </td>
+                    </tr>
+                </obsgroup>
+		    </table>
+        </fieldset>
+    </div>
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+
+</htmlform>
