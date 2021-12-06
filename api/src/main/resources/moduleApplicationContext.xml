@@ -65,6 +65,7 @@
 		<property name="defaultCompletionForm" ref="kenyaemr.covid.treatment.form.outcome" />
 		<property name="visitForms" >
 			<set>
+                <ref bean="kenyaemr.covid.treatment.form.followup"/>
 			</set>
 		</property>
 	
@@ -75,9 +76,9 @@
 		</property>
 		<property name="fragments">
 			<map>
-				<entry key="enrollment-summary" value="kenyaemr:program/covid/covidInitiationSummary" />
-				<entry key="care-panel" value="kenyaemr:program/covid/covidCarePanel" />
-				<entry key="completion-summary" value="kenyaemr:program/covid/covidOutcomeSummary" />
+				<entry key="enrollment-summary" value="kenyaemr:program/hiv/hivEnrollmentSummary" />
+				<entry key="care-panel" value="kenyaemr:program/hiv/hivCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/hiv/hivCompletionSummary" />
 			</map>
 		</property>
 		<property name="order" value="300" />

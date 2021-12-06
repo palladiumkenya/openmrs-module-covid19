@@ -37,7 +37,7 @@
 
 
         <fieldset>
-            <legend>Patient Symptoms</legend>
+            <legend>COVID-19 Treatment - Home</legend>
             <table>
                 <tr>
                     <td>Temperature</td>
@@ -78,21 +78,68 @@
                              style="radio" answerLabels="Yes,No"  />
                     </td>
                 </tr>
-
-                <tr></tr>
-                <tr></tr>
-            </table>
-        </fieldset>
-        <fieldset>
-            <legend>Referral to Hospital</legend>
-            <table>
+                <tr>
+                    <td>Sneezing</td>
+                    <td>
+                        <obs conceptId="163336AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="runny-nose"
+                             answerConceptIds="126319AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Headache</td>
+                    <td>
+                        <obs conceptId="5219AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="headache"
+                             answerConceptIds="139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"
+                        />
+                    </td> 
+                </tr>
                 <tr>
                     <td>Client Referred to hospital</td>
                     <td>
                         <obs conceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
-                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No,N/A" />
                     </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>COVID-19 Treatment - Isolation</legend>
+            <table>
+                <tr>
+                    <td> Case classification</td>
+                    <td>
+                        <obs required="true" id="status-at-reporting" conceptId="159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                             answerConceptIds="5006AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164830AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Asymptomatic,Mild,Moderate,Severe,Critical"/>
+                    </td>
+                </tr>
+
+                <tr id="tbl-admission">
+					<td> Patient admitted? </td>
+					<td>
+						<obs conceptId="162477AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 style="radio" answerLabels="Yes,No" id="admission-status"/>
+					</td>
+			    </tr>
+
+                <tr id="tbl-admission-unit">
+                    <td> Admission unit</td>
+
+                    <td style="text-align: left">
+                        <obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerLabels="Isolation,HDU,ICU" style="radio" id="admission-unit" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td> Treatment received</td>
+
+                    
                 </tr>
             </table>
         </fieldset>
