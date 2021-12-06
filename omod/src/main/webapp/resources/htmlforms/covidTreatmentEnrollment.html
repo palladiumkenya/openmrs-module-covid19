@@ -57,12 +57,15 @@
 
 
         <fieldset>
-            <legend>Admission</legend>
+            <legend>Enrollment</legend>
             <table>
                 <tr>
-                    <td>Date of admission:</td>
+                    <td>Date:</td>
                     <td>
                         <encounterDate id="encounter-date" showTime="true"/>
+                    </td>
+                    <td align="right">Location:
+                        <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
                     </td>
                 </tr>
                 <tr>
