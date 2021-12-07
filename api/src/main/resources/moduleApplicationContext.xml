@@ -76,9 +76,9 @@
 		</property>
 		<property name="fragments">
 			<map>
-				<entry key="enrollment-summary" value="kenyaemr:program/hiv/hivEnrollmentSummary" />
-				<entry key="care-panel" value="kenyaemr:program/hiv/hivCarePanel" />
-				<entry key="completion-summary" value="kenyaemr:program/hiv/hivCompletionSummary" />
+				<entry key="enrollment-summary" value="covid19:program/covid/covidInitiationSummary" />
+				<entry key="care-panel" value="covid19:program/covid/covidCarePanel" />
+				<entry key="completion-summary" value="covid19:program/covid/covidOutcomeSummary" />
 			</map>
 		</property>
 		<property name="order" value="300" />
