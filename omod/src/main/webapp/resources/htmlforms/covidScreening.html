@@ -15,6 +15,79 @@
 <htmlform>
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script type="text/javascript">
+
+		jQuery(document).ready(function(){
+            jq("#vaccination-details").hide();
+            jq("#covid-test-date").hide();
+
+            jq("#vaccination-question :input[type=radio]").change(onPatientVaccinatedSelected);
+            jq("#covid-test-status :input[type=radio]").change(onPatientTestedForCovid);
+
+		});
+
+        var onPatientVaccinatedSelected = function () {
+           
+            var val = jq(this).val();
+            if (val == 1065){
+                jq('#vaccination-details').show();
+            } else{
+                clearHiddenSections([jq('#vaccination-details')]);
+                jq('#vaccination-details').hide();
+            }
+        }
+
+        var onPatientTestedForCovid = function () {
+            
+            var val = jq(this).val();
+            if (val == 1065){
+                jq('#covid-test-date').show();
+            } else{
+                setValue('date-tested.value','');
+                jq('#covid-test-date').hide();
+            }
+        }
+
+        clearHiddenSections = function(parentObj) {
+            for(var i=0; i &lt; parentObj.length; i++){
+                parentObj[i].find('input[type=radio]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=text]').each(function() {
+                    this.val("");
+                });
+                parentObj[i].find('select').each(function() {
+                    this.selectedIndex = 0;
+                });
+            }
+        }
+    </script>
+     
+     <ifMode mode="EDIT">
+        <script type="text/javascript">
+            jq(document).ready(function(){
+
+            var val = getValue('vaccination-question.value');
+            var testedForCovid = getValue('covid-test-status.value');
+            
+            if (val == 1065){
+                jq('#vaccination-details').show();
+            } else{
+                jq('#vaccination-details').hide();
+			}
+
+            if (testedForCovid == 1065){
+                jq('#covid-test-date').show();
+            } else{
+                jq('#covid-test-date').hide();
+			}
+
+		});
+        </script>
+    </ifMode>
 
     <style>
 
@@ -86,16 +159,16 @@
             <legend>Patient Symptoms</legend>
 
             <table class="simple-table">
-			<tr id="vaccination-question">
+			<tr>
 				<td>Have you ever been vaccinated?</td>
                 <td>
-                <obs conceptId="163100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                <obs id="vaccination-question" conceptId="163100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        answerLabel="" style="radio" id="patient-vaccinated"/>
+                        answerLabel="" style="radio"/>
                 </td>
 			</tr>
 
-            <tr>
+            <tr id="vaccination-details">
                 <td> Vaccination Status </td>
                 <td>
                     <obs conceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -106,25 +179,22 @@
 
             <tr>
 					<td>
-						<div id="first-test">
-							Have you ever tested for COVID -19?
-						</div>
-						<div id="further-tests">
+						<div>
 							Have you tested for COVID -19 since your last visit?
 						</div>
 					</td>
 					<td>
 						<obs conceptId="165852AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Yes,No" style="radio" id="test-status"/>
+							 answerLabels="Yes,No" style="radio" id="covid-test-status"/>
 					</td>
 			</tr>
-            <tr>
+            <tr id="covid-test-date">
 					<td>Date tested  &#160;&#160;&#160;&#160;&#160;&#160;&#160; </td>
 					<td>
 						<obs conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" showTime="false" labelText=" " id="date-tested" />
 					</td>
-				</tr>
+			</tr>
 		</table>
         </fieldset>
         <fieldset id="patient-symptoms">
