@@ -15,7 +15,26 @@
 <htmlform>
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script>
+       
+        jq(function () {
 
+            ///var enrollmentObs = '<lookup complexExpression="#foreach($obs in $fn.latestEncounter('33a3a55c-73ae-11ea-bc55-0242ac130003').obs) $obs.valueCoded.conceptId #end" />';
+            var enrollmentObs = '<lookup complexExpression="#foreach($obs in $fn.latestEncounter('33a3a55c-73ae-11ea-bc55-0242ac130003').obs) #if( $obs.concept.conceptId == 1272 ) $obs.valueCoded.conceptId #end #end" />';
+            console.log("Enrollment action: " + enrollmentObs)
+
+            if(enrollmentObs == 165901) { // home based isolation
+                jq('#home-isolation').show();
+                jq('#hospital-treatment').hide();
+            } else if (enrollmentObs == 164165) { // hospital treatment
+                jq('#home-isolation').hide();
+                jq('#hospital-treatment').show();
+            }
+            
+
+        });
+    </script>
+    
     <style>
 
 
@@ -29,6 +48,8 @@
                 <td align="left">Followup Date:
                     <encounterDate id="encounter-date" showTime="true" />
                 </td>
+                <td>Enrolled by: <encounterProvider default="currentUser" /></td>
+
                 <td align="right">Location:
                     <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
                 </td>
@@ -39,9 +60,15 @@
     <div class="ke-form-content">
 
 
-        <fieldset>
-            <legend>COVID-19 Treatment - Home</legend>
+        <fieldset id="home-isolation">
+            <legend>COVID-19 Treatment - Home Isolation</legend>
             <table>
+                <tr>
+                    <td>Day of followup (i.e. 1,2,3..)</td>
+                    <td>
+                        <obs conceptId="165416AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    </td>
+                </tr>
                 <tr>
                     <td>Temperature</td>
                     <td>
@@ -108,9 +135,15 @@
                 </tr>
             </table>
         </fieldset>
-        <fieldset>
-            <legend>COVID-19 Treatment - Isolation</legend>
+        <fieldset id="hospital-treatment">
+            <legend>COVID-19 - Hospital Treatment</legend>
             <table>
+                <tr>
+                    <td>Day of followup (i.e. 1,2,3..)</td>
+                    <td>
+                        <obs conceptId="165416AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    </td>
+                </tr>
                 <tr>
                     <td> Case classification</td>
                     <td>
@@ -141,7 +174,16 @@
 
                 <tr>
                     <td> Treatment received</td>
-
+                    <td>
+                        <repeat with="['71780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Azithromycin'],['450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Amoxicillin and Clavulanic Acid'],['71160AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Amoxicillin'],['165872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Tocilizumab']">
+                            <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="{0}" answerLabel="{1}" style="checkbox" /><br/>
+                        </repeat>
+                    </td>
+                    <td>
+                        <repeat with="['74609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Dexamethasone'],['461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Multivitamin'],['81341AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Oxygen'],['5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Other']">
+                            <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="{0}" answerLabel="{1}" style="checkbox" /><br/>
+                        </repeat>
+                    </td>
                     
                 </tr>
             </table>
