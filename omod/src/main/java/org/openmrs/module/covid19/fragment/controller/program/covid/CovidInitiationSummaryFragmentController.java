@@ -27,17 +27,17 @@ import java.util.Map;
  */
 public class CovidInitiationSummaryFragmentController {
 	
-	String POINT_OF_DETECTION_CONCEPT = "161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	String PATIENT_TYPE_CONCEPT = "161641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
-	String SYMPTOMATIC_CONCEPT = "1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	String ACTION_TAKEN_CONCEPT = "1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
 	String DATE_DETECTED_CONCEPT = "159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
 	String STABILITY_CONCEPT = "159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
-	String TRAVEL_HISTORY_CONCEPT = "162619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	String REFERRING_FACILITY_CONCEPT = "161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
-	String CONTACT_WITH_COVID_SUSPECT_CONCEPT = "162633AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	String ADMISSION_DATE_CONCEPT = "1640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
 	EncounterService encounterService = Context.getEncounterService();
 	
@@ -51,35 +51,39 @@ public class CovidInitiationSummaryFragmentController {
 		if (encounter != null) {
 			EncounterWrapper wrapper = new EncounterWrapper(encounter);
 			
-			Obs detectionPoint = wrapper.firstObs(Dictionary.getConcept(POINT_OF_DETECTION_CONCEPT));
-			Obs symptomatic = wrapper.firstObs(Dictionary.getConcept(SYMPTOMATIC_CONCEPT));
+			Obs patientType = wrapper.firstObs(Dictionary.getConcept(PATIENT_TYPE_CONCEPT));
+			Obs actionTaken = wrapper.firstObs(Dictionary.getConcept(ACTION_TAKEN_CONCEPT));
 			Obs dateDetected = wrapper.firstObs(Dictionary.getConcept(DATE_DETECTED_CONCEPT));
 			Obs patientState = wrapper.firstObs(Dictionary.getConcept(STABILITY_CONCEPT));
-			Obs travelHistory = wrapper.firstObs(Dictionary.getConcept(TRAVEL_HISTORY_CONCEPT));
-			Obs contactWithSuspect = wrapper.firstObs(Dictionary.getConcept(CONTACT_WITH_COVID_SUSPECT_CONCEPT));
+			Obs referringFacility = wrapper.firstObs(Dictionary.getConcept(REFERRING_FACILITY_CONCEPT));
+			Obs admissionDate = wrapper.firstObs(Dictionary.getConcept(ADMISSION_DATE_CONCEPT));
 			
-			if (detectionPoint != null) {
-				dataPoints.put("Detection point", detectionPoint.getValueCoded());
+			if (patientType != null) {
+				dataPoints.put("Patient type", patientType.getValueCoded());
 			}
 			
-			if (symptomatic != null) {
-				dataPoints.put("Symptomatic", symptomatic.getValueCoded());
+			if (actionTaken != null) {
+				if (actionTaken.getValueCoded().getConceptId().equals(165901)) {
+					dataPoints.put("Action taken", "Referred to home based treatment/isolation");
+				} else {
+					dataPoints.put("Action taken", "Referred to hospital for treatment");
+				}
 			}
 			
 			if (dateDetected != null) {
-				dataPoints.put("Date Detected", dateDetected.getValueDatetime());
+				dataPoints.put("Date tested +ve", dateDetected.getValueDatetime());
 			}
 			
 			if (patientState != null) {
-				dataPoints.put("Stability of case at reporting", patientState.getValueCoded());
+				dataPoints.put("Status at enrollment", patientState.getValueCoded());
 			}
 			
-			if (travelHistory != null) {
-				dataPoints.put("Travel history", travelHistory.getValueCoded());
+			if (referringFacility != null) {
+				dataPoints.put("Facility transferred from", referringFacility.getValueText());
 			}
 			
-			if (contactWithSuspect != null) {
-				dataPoints.put("Contact with suspect", contactWithSuspect.getValueCoded());
+			if (admissionDate != null) {
+				dataPoints.put("Date of admission", admissionDate.getValueDatetime());
 			}
 			
 		}

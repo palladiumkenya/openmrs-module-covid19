@@ -22,20 +22,41 @@
         var TRANSFER_IN = 160563;
 
         jq(function () {
-            jq('#transferFacility :input').prop('disabled', true);
-            jq('#transfer-in-status input').change(onEntryPointChange);
+            jq('#hospital-isolation').hide();
+            jq("#action-taken select").change(actionTakenResponse);
 
         });
 
-        function onEntryPointChange() {
-            var entryPointStatus = getValue('transfer-in-status.value');
-            if (entryPointStatus == TRANSFER_IN) {
-                jq('#transferFacility :input').prop('disabled', false);
-            } else {
-                jq('#transferFacility :input').val('');
-                jq('#transferFacility :input').prop('disabled', true);
+        function actionTakenResponse() {
+            var val = jq(this).val();
+            if (val == 164165){
+                jq('#hospital-isolation').show();
+            } else{
+                setValue('referring-hospital.value','');
+                setValue('date-tested-positive.value','');
+                setValue('admission-date.value','');
+                clearHiddenSections([jq('#admission-status'),jq('#admission-unit')]);
+
+                jq('#hospital-isolation').hide();
             }
 
+        }
+
+        clearHiddenSections = function(parentObj) {
+            for(var i=0; i &lt; parentObj.length; i++){
+                parentObj[i].find('input[type=radio]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=text]').each(function() {
+                    this.val("");
+                });
+                parentObj[i].find('select').each(function() {
+                    this.selectedIndex = 0;
+                });
+            }
         }
     </script>
     <style>
@@ -64,9 +85,8 @@
                     <td>
                         <encounterDate id="encounter-date" showTime="true"/>
                     </td>
-                    <td align="right">Location:
-                        <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
-                    </td>
+                    <td>Enrolled by: <encounterProvider default="currentUser" /></td>
+				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
                 </tr>
                 <tr>
                     <td> Case classification</td>
@@ -92,7 +112,7 @@
                 <tr>
                     <td>Action taken</td>
                     <td>
-                        <obs required="true" id="action-taken" conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  labelText=" "
+                        <obs required="true" id="action-taken"  conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  labelText=" "
                             answerConceptIds="165901AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164165AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                             answerLabels="Referred to home based treatment/isolation,Referred to hospital for treatment"/>
                     </td>
@@ -101,19 +121,19 @@
                 
             </table>
         </fieldset>
-        <fieldset>
-            <legend>COVID-19 treatment - Isolation</legend>
+        <fieldset id="hospital-isolation">
+            <legend>COVID-19 treatment - Hospital treatment</legend>
             <table>
             <tr>
 					<td> Name of facility referred from </td>
 					<td>
-						<obs conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50" />
+						<obs id="referring-hospital" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50" />
 					</td>
 			</tr>
             <tr>
 					<td> Date patient tested positive </td>
 					<td>
-                        <obs conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " showTime="false"/>
+                        <obs id="date-tested-positive" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " showTime="false"/>
 					</td>
 			</tr>
             <tr id="tbl-admission">
@@ -129,10 +149,8 @@
                     <td>
                         <obs id="admission-date" conceptId="1640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false"/>
                     </td>
-                    <td>Name of hospital:</td>
-                    <td>
-                        <obs id="hospital-name" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
-                    </td>
+                    <td></td>
+                    <td></td>
                 </tr>
             <tr id="tbl-admission-unit">
                 <td> Admission unit</td>
