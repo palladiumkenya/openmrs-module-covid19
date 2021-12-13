@@ -14,50 +14,45 @@
 -->
 
 <htmlform>
-    <macros>
-        <macro key="quarantineCenterNames" value="67 AIRPORT HOTEL ATHI RIVER,BATIANS HOTEL,CLARION HOTEL,CLARENCE HOUSE WESTLANDS,COOPERATIVE UNIVERSITY COLLEGE,CORAT AFRICA HOTEL,CROWNE PLAZA JKIA,EMMAUS HOTEL,FOUR POINT SHERATON JKIA,FOUR POINTS SHERATON HURLINGHAM,GRACEHOUSE RESORT,HADASSAH HOTEL,HILLPARK HOTEL,HILTON GARDEN INN,HOMA-BAY KMTC,JACARANDA HOTEL,JKUAT,KAKAMEGA COUNTY TEACHING AND REFERRAL HOSPITAL,KENYA COMFORT SUITES,KENYA SCHOOL OF GOVERNMENT,KENYA WATER INSTITUTE,KENYATTA UNIVERSITY,KEHANCHA MTC,KING PREMIER HOTEL,KISE-KASARANI,KMTC/KNH,KMTC-KAREN,KWIBANCHA GIRLS,LAMADA HOTEL,LANDMARK SUITES,LENANA SCHOOL,LIKUYANI SUB-COUNTY HOSPITAL,LONG VIEW SUITES,MANYALA SUB-COUNTY HOSPITAL,MARSH PARK HOTEL,MALELA HEALTH CENTER,MAUTUMA SUB-COUNTY HOSPITAL,MOI GIRLS' NAIROBI,MONARCH HOTEL,MUMIAS WEST COUNTY HOSPITAL,NAIROBI SCHOOL,NGON'G HILLS HOTEL,PANARI HOTEL,PC KINYANJUI,PRIDE INN AZURE,PRIDE INN LANTANA,PRIDE INN RAPHTA,ROYAL TULIP,SAFARI PARK HOTEL,SINDO GIRLS(MOI) SECONDARY SCHOOL,STANDARD LEISURE HOTEL NAIROBI,SWISS LENANA MOUNT HOTEL,SOVEREIGN SUITES,ST.GEORGES,ST. MARY'S MABERA GIRLS,TANGAZA INN-KAREN,THE BOMA HOTEL,THE BOMA INN HOTEL,TRADEMARK HOTEL,UFUNGAMANO HOUSE,WEST WOOD HOTEL"/>
-    </macros>
+    <macros></macros>
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script>
-        var TRANSFER_IN = 160563;
 
         jq(function () {
             jq('#hospital-isolation').hide();
-            jq('#tbl-admission-unit').hide();
-            jq('#hospital-admission').hide();
+            jq('.transfer-in').hide();
+
             jq("#action-taken select").change(actionTakenResponse);
-            jq("#admission-status :input[type=radio]").change(onAdmissionStatusSelected);
+            jq("#patient-type :input[type=radio]").change(patientTypeResponse);
 
         });
 
         function actionTakenResponse() {
             var val = jq(this).val();
-            if (val == 164165){
+            if (val == 1654){
                 jq('#hospital-isolation').show();
             } else{
-                setValue('referring-hospital.value','');
-                setValue('date-tested-positive.value','');
                 setValue('admission-date.value','');
-                clearHiddenSections([jq('#admission-status'),jq('#admission-unit')]);
+                clearHiddenSections([jq('#admission-unit')]);
 
                 jq('#hospital-isolation').hide();
             }
 
         }
 
-        var onAdmissionStatusSelected = function () {
+        function patientTypeResponse() {
             var val = jq(this).val();
-            if (val == 1065){
-                jq('#tbl-admission-unit').show();
-                jq('#hospital-admission').show();
-
-            } else if (val == 1066){
-                setValue('admission-date.value','');
-                clearHiddenSections([jq('#admission-unit')]);
-                jq('#tbl-admission-unit').hide();
-                jq('#hospital-admission').hide();
+            if (val == 160563){ // if transfer in
+                jq('.transfer-in').show();
+            } else{ // if new patient
+                setValue('referring-hospital.value','');
+                setValue('date-tested-positive.value','');
+                jq('.transfer-in').hide();
             }
+
         }
+
+        
 
         clearHiddenSections = function(parentObj) {
             for(var i=0; i &lt; parentObj.length; i++){
@@ -80,19 +75,14 @@
     <script type="text/javascript">
         jq(document).ready(function(){
 
-        var val = getValue('action-taken.value');
-        var hospitalAdmission = getValue('admission-status.value');
-        
-        if (val == 164165){
+        var val = getValue('action-taken.value'); 
+        var patientType = getValue('patient-type.value');          
+        if (val == 1654){
             jq('#hospital-isolation').show();// this shows the entire fieldset
         }
-        
-        if(hospitalAdmission == 1065) { // only show admission info if they exist
-            jq('#tbl-admission-unit').show();
-            jq('#hospital-admission').show();
-        } else {// we want to keep admission details hidden
-            jq('#tbl-admission-unit').hide();
-            jq('#hospital-admission').hide();
+
+        if(patientType == 160563) {
+            jq('.transfer-in').show();
         }
 
     });
@@ -108,27 +98,32 @@
     <div class="ke-form-header">
         <table width="100%">
             <tr>
+                <td align="left">Enrollment Date:
+                    <encounterDate id="encounter-date" showTime="true" />
+                </td>
+                <td>Enrolled by: <encounterProvider default="currentUser" /></td>
 
+                <td align="right">Location:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                </td>
             </tr>
         </table>
     </div>
 
     <div class="ke-form-content">
 
-
         <fieldset>
             <legend>Enrollment</legend>
+            
             <table>
                 <tr>
-                    <td>Date:</td>
-                    <td>
-                        <encounterDate id="encounter-date" showTime="true"/>
-                    </td>
-                    <td>Enrolled by: <encounterProvider default="currentUser" /></td>
-				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
-                </tr>
+					<td>Passport/ID Number</td>
+					<td colspan="3">
+                        <obs id="national_identification" conceptId="163084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
                 <tr>
-                    <td> Case classification</td>
+                    <td width="30%"> Case classification</td>
                     <td>
                         <obs required="true" id="status-at-reporting" conceptId="159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
                              answerConceptIds="5006AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164830AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -140,11 +135,24 @@
                     <td>Type of patient</td>
                     <td>
                         <obs
-                                id="transfer-in-status" conceptId="161641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"
+                                id="patient-type" conceptId="161641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"
                                 answerConceptIds="164144AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerLabels="New,Transfer in"
                                 required="true"
                         />
+                    </td>
+                </tr>
+                
+                <tr class="transfer-in">
+                    <td> Referral facility </td>
+                    <td>
+                        <obs id="referring-hospital" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50" />
+                    </td>
+                </tr>
+                <tr class="transfer-in">
+                    <td> Date confirmed positive </td>
+                    <td>
+                        <obs id="date-tested-positive" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " showTime="false"/>
                     </td>
                 </tr>
 
@@ -152,54 +160,34 @@
                     <td>Action taken</td>
                     <td>
                         <obs required="true" id="action-taken"  conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  labelText=" "
-                            answerConceptIds="165901AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164165AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                            answerLabels="Referred to home based treatment/isolation,Referred to hospital for treatment"/>
+                            answerConceptIds="165901AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabels="Referred to home based treatment/isolation,Hospital admission"/>
                     </td>
                 </tr>
                 <tr></tr>
                 
             </table>
         </fieldset>
+
         <fieldset id="hospital-isolation">
             <legend>COVID-19 treatment - Hospital treatment</legend>
             <table>
-            <tr>
-					<td> Name of facility referred from </td>
-					<td>
-						<obs id="referring-hospital" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50" />
-					</td>
-			</tr>
-            <tr>
-					<td> Date patient tested positive </td>
-					<td>
-                        <obs id="date-tested-positive" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " showTime="false"/>
-					</td>
-			</tr>
-            <tr id="tbl-admission">
-					<td> Patient admitted? </td>
-					<td>
-						<obs conceptId="162477AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 style="radio" answerLabels="Yes,No" id="admission-status"/>
-					</td>
-			</tr>
-            <tr id="hospital-admission">
-                    <td>Date of admission</td>
-                    <td>
-                        <obs id="admission-date" conceptId="1640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false"/>
-                    </td>
-                    <td></td>
-                    <td></td>
+            
+                <tr class="admission-detail">
+                        <td width="49%">Date of admission</td>
+                        <td>
+                            <obs id="admission-date" conceptId="1640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false"/>
+                        </td>
                 </tr>
-            <tr id="tbl-admission-unit">
-                <td> Admission unit</td>
+                <tr class="admission-detail">
+                    <td> Admission unit</td>
 
-                    <td style="text-align: left">
-                        <obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerConceptIds="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerLabels="Isolation,HDU,ICU" style="radio" id="admission-unit" />
-                    </td>
-            </tr>
+                        <td style="text-align: left">
+                            <obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerConceptIds="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerLabels="Isolation,HDU,ICU" style="radio" id="admission-unit" />
+                        </td>
+                </tr>
             </table>
         </fieldset>
         <enrollInProgram programId="117093ea-5355-11ec-bf63-0242ac130002"/>

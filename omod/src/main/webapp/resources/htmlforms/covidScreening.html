@@ -120,8 +120,8 @@
 					<td colspan="3">
 						<obs id="entry-point" style="radio" answerSeparator=" "
 							 conceptId="164918AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="1622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1623AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5483AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162049AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="ANC,PNC,FP,CWC,OPD,CCC,TB"
+							 answerConceptIds="1622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1623AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5483AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162049AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160545AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="ANC,PNC,FP,CWC,OPD,CCC,TB,Community"
 							 required="true"
 						/>
 					</td>
@@ -315,6 +315,16 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>Loss of taste/smell</td>
+                    <td>
+                        <obs required="true" id="obs-taste-smell" conceptId="1729" labelText=" "
+                             answerConceptIds="135589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"/>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
                     <td>Other</td>
                     <td>
                         <obs id="obs-other-symptom" conceptId="1838AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
@@ -334,6 +344,35 @@
                     <td>
                         <obs id="date-onset-of-symptoms" conceptId="1730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              showTime="false"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Other possible exposure</legend>
+            <table>
+                <tr>
+                    <td>Recent travel out of town?</td>
+                    <td>
+                        <obs conceptId="162619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No" required="true"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Suspected contact of a positive case?</td>
+                    <td>
+                        <obs conceptId="162633AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No" required="true"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Attended any large gatherings?</td>
+                    <td>
+                        <obs conceptId="165163" labelText=" "
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No" required="true"/>
                     </td>
                 </tr>
             </table>

@@ -17,20 +17,7 @@
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script>
        
-        jq(function () {
-
-            ///var enrollmentObs = '<lookup complexExpression="#foreach($obs in $fn.latestEncounter('33a3a55c-73ae-11ea-bc55-0242ac130003').obs) $obs.valueCoded.conceptId #end" />';
-            var enrollmentObs = '<lookup complexExpression="#foreach($obs in $fn.latestEncounter('33a3a55c-73ae-11ea-bc55-0242ac130003').obs) #if( $obs.concept.conceptId == 1272 ) $obs.valueCoded.conceptId #end #end" />';
-            console.log("Enrollment action: " + enrollmentObs)
-
-            if(enrollmentObs == 165901) { // home based isolation
-                jq('#home-isolation').show();
-                jq('#hospital-treatment').hide();
-            } else if (enrollmentObs == 164165) { // hospital treatment
-                jq('#home-isolation').hide();
-                jq('#hospital-treatment').show();
-            }
-            
+        jq(function () {            
 
         });
     </script>
@@ -59,135 +46,144 @@
 
     <div class="ke-form-content">
 
+        <includeIf velocityTest="$covid19.lastDocumentedIsolationLocation() == 'home_isolation'">
+            <fieldset id="home-isolation">
+                <legend>COVID-19 Treatment - Home Isolation</legend>
+                <table>
+                    <tr>
+                        <td>Day of followup (i.e. 1,2,3..)</td>
+                        <td>
+                            <obs required="true" conceptId="165416AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Temperature</td>
+                        <td>
+                            <obs required="true" conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> &#176;C
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Fever (38 degrees celcius or higher), felt feverish, or had chills?</td>
+                        <td>
+                            <obs conceptId="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                                answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                style="radio" answerLabels="Yes,No" required="true" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Cough</td>
+                        <td>
+                            <obs conceptId="143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                                answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                style="radio" answerLabels="Yes,No" required="true" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Difficulty breathing</td>
+                        <td>
 
-        <fieldset id="home-isolation">
-            <legend>COVID-19 Treatment - Home Isolation</legend>
-            <table>
-                <tr>
-                    <td>Day of followup (i.e. 1,2,3..)</td>
-                    <td>
-                        <obs conceptId="165416AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Temperature</td>
-                    <td>
-                        <obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> &#176;C
-                    </td>
-                </tr>
-                <tr>
-                    <td>Fever (38 degrees celcius or higher), felt feverish, or had chills?</td>
-                    <td>
-                        <obs conceptId="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
-                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Yes,No" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Cough</td>
-                    <td>
-                        <obs conceptId="143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
-                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Yes,No"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Difficulty breathing</td>
-                    <td>
+                            <obs conceptId="164441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                                answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                style="radio" answerLabels="Yes,No" required="true" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Sore throat</td>
+                        <td>
+                            <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                                answerConceptIds="158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                style="radio" answerLabels="Yes,No"  required="true" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Sneezing</td>
+                        <td>
+                            <obs conceptId="163336AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="runny-nose"
+                                answerConceptIds="126319AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                style="radio" answerLabels="Yes,No" required="true" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Headache</td>
+                        <td>
+                            <obs conceptId="5219AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="headache"
+                                answerConceptIds="139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                style="radio" answerLabels="Yes,No" required="true"
+                            />
+                        </td> 
+                    </tr>
+                    <tr>
+                        <td>Client Referred to hospital</td>
+                        <td>
+                            <obs conceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                                answerConceptIds="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                style="radio" answerLabels="Yes,No,N/A" />
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+        </includeIf>
+        <includeIf velocityTest="$covid19.lastDocumentedIsolationLocation() == 'hospital_isolation'">
+            <fieldset id="hospital-treatment">
+                <legend>COVID-19 - Hospital Treatment</legend>
+                <table>
+                    <tr>
+                        <td>Day of followup (i.e. 1,2,3..)</td>
+                        <td>
+                            <obs conceptId="165416AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> Case classification</td>
+                        <td>
+                            <obs id="status-at-reporting" conceptId="159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                                answerConceptIds="5006AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164830AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                style="radio" answerLabels="Asymptomatic,Mild,Moderate,Severe,Critical" required="true"/>
+                        </td>
+                    </tr>
 
-                        <obs conceptId="164441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
-                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Yes,No" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Sore throat</td>
-                    <td>
-                        <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
-                             answerConceptIds="158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Yes,No"  />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Sneezing</td>
-                    <td>
-                        <obs conceptId="163336AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="runny-nose"
-                             answerConceptIds="126319AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Yes,No"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Headache</td>
-                    <td>
-                        <obs conceptId="5219AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="headache"
-                             answerConceptIds="139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Yes,No"
-                        />
-                    </td> 
-                </tr>
-                <tr>
-                    <td>Client Referred to hospital</td>
-                    <td>
-                        <obs conceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
-                             answerConceptIds="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Yes,No,N/A" />
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-        <fieldset id="hospital-treatment">
-            <legend>COVID-19 - Hospital Treatment</legend>
-            <table>
-                <tr>
-                    <td>Day of followup (i.e. 1,2,3..)</td>
-                    <td>
-                        <obs conceptId="165416AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                    </td>
-                </tr>
-                <tr>
-                    <td> Case classification</td>
-                    <td>
-                        <obs required="true" id="status-at-reporting" conceptId="159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
-                             answerConceptIds="5006AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164830AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Asymptomatic,Mild,Moderate,Severe,Critical"/>
-                    </td>
-                </tr>
+                    <tr id="tbl-admission">
+                        <td> Patient admitted? </td>
+                        <td>
+                            <obs conceptId="162477AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                style="radio" answerLabels="Yes,No" id="admission-status" required="true"/>
+                        </td>
+                    </tr>
 
-                <tr id="tbl-admission">
-					<td> Patient admitted? </td>
-					<td>
-						<obs conceptId="162477AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 style="radio" answerLabels="Yes,No" id="admission-status"/>
-					</td>
-			    </tr>
+                    <tr id="tbl-admission-unit">
+                        <td> Admission unit</td>
 
-                <tr id="tbl-admission-unit">
-                    <td> Admission unit</td>
+                        <td style="text-align: left">
+                            <obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerConceptIds="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerLabels="Isolation,HDU,ICU" style="radio" id="admission-unit" required="true"/>
+                        </td>
+                    </tr>
 
-                    <td style="text-align: left">
-                        <obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerConceptIds="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerLabels="Isolation,HDU,ICU" style="radio" id="admission-unit" />
+                    <tr>
+                        <td> Treatment received</td>
+                        <td>
+                            <repeat with="['71780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Azithromycin'],['450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Amoxicillin and Clavulanic Acid'],['71160AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Amoxicillin'],['165872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Tocilizumab']">
+                                <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="{0}" answerLabel="{1}" style="checkbox" /><br/>
+                            </repeat>
+                        </td>
+                        <td>
+                            <repeat with="['74609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Dexamethasone'],['461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Multivitamin'],['81341AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Oxygen'],['5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Other']">
+                                <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="{0}" answerLabel="{1}" style="checkbox" /><br/>
+                            </repeat>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                    <td> Clinical notes </td>
+                    <td>
+                        <obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="textarea" />
                     </td>
                 </tr>
-
-                <tr>
-                    <td> Treatment received</td>
-                    <td>
-                        <repeat with="['71780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Azithromycin'],['450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Amoxicillin and Clavulanic Acid'],['71160AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Amoxicillin'],['165872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Tocilizumab']">
-                            <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="{0}" answerLabel="{1}" style="checkbox" /><br/>
-                        </repeat>
-                    </td>
-                    <td>
-                        <repeat with="['74609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Dexamethasone'],['461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Multivitamin'],['81341AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Oxygen'],['5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA','Other']">
-                            <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="{0}" answerLabel="{1}" style="checkbox" /><br/>
-                        </repeat>
-                    </td>
-                    
-                </tr>
-            </table>
-        </fieldset>
+                </table>
+            </fieldset>
+        </includeIf>
     </div>
     <div class="ke-form-footer">
         <submit/>

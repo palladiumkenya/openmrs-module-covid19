@@ -11,10 +11,14 @@ package org.openmrs.module.covid19.form.velocity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
 import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.module.covid19.ModuleConstants;
 import org.openmrs.module.covid19.calculation.library.covid.CovidVelocityCalculation;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 /**
  * Velocity functions for adding logic to HTML forms
@@ -46,6 +50,31 @@ public class CovidVelocityFunctions {
 		    session.getPatient());
 		return (String) covid19Velocity.getValue();
 		
+	}
+	
+	public String lastDocumentedIsolationLocation() {
+		
+		int isolationQuestionConceptId = 1272;
+		int homebaseIsolationConceptId = 165901;
+		int hospitalIsolationConceptId = 164165;
+		if (session.getPatient() == null) {
+			return "";
+		} else {
+			Encounter lastEnrollmentEnc = EmrUtils.lastEncounter(session.getPatient(),
+			    ModuleConstants.covidEnrollmentEncType, ModuleConstants.covidEnrollmentForm);
+			if (lastEnrollmentEnc != null) {
+				for (Obs o : lastEnrollmentEnc.getObs()) {
+					if (o.getConcept().getConceptId().equals(isolationQuestionConceptId)) {
+						if (o.getValueCoded().getConceptId().equals(homebaseIsolationConceptId)) {
+							return "home_isolation";
+						} else if (o.getValueCoded().getConceptId().equals(hospitalIsolationConceptId)) {
+							return "hospital_isolation";
+						}
+					}
+				}
+			}
+		}
+		return "";
 	}
 	
 }
