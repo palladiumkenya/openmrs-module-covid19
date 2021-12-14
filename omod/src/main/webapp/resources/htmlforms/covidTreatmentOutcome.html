@@ -117,16 +117,26 @@
 	</div>
 	<div class="ke-form-content">
 		<fieldset>
-			<legend>COVID Quarantine Discontinuation</legend>
+			<legend>COVID-19 Treatment Discontinuation</legend>
 			<table>
-				<tr>
-					<td>Reason for discontinuation:</td>
-					<td><obs id="discReason" conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="1663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164165AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160018AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Completed,Transferred out,Referral, Discharged,Died,Never reached" style="dropdown" labelText=""  showDate="false"/></td>
+                <includeIf velocityTest="$covid19.lastDocumentedIsolationLocation() == 'home_isolation'">
+                    <tr id="home-isolation">
+                        <td>Reason for discontinuation:</td>
+                        <td><obs id="discReason" conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="1663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164165AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160018AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerLabels="Completed isolation,Referral,Died,Never reached" style="dropdown" labelText=""  showDate="false"/></td>
 
-				</tr>
-				<tr></tr>
+                    </tr>
+                </includeIf>
+                <includeIf velocityTest="$covid19.lastDocumentedIsolationLocation() == 'hospital_isolation'">
+                    <tr id="hospital-isolation">
+                        <td>Reason for discontinuation:</td>
+                        <td><obs id="discReason" conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerLabels="Transferred to another hospital, Discharged,Died" style="dropdown" labelText=""  showDate="false"/></td>
+
+                    </tr>
+                </includeIf>
 				<tr></tr>
 				<tr id="transferred" style="display: none">
 					<td>Transfer to Facility:</td>
@@ -136,20 +146,10 @@
 				</tr>
 
 				<tr id="referred" style="display: none">
-					<td>Reason for referral:</td>
-					<td ><obs conceptId="159623AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							  answerConceptIds="162747AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							  answerLabels="Cormobidity management,Covid treatment" labelText=" " style="radio"/></td>
 					<td>Facility referred to:</td>
 					<td><obs conceptId="161562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
 				</tr>
 
-				<tr id="discharged" style="display: none">
-					<td>Reason for discharge:</td>
-					<td ><obs conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							  answerConceptIds="126311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							  answerLabels="Home quarantine,End of quarantine" labelText=" " style="radio"/></td>
-				</tr>
 				<tr></tr>
 				<tr></tr>
 				<tr>

@@ -56,7 +56,7 @@ public class CovidVelocityFunctions {
 		
 		int isolationQuestionConceptId = 1272;
 		int homebaseIsolationConceptId = 165901;
-		int hospitalIsolationConceptId = 164165;
+		int hospitalIsolationConceptId = 1654;
 		if (session.getPatient() == null) {
 			return "";
 		} else {
