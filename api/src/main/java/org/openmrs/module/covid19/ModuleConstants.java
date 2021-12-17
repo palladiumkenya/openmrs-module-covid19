@@ -18,4 +18,14 @@ public class ModuleConstants {
 	
 	public static final EncounterType covidEnrollmentEncType = MetadataUtils.existing(EncounterType.class,
 	    CovidMetadata._EncounterType.COVID_TREATMENT_ENROLLMENT);
+	
+	public static final EncounterType covidScreeningEncType = MetadataUtils.existing(EncounterType.class,
+	    CovidMetadata._EncounterType.COVID_SCREENING);
+	
+	public static final EncounterType covidTestingEncType = MetadataUtils.existing(EncounterType.class,
+	    CovidMetadata._EncounterType.COVID_TESTING);
+	
+	public static final EncounterType covidClinicalReviewEncType = MetadataUtils.existing(EncounterType.class,
+	    CovidMetadata._EncounterType.COVID_CLINICAL_REVIEW);
+	
 }

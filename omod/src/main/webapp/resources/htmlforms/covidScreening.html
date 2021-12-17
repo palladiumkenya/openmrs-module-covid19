@@ -17,25 +17,74 @@
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
 
+            
 		jQuery(document).ready(function(){
+
             jq("#vaccination-details").hide();
             jq("#covid-test-date").hide();
+            jq('#specify-symptoms').hide();
+            jq('#onset-date').hide();
+
 
             jq("#vaccination-question :input[type=radio]").change(onPatientVaccinatedSelected);
             jq("#covid-test-status :input[type=radio]").change(onPatientTestedForCovid);
+            jq('#obs-other-symptom :input[type=radio]').change(onChangeOfOtherSymptoms);
+            jq('.patient-symptom :input[type=radio]').change(onSelectOfCovidSymptoms);
 
 		});
 
-        var onPatientVaccinatedSelected = function () {
-           
-            var val = jq(this).val();
-            if (val == 1065){
-                jq('#vaccination-details').show();
-            } else{
-                clearHiddenSections([jq('#vaccination-details')]);
-                jq('#vaccination-details').hide();
+        var onSelectOfCovidSymptoms = function () {
+            var symptomsOnsetDate = getValue('date-onset-of-symptoms.value');
+            var hasFever = jq('#fever input[type="radio"]:checked').val();
+            var hasSoreThroat = jq('#sore-throat input[type="radio"]:checked').val();
+
+            var hasWeakness = jq('#weakness input[type="radio"]:checked').val();
+            var hasCough = jq('#cough input[type="radio"]:checked').val();
+            var hasDiarrhoea = jq('#diarrhoea input[type="radio"]:checked').val();
+
+            var hasDiarrhoea = jq('#diarrhoea input[type="radio"]:checked').val();
+            var hasJointPain = jq('#joint-pain input[type="radio"]:checked').val();
+            var hasChestPain = jq('#chest-pain input[type="radio"]:checked').val();
+            var hasConfusion = jq('#confusion input[type="radio"]:checked').val();
+            var vomiting = jq('#vomiting input[type="radio"]:checked').val();
+            var hasShortBreath = jq('#short-breath input[type="radio"]:checked').val();
+            var hasRunnynose = jq('#runny-nose input[type="radio"]:checked').val();
+            var hasHeadache = jq('#headache input[type="radio"]:checked').val();
+            var hasAbdominalPain = jq('#abdominal-pain input[type="radio"]:checked').val();
+            var hasMuscularPain = jq('#muscular-pain input[type="radio"]:checked').val();
+            var lossOfTaste = jq('#obs-taste-smell input[type="radio"]:checked').val();
+            var otherSymptomsQuestion = jq('#obs-other-symptom input[type="radio"]:checked').val();
+
+            if(     hasFever == 1065 || hasWeakness == 5226 || hasCough == 1065 || hasSoreThroat == 158843 || hasRunnynose == 113224 || hasShortBreath == 1065 || 
+                    hasDiarrhoea == 1065 || vomiting == 1065 || hasHeadache == 139084 || hasConfusion == 1065 || hasMuscularPain == 133632 || hasChestPain == 120749 ||
+                    hasAbdominalPain == 151 || hasChestPain == 80 || lossOfTaste == 135589 || hasJointPain == 80 || otherSymptomsQuestion == 160632
+                
+                ) {
+                    jq('#onset-date').show();
+                } else {
+                    jq('#onset-date').hide();
+                }
+        }
+
+        var onChangeOfOtherSymptoms = function () {
+            
+            if(jq(this).val() == 139548) {
+                jq('#specify-symptoms').show();
+            } else {
+                jq('#specify-symptoms').hide();
             }
         }
+
+        var onPatientVaccinatedSelected = function () {
+           
+           var val = jq(this).val();
+           if (val == 1065){
+               jq('#vaccination-details').show();
+           } else{
+               clearHiddenSections([jq('#vaccination-details')]);
+               jq('#vaccination-details').hide();
+           }
+       }
 
         var onPatientTestedForCovid = function () {
             
@@ -47,6 +96,47 @@
                 jq('#covid-test-date').hide();
             }
         }
+
+
+        beforeSubmit.push(function() {
+            //Before submit validations
+            pAge = parseInt('<lookup expression="patient.age"/>');
+            var encounterDate = getValue('encounter-date.value'); 
+            var symptomsOnsetDate = getValue('date-onset-of-symptoms.value');
+            var hasFever = jq('#fever input[type="radio"]:checked').val();
+            var hasSoreThroat = jq('#sore-throat input[type="radio"]:checked').val();
+
+            var hasWeakness = jq('#weakness input[type="radio"]:checked').val();
+            var hasCough = jq('#cough input[type="radio"]:checked').val();
+            var hasDiarrhoea = jq('#diarrhoea input[type="radio"]:checked').val();
+
+            var hasDiarrhoea = jq('#diarrhoea input[type="radio"]:checked').val();
+            var hasJointPain = jq('#joint-pain input[type="radio"]:checked').val();
+            var hasChestPain = jq('#chest-pain input[type="radio"]:checked').val();
+            var hasConfusion = jq('#confusion input[type="radio"]:checked').val();
+            var vomiting = jq('#vomiting input[type="radio"]:checked').val();
+            var hasShortBreath = jq('#short-breath input[type="radio"]:checked').val();
+            var hasRunnynose = jq('#runny-nose input[type="radio"]:checked').val();
+            var hasHeadache = jq('#headache input[type="radio"]:checked').val();
+            var hasAbdominalPain = jq('#abdominal-pain input[type="radio"]:checked').val();
+            var hasMuscularPain = jq('#muscular-pain input[type="radio"]:checked').val();
+            var lossOfTaste = jq('#obs-taste-smell input[type="radio"]:checked').val();
+            var otherSymptomsQuestion = jq('#obs-other-symptom input[type="radio"]:checked').val();
+            
+
+                if( symptomsOnsetDate == '' &amp;&amp; (
+                    hasFever == 1065 || hasWeakness == 5226 || hasCough == 1065 || hasSoreThroat == 158843 || hasRunnynose == 113224 || hasShortBreath == 1065 || 
+                    hasDiarrhoea == 1065 || vomiting == 1065 || hasHeadache == 139084 || hasConfusion == 1065 || hasMuscularPain == 133632 || hasChestPain == 120749 ||
+                    hasAbdominalPain == 151 || hasChestPain == 80 || lossOfTaste == 135589 || hasJointPain == 80 || otherSymptomsQuestion == 160632
+                )
+                
+                ) {
+                    getField('date-onset-of-symptoms.error').html('Please specify the onset date').show();
+                    return false
+                }
+
+            return true;
+        });
 
         clearHiddenSections = function(parentObj) {
             for(var i=0; i &lt; parentObj.length; i++){
@@ -64,6 +154,10 @@
                 });
             }
         }
+
+        function eventAction(domElement,triggerValue) {
+
+        }
     </script>
      
      <ifMode mode="EDIT">
@@ -72,6 +166,9 @@
 
             var val = getValue('vaccination-question.value');
             var testedForCovid = getValue('covid-test-status.value');
+            var otherCovidSymptom = getValue('obs-other-symptom.value');
+            var symptomsOnsetDate = getValue('date-onset-of-symptoms.value');
+
             
             if (val == 1065){
                 jq('#vaccination-details').show();
@@ -84,6 +181,14 @@
             } else{
                 jq('#covid-test-date').hide();
 			}
+
+            if(otherCovidSymptom == 139548) {
+                jq('#specify-symptoms').show();
+            }
+
+            if(symptomsOnsetDate != ''){
+                jq('#onset-date').show();
+            }
 
 		});
         </script>
@@ -158,7 +263,7 @@
             </table>
         </fieldset>
         <fieldset>
-            <legend>Patient Symptoms</legend>
+            <legend>COVID Status</legend>
 
             <table class="simple-table">
 			<tr>
@@ -205,14 +310,14 @@
                 <tr>
                     <td>History of fever / chills (&gt;38&#176;C)</td>
                     <td>
-                        <obs conceptId="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="fever"
+                        <obs class="patient-symptom" conceptId="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="fever"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"/>
                     </td>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
                     <td>General Weakness</td>
                     <td>
-                        <obs conceptId="122943AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="weakness"
+                        <obs class="patient-symptom" conceptId="122943AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="weakness"
                              answerConceptIds="5226AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"/>
                     </td>
@@ -220,14 +325,14 @@
                 <tr>
                     <td>Cough</td>
                     <td>
-                        <obs conceptId="143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "  id="cough"
+                        <obs class="patient-symptom" conceptId="143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "  id="cough"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"/>
                     </td>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
                     <td>Sore throat</td>
                     <td>
-                        <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="sore-throat"
+                        <obs class="patient-symptom" conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="sore-throat"
                              answerConceptIds="158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"/>
                     </td>
@@ -235,14 +340,14 @@
                 <tr>
                     <td>Runny nose</td>
                     <td>
-                        <obs conceptId="163336AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="runny-nose"
+                        <obs class="patient-symptom" conceptId="163336AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="runny-nose"
                              answerConceptIds="113224AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"/>
                     </td>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
                     <td>Shortness of breath</td>
                     <td>
-                        <obs conceptId="164441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "   id="short-breath"
+                        <obs class="patient-symptom" conceptId="164441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "   id="short-breath"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"/>
                     </td>
@@ -250,14 +355,14 @@
                 <tr>
                     <td>Diarrhoea</td>
                     <td>
-                        <obs conceptId="142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "     id="diarrhoea"
+                        <obs class="patient-symptom" conceptId="142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "     id="diarrhoea"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"/>
                     </td>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
                     <td>Nausea/vomiting</td>
                     <td>
-                        <obs conceptId="122983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="vomiting"
+                        <obs class="patient-symptom" conceptId="122983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="vomiting"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"
                         />
@@ -266,7 +371,7 @@
                 <tr>
                     <td>Headache</td>
                     <td>
-                        <obs conceptId="5219AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="headache"
+                        <obs class="patient-symptom" conceptId="5219AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="headache"
                              answerConceptIds="139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"
                         />
@@ -274,7 +379,7 @@
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
                     <td>Irritability/confusion</td>
                     <td>
-                        <obs conceptId="6023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="confusion"
+                        <obs class="patient-symptom" conceptId="6023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="confusion"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"
                         />
@@ -283,7 +388,7 @@
                 <tr>
                     <td>Mascular pain</td>
                     <td>
-                        <obs conceptId="160388AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "   id="muscular-pain"
+                        <obs class="patient-symptom" conceptId="160388AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "   id="muscular-pain"
                              answerConceptIds="133632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"
                         />
@@ -291,7 +396,7 @@
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
                     <td>Chest pain</td>
                     <td>
-                        <obs conceptId="1123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="chest-pain"
+                        <obs class="patient-symptom" conceptId="1123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="chest-pain"
                              answerConceptIds="120749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"
                         />
@@ -300,7 +405,7 @@
                 <tr>
                     <td>Abdominal pain</td>
                     <td>
-                        <obs conceptId="1125AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "     id="abdominal-pain"
+                        <obs class="patient-symptom" conceptId="1125AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "     id="abdominal-pain"
                              answerConceptIds="151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"
                         />
@@ -308,7 +413,7 @@
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
                     <td>Joint pain</td>
                     <td>
-                        <obs conceptId="160687AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="joint-pain"
+                        <obs class="patient-symptom" conceptId="160687AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "    id="joint-pain"
                              answerConceptIds="80AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No" required="true"
                         />
@@ -317,7 +422,7 @@
                 <tr>
                     <td>Loss of taste/smell</td>
                     <td>
-                        <obs required="true" id="obs-taste-smell" conceptId="1729" labelText=" "
+                        <obs class="patient-symptom" required="true" id="obs-taste-smell" conceptId="1729" labelText=" "
                              answerConceptIds="135589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No"/>
                     </td>
@@ -327,7 +432,7 @@
                 <tr>
                     <td>Other</td>
                     <td>
-                        <obs id="obs-other-symptom" conceptId="1838AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                        <obs class="patient-symptom" id="obs-other-symptom" conceptId="1838AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
                              answerConceptIds="139548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels=""/>
                     </td>

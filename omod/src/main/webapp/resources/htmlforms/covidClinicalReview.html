@@ -20,19 +20,99 @@
 
         jq(function () {
             jq('.hospital-referral').hide();
+            jq('#pcr-test').hide();
+            
             jq("#action-taken select").change(actionTakenResponse);
 
         });
 
         function actionTakenResponse() {
             var val = jq(this).val();
-            if (val == 164165){
+            if (val == 164165){ // referred to another facility
                 jq('.hospital-referral').show();
+                setValue('email.value','');
+                setValue('case-id.value','');
+                clearSections(jq('#sample-collection-date'));
+                clearSections(jq('#result-date'));
+                clearSections(jq('#case-type'));
+                clearSections(jq('#rdt-action-taken'));
+                clearSections(jq('#pcr-result'));
+                jq('#pcr-test').hide();
+            } else if(val == 165611) { // referred for pcr
+                jq('#pcr-test').show();
+                jq('.hospital-referral').hide();
+                setValue('hospital-referred-to.value','');
             } else{
                 setValue('hospital-referred-to.value','');
+                clearSections(jq('#sample-collection-date'));
+                clearSections(jq('#result-date'));
+                setValue('email.value','');
+                setValue('case-id.value','');
+
+                clearSections(jq('#case-type'));
+                clearSections(jq('#rdt-action-taken'));
+                clearSections(jq('#pcr-result'));
                 jq('.hospital-referral').hide();
+                jq('#pcr-test').hide();
             }
         }
+
+        //Clear hidden sections
+        clearSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
+
+        beforeSubmit.push(function() {
+            //Before submit validations
+            pAge = parseInt('<lookup expression="patient.age"/>');
+            var encounterDate = getValue('encounter-date.value'); 
+            var actionTaken = jq("#action-taken select").val();
+            var caseType = jq('#case-type input[type="radio"]:checked').val();
+            var caseId = jq('#case-id input[type=text]').val();
+            var email = jq('#email input[type=text]').val();
+            var hospitalReferred = jq('#hospital-referred-to input[type=text]').val();
+            var sampleCollectionDate = jq('#sample-collection-date input[type=hidden]').val();
+            
+            
+
+                if( actionTaken == 164165 &amp;&amp; hospitalReferred == '' ) {
+                    getField('hospital-referred-to.error').html('Please specify hospital referred to').show();
+                    return false
+                }
+
+                if( actionTaken == 165611 &amp;&amp; caseId == '' ) {
+                    getField('case-id.error').html('Please specify case ID').show();
+                    return false
+                }
+
+                if( actionTaken == 165611 &amp;&amp; email == '' ) {
+                    getField('email.error').html('Please specify email').show();
+                    return false
+                }
+
+                if( actionTaken == 165611 &amp;&amp; caseType == undefined ) {
+                    getField('case-type.error').html('Please specify case type').show();
+                    return false
+                }
+
+                if( actionTaken == 165611 &amp;&amp; sampleCollectionDate == '' ) {
+                    getField('sample-collection-date.error').html('Please specify sample collection date').show();
+                    return false
+                }
+
+            return true;
+        });
     </script>
     <ifMode mode="EDIT">
     <script type="text/javascript">
@@ -41,10 +121,13 @@
         var val = getValue('action-taken.value'); 
         if (val == 164165){
             jq('.hospital-referral').show();
-        }
+        } else if(val == 165611) { // referred for pcr
+                jq('#pcr-test').show();
+                
+            }
     });
     </script>
-</ifMode>
+    </ifMode>
     <style>
 
 
@@ -86,8 +169,8 @@
                     <td>Action taken</td>
                     <td>
                         <obs required="true" id="action-taken"  conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  labelText=" "
-                            answerConceptIds="165901AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164165AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                            answerLabels="Referred to home based treatment/isolation,Hospital admission,Referred to other hospital for treatment"/>
+                            answerConceptIds="165901AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164165AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabels="Referred to home based treatment/isolation,Hospital admission,Referred to other hospital for treatment,Referred for PCR"/>
                     </td>
                 </tr>
                 <tr class="hospital-referral">
@@ -96,14 +179,79 @@
                         <obs id="hospital-referred-to" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50" />
                     </td>
                 </tr>
+                
+                <tr></tr>
+                
+            </table>
+        </fieldset>
+
+        <fieldset id="pcr-test">
+            <legend>PCR Testing</legend>
+
+            <table class="simple-table">
+                <obsgroup groupingConceptId="165611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                    <tr>
+                        <td>Case ID</td>
+                        <td>
+                        <obs id="case-id" conceptId="162576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>
+                        <obs id="email" conceptId="162725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Type of case</td>
+                        <td>
+                        <obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162081AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                style="radio" id="case-type"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Date of sample collection</td>
+                        <td>
+                        <obs id="sample-collection-date" conceptId="162078AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Date result received</td>
+                        <td>
+                        <obs id="result-date" conceptId="162079AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"/>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>PCR Result</td>
+                        <td>
+                            <obs id="pcr-result" conceptId="166638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                             answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Negative,Positive,Invalid,Not done"/>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Action taken</td>
+                        <td>
+                            <obs id="rdt-action-taken" conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  labelText=" "
+                             answerConceptIds="165093"
+                             style="radio" answerLabels="Preventive counseling"/>
+                        </td>
+                    </tr>
+                </obsgroup>
+		    </table>
+        </fieldset>
+        <fieldset>
+            <legend>Notes</legend>
+            <table>
                 <tr>
                     <td> Clinical notes </td>
                     <td>
-                        <obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="textarea" />
+                        <obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="70" rows="8" style="textarea" />
                     </td>
-                </tr>
-                <tr></tr>
-                
+                </tr>    
             </table>
         </fieldset>
 
