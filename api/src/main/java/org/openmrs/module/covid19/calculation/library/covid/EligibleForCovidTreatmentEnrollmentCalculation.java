@@ -56,8 +56,9 @@ public class EligibleForCovidTreatmentEnrollmentCalculation extends AbstractPati
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	        PatientCalculationContext context) {
 		
-		Integer hospitalAdmissionAns = 1654;
-		Integer clinicalReviewActionQuestion = 1272;
+		int hospitalAdmissionAns = 1654;
+		int clinicalReviewActionQuestion = 1272;
+		int pcrActionQuestion = 160721;
 		
 		Program covidProgram = MetadataUtils.existing(Program.class, CovidMetadata._Program.COVID_TREATMENT);
 		Set<Integer> alive = Filters.alive(cohort, context);
@@ -75,7 +76,9 @@ public class EligibleForCovidTreatmentEnrollmentCalculation extends AbstractPati
 				if (lastCovidEncounter.getEncounterType().getUuid()
 				        .equals(CovidMetadata._EncounterType.COVID_CLINICAL_REVIEW)) {
 					eligible = EmrUtils.encounterThatPassCodedAnswer(lastCovidEncounter,
-					    cs.getConcept(clinicalReviewActionQuestion), cs.getConcept(hospitalAdmissionAns));
+					    cs.getConcept(clinicalReviewActionQuestion), cs.getConcept(hospitalAdmissionAns))
+					        || EmrUtils.encounterThatPassCodedAnswer(lastCovidEncounter, cs.getConcept(pcrActionQuestion),
+					            cs.getConcept(hospitalAdmissionAns));
 				}
 			}
 			

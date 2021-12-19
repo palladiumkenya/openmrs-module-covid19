@@ -21,40 +21,65 @@
         jq(function () {
             jq('.hospital-referral').hide();
             jq('#pcr-test').hide();
+            jq('#case-classification').hide();
             
             jq("#action-taken select").change(actionTakenResponse);
+            jq('#rdt-test-result :input[type=radio]').change(rdtResult);
 
         });
+
+        function rdtResult() {
+            var rdtTestQuestion = jq(this).val();
+            if(rdtTestQuestion == 703) {
+                jq('#case-classification').show();
+                clearSections(jq('#case-classification'));
+                clearSections(jq('#action-taken-positive-result'));
+                hidePCRSection();
+                hideReferralSection();
+                buildActionTakenOptionList(703);
+
+            } else {
+                jq('#case-classification').hide(); 
+                jq('#pcr-test').hide();
+                clearSections(jq('#case-classification'));
+                clearSections(jq('#action-taken-negative-result'));
+                hidePCRSection();
+                hideReferralSection();
+                buildActionTakenOptionList(664);
+
+            }
+            
+        }
 
         function actionTakenResponse() {
             var val = jq(this).val();
             if (val == 164165){ // referred to another facility
                 jq('.hospital-referral').show();
-                setValue('email.value','');
-                setValue('case-id.value','');
-                clearSections(jq('#sample-collection-date'));
-                clearSections(jq('#result-date'));
-                clearSections(jq('#case-type'));
-                clearSections(jq('#rdt-action-taken'));
-                clearSections(jq('#pcr-result'));
-                jq('#pcr-test').hide();
+                hidePCRSection();
             } else if(val == 165611) { // referred for pcr
                 jq('#pcr-test').show();
-                jq('.hospital-referral').hide();
-                setValue('hospital-referred-to.value','');
+                hideReferralSection();
             } else{
-                setValue('hospital-referred-to.value','');
-                clearSections(jq('#sample-collection-date'));
-                clearSections(jq('#result-date'));
-                setValue('email.value','');
-                setValue('case-id.value','');
-
-                clearSections(jq('#case-type'));
-                clearSections(jq('#rdt-action-taken'));
-                clearSections(jq('#pcr-result'));
-                jq('.hospital-referral').hide();
-                jq('#pcr-test').hide();
+                hidePCRSection();
+                hideReferralSection();
             }
+        }
+
+        function hideReferralSection() {
+            jq('.hospital-referral').hide();
+            setValue('hospital-referred-to.value','');
+        }
+
+        function hidePCRSection() {
+            setValue('email.value','');
+            setValue('case-id.value','');
+            clearSections(jq('#sample-collection-date'));
+            clearSections(jq('#result-date'));
+            clearSections(jq('#case-type'));
+            clearSections(jq('#rdt-action-taken'));
+            clearSections(jq('#pcr-result'));
+            jq('#pcr-test').hide();
+
         }
 
         //Clear hidden sections
@@ -69,22 +94,48 @@
                 jq(this).val("");
             });
             parentObj.find('select').each(function() {
-                this.selectedIndex =0;
+                this.selectedIndex = 0;
             });
+        }
+
+        // build options for action taken based on rdt test resutl
+
+        function buildActionTakenOptionList(rdtResult) {
+           
+            var selectObj = jq('#action-taken select');
+            selectObj.find('option:not(:first)').remove();
+
+            if(rdtResult == 703) {
+                selectObj.append(jq(new Option('Referred to home based treatment/isolation', 165901)));
+                selectObj.append(jq(new Option('Hospital admission', 1654)));
+                selectObj.append(jq(new Option('Referred to other hospital for treatment', 164165)));
+                selectObj.append(jq(new Option('Referred for PCR', 165611)));
+            } else {
+                selectObj.append(jq(new Option('Preventive counseling', 165093)));
+                selectObj.append(jq(new Option('Referred for PCR', 165611)));
+            }
         }
 
         beforeSubmit.push(function() {
             //Before submit validations
-            pAge = parseInt('<lookup expression="patient.age"/>');
-            var encounterDate = getValue('encounter-date.value'); 
+     
             var actionTaken = jq("#action-taken select").val();
             var caseType = jq('#case-type input[type="radio"]:checked').val();
             var caseId = jq('#case-id input[type=text]').val();
             var email = jq('#email input[type=text]').val();
             var hospitalReferred = jq('#hospital-referred-to input[type=text]').val();
             var sampleCollectionDate = jq('#sample-collection-date input[type=hidden]').val();
+            var rdtTestResult = jq('#rdt-test-result input[type="radio"]:checked').val();"status-at-reporting"
+            var caseClassification = jq('#status-at-reporting input[type="radio"]:checked').val();
+
             
             
+
+                if( rdtTestResult == 703 &amp;&amp; caseClassification == undefined ) {
+                    getField('status-at-reporting.error').html('This is required. Please indicate').show();
+                    return false
+                }
+
 
                 if( actionTaken == 164165 &amp;&amp; hospitalReferred == '' ) {
                     getField('hospital-referred-to.error').html('Please specify hospital referred to').show();
@@ -119,12 +170,22 @@
         jq(document).ready(function(){
 
         var val = getValue('action-taken.value'); 
+        var caseClassificationAtReporting = getValue('status-at-reporting.value'); 
+
+        var val = getValue('action-taken.value'); 
+
+        
         if (val == 164165){
             jq('.hospital-referral').show();
         } else if(val == 165611) { // referred for pcr
-                jq('#pcr-test').show();
+            jq('#pcr-test').show();
                 
-            }
+        } 
+
+        if(caseClassificationAtReporting != '') {
+            jq('#case-classification').show();
+        }
+
     });
     </script>
     </ifMode>
@@ -157,15 +218,23 @@
             
             <table>
                 <tr>
-                    <td width="30%"> Case classification</td>
+                    <td width="200px">Ag RDT test result</td>
                     <td>
-                        <obs required="true" id="status-at-reporting" conceptId="159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                        <obs required="true" id="rdt-test-result" conceptId="165852AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  labelText=" "
+                        answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Negative,Positive"/>
+                    </td>
+                </tr>
+                <tr id="case-classification">
+                    <td> Case classification</td>
+                    <td>
+                        <obs id="status-at-reporting" conceptId="159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
                              answerConceptIds="5006AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164830AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Asymptomatic,Mild,Moderate,Severe,Critical"/>
                     </td>
                 </tr>
                 <tr></tr>
-                <tr>
+                <tr id="provider-action">
                     <td>Action taken</td>
                     <td>
                         <obs required="true" id="action-taken"  conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  labelText=" "
@@ -173,7 +242,9 @@
                             answerLabels="Referred to home based treatment/isolation,Hospital admission,Referred to other hospital for treatment,Referred for PCR"/>
                     </td>
                 </tr>
-                <tr class="hospital-referral">
+            
+                
+                <tr  class="hospital-referral">
                     <td> Facility referred to </td>
                     <td>
                         <obs id="hospital-referred-to" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50" />
@@ -191,7 +262,7 @@
             <table class="simple-table">
                 <obsgroup groupingConceptId="165611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                     <tr>
-                        <td>Case ID</td>
+                        <td width="200px">Case ID</td>
                         <td>
                         <obs id="case-id" conceptId="162576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
                         </td>
@@ -232,12 +303,20 @@
                         </td>
                     </tr>
                     
+                    <tr id="pcr-classification">
+                    <td> Case classification</td>
+                    <td>
+                        <obs id="pcr-case-classification" conceptId="159640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                             answerConceptIds="5006AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164830AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Asymptomatic,Mild,Moderate,Severe,Critical"/>
+                    </td>
+                </tr>
                     <tr>
                         <td>Action taken</td>
                         <td>
-                            <obs id="rdt-action-taken" conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  labelText=" "
-                             answerConceptIds="165093"
-                             style="radio" answerLabels="Preventive counseling"/>
+                            <obs id="pcr-action-taken" conceptId="160721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  labelText=" "
+                            answerConceptIds="165901AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164165AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165093"
+                            answerLabels="Referred to home based treatment/isolation,Hospital admission,Referred to other hospital for treatment,Referred for PCR,Preventive counseling"/>
                         </td>
                     </tr>
                 </obsgroup>
