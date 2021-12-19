@@ -17,7 +17,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Encounter;
-import org.openmrs.Obs;
+import org.openmrs.Program;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -29,18 +29,20 @@ import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 /**
  * Calculates not vaccinated status
  */
-public class CovidPCRPendingResultCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class EligibleForCovidTreatmentEnrollmentCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 	
 	/**
 	 * @see PatientFlagCalculation#getFlagMessage()
 	 */
 	@Override
 	public String getFlagMessage() {
-		return "Pending COVID-19 PCR result";
+		return "Enrol in COVID-19 Treatment program";
 	}
 	
 	/**
@@ -54,8 +56,14 @@ public class CovidPCRPendingResultCalculation extends AbstractPatientCalculation
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	        PatientCalculationContext context) {
 		
+		Integer hospitalAdmissionAns = 1654;
+		Integer clinicalReviewActionQuestion = 1272;
+		
+		Program covidProgram = MetadataUtils.existing(Program.class, CovidMetadata._Program.COVID_TREATMENT);
 		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inCovidTreatmentProgram = Filters.inProgram(covidProgram, alive, context);
 		CalculationResultMap ret = new CalculationResultMap();
+		ConceptService cs = Context.getConceptService();
 		for (int ptId : cohort) {
 			boolean eligible = false;
 			// Check clients with covid encounters
@@ -63,41 +71,17 @@ public class CovidPCRPendingResultCalculation extends AbstractPatientCalculation
 			        .asList(ModuleConstants.covidScreeningEncType, ModuleConstants.covidTestingEncType,
 			            ModuleConstants.covidClinicalReviewEncType)); //last covid 19 encounter
 			
-			if (alive.contains(ptId) && lastCovidEncounter != null) {
+			if (!inCovidTreatmentProgram.contains(ptId) && lastCovidEncounter != null) {
 				if (lastCovidEncounter.getEncounterType().getUuid()
 				        .equals(CovidMetadata._EncounterType.COVID_CLINICAL_REVIEW)) {
-					eligible = hasPcrTestPendingResult(lastCovidEncounter);
+					eligible = EmrUtils.encounterThatPassCodedAnswer(lastCovidEncounter,
+					    cs.getConcept(clinicalReviewActionQuestion), cs.getConcept(hospitalAdmissionAns));
 				}
 			}
 			
 			ret.put(ptId, new BooleanResult(eligible, this));
 		}
 		return ret;
-	}
-	
-	/**
-	 * Evaluates a clinical review encounter to check if there are obs for sample collection date
-	 * and pcr results
-	 * 
-	 * @param enc
-	 * @return true if sample date obs exists, and no pcr results obs
-	 */
-	public boolean hasPcrTestPendingResult(Encounter enc) {
-		
-		boolean hasSampleCollectionObs = false;
-		boolean hasPcrResult = false;
-		
-		int sampleCollectionDateConceptId = 162078;
-		int testResultConcept = 166638;
-		
-		for (Obs obs : enc.getAllObs()) {
-			if (obs.getConcept().getConceptId().intValue() == sampleCollectionDateConceptId) {
-				hasSampleCollectionObs = true;
-			} else if (obs.getConcept().getConceptId().intValue() == testResultConcept) {
-				hasPcrResult = true;
-			}
-		}
-		return hasSampleCollectionObs && !hasPcrResult;
 	}
 	
 }

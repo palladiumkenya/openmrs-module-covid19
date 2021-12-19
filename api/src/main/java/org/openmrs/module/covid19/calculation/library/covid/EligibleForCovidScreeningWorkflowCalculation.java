@@ -9,39 +9,25 @@
  */
 package org.openmrs.module.covid19.calculation.library.covid;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Encounter;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.context.Context;
+import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.covid19.ModuleConstants;
 import org.openmrs.module.covid19.metadata.CovidMetadata;
-import org.openmrs.module.covid19.util.CovidUtils;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.Filters;
-import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 /**
  * Calculates not vaccinated status
  */
-public class PositiveRDTAwaitingClinicalReviewTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
-	
-	/**
-	 * @see PatientFlagCalculation#getFlagMessage()
-	 */
-	@Override
-	public String getFlagMessage() {
-		return "Positive RDT: Needs clinical review";
-	}
+public class EligibleForCovidScreeningWorkflowCalculation extends AbstractPatientCalculation {
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(Collection, Map,
@@ -54,24 +40,16 @@ public class PositiveRDTAwaitingClinicalReviewTestCalculation extends AbstractPa
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	        PatientCalculationContext context) {
 		
-		Integer clinicalReferralAns = 159494;
-		Integer referralQuestion = 1272;
-		
+		Program covidProgram = MetadataUtils.existing(Program.class, CovidMetadata._Program.COVID_TREATMENT);
 		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inCovidTreatmentProgram = Filters.inProgram(covidProgram, alive, context);
+		
 		CalculationResultMap ret = new CalculationResultMap();
-		ConceptService cs = Context.getConceptService();
 		for (int ptId : cohort) {
 			boolean eligible = false;
-			// Check clients with covid encounters
-			Encounter lastCovidEncounter = CovidUtils.lastEncounter(Context.getPatientService().getPatient(ptId), Arrays
-			        .asList(ModuleConstants.covidScreeningEncType, ModuleConstants.covidTestingEncType,
-			            ModuleConstants.covidClinicalReviewEncType)); //last covid 19 encounter
 			
-			if (alive.contains(ptId) && lastCovidEncounter != null) {
-				if (lastCovidEncounter.getEncounterType().getUuid().equals(CovidMetadata._EncounterType.COVID_TESTING)) {
-					eligible = EmrUtils.encounterThatPassCodedAnswer(lastCovidEncounter, cs.getConcept(referralQuestion),
-					    cs.getConcept(clinicalReferralAns));
-				}
+			if (!inCovidTreatmentProgram.contains(ptId)) {
+				eligible = true;
 			}
 			
 			ret.put(ptId, new BooleanResult(eligible, this));

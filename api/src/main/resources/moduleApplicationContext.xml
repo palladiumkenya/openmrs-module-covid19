@@ -134,6 +134,7 @@
                 <ref bean="covid.app.providerHome"/>
 			</set>
 		</property>
+        <property name="showIfCalculation" value="org.openmrs.module.covid19.calculation.library.covid.EligibleForCovidScreeningWorkflowCalculation"/>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="covid19:covidScreening.html" />
 		<property name="order" value="201005" />
@@ -150,6 +151,7 @@
                 <ref bean="covid.app.providerHome"/>
 			</set>
 		</property>
+        <property name="showIfCalculation" value="org.openmrs.module.covid19.calculation.library.covid.EligibleForCovidScreeningWorkflowCalculation"/>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="covid19:covidTesting.html" />
 		<property name="order" value="201005" />
@@ -215,7 +217,7 @@
                 <ref bean="covid.app.providerHome"/>
 			</set>
 		</property>
-        <property name="showIfCalculation" value="org.openmrs.module.covid19.calculation.library.covid.PositiveRDTAwaitingClinicalReviewTestCalculation"/>
+        <property name="showIfCalculation" value="org.openmrs.module.covid19.calculation.library.covid.PositiveRDTPendingClinicalReviewTestCalculation"/>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="covid19:covidClinicalReview.html" />
 		<property name="order" value="201005" />
