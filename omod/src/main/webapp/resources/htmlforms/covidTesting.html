@@ -66,7 +66,6 @@
             var lotNumber = jq('#lot-number input[type=text]').val();
             var kitExpiry = jq('#kit-expiry input[type=hidden]').val();
             var covidResult = jq('#covid-result input[type="radio"]:checked').val();
-            var symptomatic = jq('#symptomatic input[type="radio"]:checked').val();
             var actionTaken = jq('#rdt-action-taken input[type="radio"]:checked').val();
 
 
@@ -104,11 +103,6 @@
 
                 if( hadRdtTest == 1065 &amp;&amp; covidResult == undefined ) {
                     getField('covid-result.error').html('Please specify test result').show();
-                    return false
-                }
-
-                if( hadRdtTest == 1065 &amp;&amp; symptomatic == undefined ) {
-                    getField('symptomatic.error').html('Please specify if patient is symptomatic').show();
                     return false
                 }
 
