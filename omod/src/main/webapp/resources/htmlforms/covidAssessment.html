@@ -318,11 +318,11 @@
             var vaccineDate = getValue('vaccination-date.value');
             var vaccineDate2 = getValue('vaccine-2-date.value');
 
-            if (pAge &gt; 17 &amp;&amp; patientVaccinated == "" &amp;&amp; completionStatus != 5585) {
+            if (pAge &gt; 14 &amp;&amp; patientVaccinated == "" &amp;&amp; completionStatus != 5585) {
                 getField('patient-vaccinated.error').html('Vaccination status should not be empty').show();
                 return false;
             }
-            if (pAge &gt; 17 &amp;&amp; completionStatus == "" &amp;&amp; patientVaccinated == 1065) {
+            if (pAge &gt; 14 &amp;&amp; completionStatus == "" &amp;&amp; patientVaccinated == 1065) {
                 getField('completion-status.error').html('Final vaccination status should not be empty').show();
                 return false;
             }
@@ -356,11 +356,11 @@
                 getField('vaccine-2-date.error').html('Second vaccination date, should not be before first vaccinaton date').show();
                 return false;
             }
-            if (pAge &gt; 17 &amp;&amp; boosterStatus == "" &amp;&amp; patientVaccinated == 1065) {
+            if (pAge &gt; 14 &amp;&amp; boosterStatus == "" &amp;&amp; patientVaccinated == 1065) {
                 getField('booster-dose-given.error').html('Booster vaccination status should not be empty').show();
                 return false;
             }
-            if (pAge &gt; 17 &amp;&amp; boosterStatus == "" &amp;&amp; completionStatus == 5585) {
+            if (pAge &gt; 14 &amp;&amp; boosterStatus == "" &amp;&amp; completionStatus == 5585) {
                 getField('booster-dose-given.error').html('Booster vaccination status should not be empty').show();
                 return false;
             }
@@ -528,7 +528,7 @@
 					</tr>
 				</table>
 		</fieldset>
-	  <includeIf velocityTest="$patient.age &gt; 17">
+	  <includeIf velocityTest="$patient.age &gt; 14">
 	  <fieldset id="vaccination">
 				   <legend>
 					   Vaccination
