@@ -67,13 +67,13 @@ public class Covid19VaccinationIndicatorLibrary {
 	}
 	
 	/**
-	 * Number of patients on ART and 18+ years old
+	 * Number of patients on ART and 15+ years old
 	 * 
 	 * @return the indicator
 	 */
-	public CohortIndicator onArt18AndAbove() {
-		return cohortIndicator("On ART and 18+ years",
-		    ReportUtils.map(cohortLibrary.onArtAged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+	public CohortIndicator onArt15AndAbove() {
+		return cohortIndicator("On ART and 15+ years",
+		    ReportUtils.map(cohortLibrary.onArtAged15AndAbove(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	
 	/**

@@ -58,8 +58,8 @@ public class Covid19VaccinationReportBuilder extends AbstractReportBuilder {
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 		cohortDsd.setDescription("Covid-19 vaccination report");
 		
-		cohortDsd.addColumn("On ART 18+ years", "",
-		    ReportUtils.map(covid19VaccinationIndicatorLibrary.onArt18AndAbove(), indParams), "");
+		cohortDsd.addColumn("On ART 15+ years", "",
+		    ReportUtils.map(covid19VaccinationIndicatorLibrary.onArt15AndAbove(), indParams), "");
 		cohortDsd.addColumn("Partially vaccinated", "",
 		    ReportUtils.map(covid19VaccinationIndicatorLibrary.partiallyVaccinated(), indParams), "");
 		cohortDsd.addColumn("Fully vaccinated", "",
