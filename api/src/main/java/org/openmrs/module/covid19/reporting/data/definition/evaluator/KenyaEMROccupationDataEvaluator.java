@@ -10,10 +10,10 @@
 package org.openmrs.module.covid19.reporting.data.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.covid19.reporting.data.definition.CovidRDTKitLotAndExpiryDataDefinition;
-import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
-import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
-import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
+import org.openmrs.module.covid19.reporting.data.definition.KenyaEMROccupationDataDefinition;
+import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
+import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
@@ -25,17 +25,17 @@ import java.util.Map;
 /**
  * Evaluates a VisitIdDataDefinition to produce a VisitData
  */
-@Handler(supports = CovidRDTKitLotAndExpiryDataDefinition.class, order = 50)
-public class CovidRDTKitLotAndExpiryDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports = KenyaEMROccupationDataDefinition.class, order = 50)
+public class KenyaEMROccupationDataEvaluator implements PersonDataEvaluator {
 	
 	@Autowired
 	private EvaluationService evaluationService;
 	
-	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context)
+	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context)
 	        throws EvaluationException {
-		EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
+		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 		
-		String qry = "select encounter_id, CONCAT_WS('\\n', kit_lot_number, '____________', DATE_FORMAT(kit_expiry,'%d/%m/%Y')) AS lot_and_expiry from kenyaemr_etl.etl_cca_covid_rdt_test;";
+		String qry = "select patient_id, occupation from kenyaemr_etl.etl_patient_demographics";
 		
 		SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
 		queryBuilder.append(qry);

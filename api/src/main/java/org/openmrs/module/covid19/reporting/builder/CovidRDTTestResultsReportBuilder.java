@@ -18,6 +18,7 @@ import org.openmrs.module.covid19.reporting.calculation.RegistrationCountyAddres
 import org.openmrs.module.covid19.reporting.calculation.RegistrationSubCountyAddressCalculation;
 import org.openmrs.module.covid19.reporting.calculation.converter.GeneralCalculationResultConverter;
 import org.openmrs.module.covid19.reporting.cohort.definition.CovidRDTTestsCohortDefinition;
+import org.openmrs.module.covid19.reporting.data.converter.CovidRDTActionTakenDataConverter;
 import org.openmrs.module.covid19.reporting.data.converter.CovidRDTResultDataConverter;
 import org.openmrs.module.covid19.reporting.data.converter.CovidRDTTestReasonsDataConverter;
 import org.openmrs.module.covid19.reporting.data.converter.CovidSymptomsDataConverter;
@@ -35,12 +36,12 @@ import org.openmrs.module.covid19.reporting.data.definition.CovidRDTSampleTypeDa
 import org.openmrs.module.covid19.reporting.data.definition.CovidRDTTestReasonDataDefinition;
 import org.openmrs.module.covid19.reporting.data.definition.CovidRDTVaccinationDosageDataDefinition;
 import org.openmrs.module.covid19.reporting.data.definition.CovidRDTVaccinationStatusDataDefinition;
+import org.openmrs.module.covid19.reporting.data.definition.KenyaEMROccupationDataDefinition;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.CountyAddressCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAddressCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSProviderDataDefinition;
@@ -118,6 +119,7 @@ public class CovidRDTTestResultsReportBuilder extends AbstractReportBuilder {
 		        new RegistrationSubCountyAddressCalculation()), "", new GeneralCalculationResultConverter());
 		dsd.addColumn("Village/Estate of residence", new CalculationDataDefinition("Village/Estate of residence",
 		        new PersonAddressCalculation()), "", new GeneralCalculationResultConverter());
+		dsd.addColumn("Occupation", new KenyaEMROccupationDataDefinition(), "");
 		
 		dsd.addColumn("Type of case", new CovidRDTCaseTypeDataDefinition(), null);
 		dsd.addColumn("Sample type", new CovidRDTSampleTypeDataDefinition(), null);
@@ -136,7 +138,8 @@ public class CovidRDTTestResultsReportBuilder extends AbstractReportBuilder {
 		
 		dsd.addColumn("Vaccination status", new CovidRDTVaccinationStatusDataDefinition(), null);
 		dsd.addColumn("Dosage", new CovidRDTVaccinationDosageDataDefinition(), null);
-		dsd.addColumn("Action taken", new CovidRDTPostResultActionTakenDataDefinition(), null);
+		dsd.addColumn("Action taken", new CovidRDTPostResultActionTakenDataDefinition(), "",
+		    new CovidRDTActionTakenDataConverter());
 		
 		dsd.addColumn("Tester initials", new HTSProviderDataDefinition(), null);
 		
