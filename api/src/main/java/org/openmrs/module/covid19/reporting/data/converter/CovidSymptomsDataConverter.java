@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.covid19.reporting.data.converter;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -16,13 +17,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 
 /**
- * Created by codehub on 18/06/15.
+ * Converter for symptoms
  */
 public class CovidSymptomsDataConverter implements DataConverter {
 	
 	public static String SYMPTOMS_PRESENCE = "symptomsPresence";
 	
 	public static String CODED_SYMPTOMS = "codedSymptoms";
+	
+	public static String SYMPTOMS_RAW_LISTING = "symptomsListing";
 	
 	private String whatToFormat;
 	
@@ -89,6 +92,49 @@ public class CovidSymptomsDataConverter implements DataConverter {
 				
 			}
 			String joinedSymptoms = StringUtils.join(symptomCodes, "/");
+			return joinedSymptoms;
+			
+		} else if (whatToFormat != null && whatToFormat.equals(SYMPTOMS_RAW_LISTING)) {
+			/**
+			 * indicate the symptoms shown, list them separated by a semi colon (;) eg 1; 5; 1.
+			 * Fever 2. Cough 3.Shortness of breath or difficulty breathing 4. Fatigue 5.Muscle or
+			 * body aches 6. Headache 7. New loss of taste or smell 8.Sore throat 9.Congestion or
+			 * runny nose 10.Nausea or vomiting 11.Other" Possible answers from data definition
+			 * 'Fever','Cough','Runny nose','Diarrhoea','Headache','Muscular pain','Abdominal
+			 * pain','General weakness','Sore-throat', 'Breathing difficulty','Nausea','Altered
+			 * mental status','Chest pain','Joint pain','Loss of taste or smell','Other'
+			 */
+			Set<String> symptomCodes = new HashSet<String>();
+			for (int i = 0; i < symptoms.length - 1; i++) {
+				if (StringUtils.isNotEmpty(symptoms[i]) && symptoms[i].equals("Fever")) {
+					symptomCodes.add("Fever");
+				} else if (StringUtils.isNotEmpty(symptoms[i]) && symptoms[i].equals("Cough")) {
+					symptomCodes.add("Cough");
+				} else if (StringUtils.isNotEmpty(symptoms[i]) && symptoms[i].equals("Breathing difficulty")) {
+					symptomCodes.add("Shortness of breath or difficulty breathing");
+				} else if (StringUtils.isNotEmpty(symptoms[i]) && symptoms[i].equals("General weakness")) {
+					symptomCodes.add("General weakness");
+				} else if (StringUtils.isNotEmpty(symptoms[i])
+				        && (symptoms[i].equals("Chest pain") || symptoms[i].equals("Joint pain")
+				                || symptoms[i].equals("Abdominal pain") || symptoms[i].equals("Muscular pain"))) {
+					symptomCodes.add("Muscle or body aches");
+				} else if (StringUtils.isNotEmpty(symptoms[i]) && symptoms[i].equals("Headache")) {
+					symptomCodes.add("Headache");
+				} else if (StringUtils.isNotEmpty(symptoms[i]) && symptoms[i].equals("Loss of taste or smell")) {
+					symptomCodes.add("New loss of taste or smell");
+				} else if (StringUtils.isNotEmpty(symptoms[i]) && symptoms[i].equals("Sore-throat")) {
+					symptomCodes.add("Sore throat");
+				} else if (StringUtils.isNotEmpty(symptoms[i]) && symptoms[i].equals("Runny nose")) {
+					symptomCodes.add("Runny nose");
+				} else if (StringUtils.isNotEmpty(symptoms[i]) && symptoms[i].equals("Nausea")) {
+					symptomCodes.add("Nausea");
+					
+				} else if (StringUtils.isNotEmpty(symptoms[i])) {
+					symptomCodes.add("Other");
+				}
+				
+			}
+			String joinedSymptoms = StringUtils.join(symptomCodes, ";");
 			return joinedSymptoms;
 			
 		}
