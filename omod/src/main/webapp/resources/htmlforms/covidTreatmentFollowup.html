@@ -161,6 +161,16 @@
                         </td>
                     </tr>
 
+                    <tr id="tbl-ventilator">
+                        <td> On ventilation?</td>
+
+                        <td style="text-align: left">
+                            <obs id="ventilated" conceptId="165647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"/>
+                        </td>
+                    </tr>
+
                     <tr>
                         <td> Treatment received</td>
                         <td>
@@ -175,11 +185,30 @@
                         </td>
                         
                     </tr>
+
                     <tr>
-                    <td> Clinical notes </td>
-                    <td>
-                        <obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="8" cols="70" style="textarea" />
-                    </td>
+                        <td>Have you ever been vaccinated?</td>
+                        <td>
+                        <obs id="vaccination-question" conceptId="163100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerLabel="" style="radio" required="true"/>
+                        </td>
+                    </tr>
+
+                    <tr id="vaccination-details">
+                        <td> Vaccination Status </td>
+                        <td>
+                            <obs conceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="166192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerLabels="Partially Vaccinated,Fully Vaccinated" style="radio" id="completion-status" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td> Clinical notes </td>
+                        <td>
+                            <obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="8" cols="70" style="textarea" />
+                        </td>
                 </tr>
                 </table>
             </fieldset>

@@ -73,6 +73,8 @@
 			<set>
                 <ref bean="kenyaemr.cca.pcr.tests.report"/>
                 <ref bean="kenyaemr.cca.rdt.tests.report"/>
+                <ref bean="kenyaemr.cca.daily.qa.report" />
+                <ref bean="kenyaemr.cca.covid.enrollment.report"/>
 			</set>
 		</property>
 		<property name="fragments">
@@ -271,4 +273,27 @@
         <property name="template" value="covid19:COVID_RDT_Lab_Register.xls" />
 		<property name="repeatingSection" value="sheet:1,row:8,dataset:rdtRegister" />
     </bean>
+
+    <bean id="kenyaemr.cca.daily.qa.report" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+        <property name="targetUuid" value="8ca5e213-8259-42af-902a-4cbabc03a025" />
+        <property name="name" value="Covid-19 QA Daily report" />
+        <property name="description" value="Covid-19 QA daily report indicators" />
+        <property name="apps">
+            <set>
+                <ref bean="kenyaemr.app.reports" />
+            </set>
+        </property>
+    </bean>
+
+    <bean id="kenyaemr.cca.covid.enrollment.report" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+        <property name="targetUuid" value="cfd7f5f2-db9b-4876-83d2-d8efc1325efa" />
+        <property name="name" value="Covid-19 treatment enrollment report" />
+        <property name="description" value="Covid-19 treatment enrollment report" />
+        <property name="apps">
+            <set>
+                <ref bean="kenyaemr.app.reports" />
+            </set>
+        </property>
+    </bean>
+
 </beans>
