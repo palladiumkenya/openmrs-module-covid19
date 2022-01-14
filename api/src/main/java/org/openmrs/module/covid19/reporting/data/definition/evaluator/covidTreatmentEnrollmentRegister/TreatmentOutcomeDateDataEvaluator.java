@@ -12,7 +12,7 @@ package org.openmrs.module.covid19.reporting.data.definition.evaluator.covidTrea
 import java.util.Map;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.covid19.reporting.data.definition.covidTreatmentEnrollmentRegister.TreatmentOutcomeDataDefinition;
+import org.openmrs.module.covid19.reporting.data.definition.covidTreatmentEnrollmentRegister.TreatmentOutcomeDateDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -25,8 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Evaluates a VisitIdDataDefinition to produce a VisitData
  */
-@Handler(supports = TreatmentOutcomeDataDefinition.class, order = 50)
-public class TreatmentOutcomeDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports = TreatmentOutcomeDateDataDefinition.class, order = 50)
+public class TreatmentOutcomeDateDataEvaluator implements EncounterDataEvaluator {
 	
 	@Autowired
 	private EvaluationService evaluationService;
@@ -35,7 +35,7 @@ public class TreatmentOutcomeDataEvaluator implements EncounterDataEvaluator {
 	        throws EvaluationException {
 		EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 		
-		String qry = "select e.encounter_id, o.outcome "
+		String qry = "select e.encounter_id, o.visit_date "
 		        + " from kenyaemr_etl.etl_cca_covid_treatment_enrollment e "
 		        + " inner join kenyaemr_etl.etl_patient_program pp on e.patient_id = pp.patient_id and date(e.visit_date) = date(pp.date_enrolled) "
 		        + " inner join kenyaemr_etl.etl_cca_covid_treatment_enrollment_outcome o on o.patient_id = pp.patient_id  and date(o.visit_date) = date(pp.date_completed) ";

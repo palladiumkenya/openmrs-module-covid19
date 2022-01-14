@@ -24,6 +24,8 @@ import org.openmrs.module.covid19.reporting.data.definition.covidTreatmentEnroll
 import org.openmrs.module.covid19.reporting.data.definition.covidTreatmentEnrollmentRegister.CovidCaseClassificationDataDefinition;
 import org.openmrs.module.covid19.reporting.data.definition.covidTreatmentEnrollmentRegister.CovidPatientTypeDataDefinition;
 import org.openmrs.module.covid19.reporting.data.definition.covidTreatmentEnrollmentRegister.FacilityReferredFromDataDefinition;
+import org.openmrs.module.covid19.reporting.data.definition.covidTreatmentEnrollmentRegister.TreatmentOutcomeDataDefinition;
+import org.openmrs.module.covid19.reporting.data.definition.covidTreatmentEnrollmentRegister.TreatmentOutcomeDateDataDefinition;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
@@ -112,6 +114,8 @@ public class CCACovidTreatmentEnrollmentReportBuilder extends AbstractReportBuil
 		dsd.addColumn("Action taken", new ActionTakenDataDefinition(), "");
 		
 		dsd.addColumn("Admission unit", new AdmissionUnitDataDefinition(), "");
+		dsd.addColumn("Treatment outcome", new TreatmentOutcomeDataDefinition(), "");
+		dsd.addColumn("Treatment outcome date", new TreatmentOutcomeDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
 		
 		// new columns
 		
