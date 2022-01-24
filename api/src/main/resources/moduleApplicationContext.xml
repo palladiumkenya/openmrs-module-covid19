@@ -101,10 +101,10 @@
     </bean>
     <!-- Covid assessment form -->
     <bean id="covid19.form.covidAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-        <property name="targetUuid" value="86709f36-1490-11ec-82a8-0242ac130003" />
+        <property name="targetUuid" value="-1490-11ec-82a8-0242ac130003" />
         <property name="apps">
             <set>
-                <ref bean="kenyaemr.app.clinician" />
+                <ref bean="kenyaemr.app.clinic86709f36ian" />
                 <ref bean="kenyaemr.app.chart" />
                 <ref bean="kenyaemr.app.intake" />
                 <ref bean="covid.app.providerHome"/>
