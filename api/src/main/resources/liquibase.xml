@@ -35,5 +35,32 @@
         <addForeignKeyConstraint constraintName="covid19_item_owner_fk" baseTableName="covid19_item" baseColumnNames="owner"  referencedTableName="users"
                                  referencedColumnNames="user_id" />
     </changeSet> -->
- 
+
+    <changeSet id="${project.parent.artifactId}-20221402-1715" author="aojwang">
+        <comment>
+            Execute DDL script for ETL
+        </comment>
+        <sqlFile path="sql/DDL.sql" endDelimiter="\$\$" stripComments="true" />
+    </changeSet>
+
+    <changeSet id="${project.parent.artifactId}-20221402-1725" author="aojwang">
+        <comment>
+            Execute DML script for ETL
+        </comment>
+        <sqlFile path="sql/DML.sql" endDelimiter="\$\$" stripComments="true" />
+    </changeSet>
+
+    <changeSet id="${project.parent.artifactId}-20221402-1735" author="aojwang">
+        <comment>
+            Execute Scheduled Updates script for ETL
+        </comment>
+        <sqlFile path="sql/Scheduled_Updates.sql" endDelimiter="\$\$" stripComments="true" />
+    </changeSet>
+
+<!--    <changeSet id="${project.parent.artifactId}-20221402-1740" author="aojwang">
+        <comment>
+            Execute DataTool script for ETL tables
+        </comment>
+        <sqlFile path="sql/DataTools.sql" endDelimiter="\$\$" stripComments="true" />
+    </changeSet>-->
 </databaseChangeLog>

@@ -296,4 +296,26 @@
         </property>
     </bean>
 
+    <bean id="kenyaemr.covid.cca.etl.routines" class="org.openmrs.module.kenyacore.etl.ETLConfiguration">
+        <property name="ddlProcedures">
+            <set>
+                <value>create_cca_etl_tables</value>
+            </set>
+        </property>
+        <property name="dmlProcedures">
+            <set>
+                <value>sp_build_cca_covid_tables</value>
+            </set>
+        </property>
+        <property name="incrementalUpdatesProcedures">
+            <set>
+                <value>sp_covid_module_scheduled_updates</value>
+            </set>
+        </property>
+<!--        <property name="dataToolDbProcedures">
+            <set>
+                <value>create_datatools_tables</value>
+            </set>
+        </property>-->
+    </bean>
 </beans>
