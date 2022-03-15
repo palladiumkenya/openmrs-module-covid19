@@ -16,6 +16,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.springframework.stereotype.Component;
 
 /**
@@ -167,4 +168,35 @@ public class CCACovid19TreatmentCohortLibrary {
 		return cd;
 	}
 	
+	/**
+	 * Consented for covid test
+	 * 
+	 * @return
+	 */
+	public CohortDefinition consentedForCovidTest() {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_cca_covid_screening where voided = 0 and date(visit_date) = date(:startDate) and consented_for_covid_test = 'Yes';";
+		cd.setName("consentedForCovidTest;");
+		cd.setQuery(sqlQuery);
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.setDescription("consentedForCovidTest");
+		
+		return cd;
+	}
+	
+	/**
+	 * Declined covid test
+	 * 
+	 * @return
+	 */
+	public CohortDefinition declinedCovidTest() {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_cca_covid_screening where voided = 0 and date(visit_date) = date(:startDate) and consented_for_covid_test = 'No';";
+		cd.setName("declinedCovidTest;");
+		cd.setQuery(sqlQuery);
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.setDescription("declinedCovidTest");
+		
+		return cd;
+	}
 }

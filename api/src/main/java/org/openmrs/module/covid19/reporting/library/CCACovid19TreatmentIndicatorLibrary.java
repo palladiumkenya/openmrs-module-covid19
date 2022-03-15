@@ -12,6 +12,7 @@ package org.openmrs.module.covid19.reporting.library;
 import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndicator;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -140,5 +141,25 @@ public class CCACovid19TreatmentIndicatorLibrary {
 	public CohortIndicator referralsToOtherFacilities() {
 		return cohortIndicator("referrals to other facilities",
 		    ReportUtils.map(cohortLibrary.referralsToOtherFacilities(), "startDate=${startDate}"));
+	}
+	
+	/**
+	 * Clients who were screened, eligible, and consented for covid testing
+	 * 
+	 * @return
+	 */
+	public CohortIndicator consentedForCovidTest() {
+		return cohortIndicator("consented for covid testing",
+		    ReportUtils.map(cohortLibrary.consentedForCovidTest(), "startDate=${startDate}"));
+	}
+	
+	/**
+	 * Clients who were screened, eligible, but declined covid testing
+	 * 
+	 * @return
+	 */
+	public CohortIndicator declinedCovidTest() {
+		return cohortIndicator("declined covid testing",
+		    ReportUtils.map(cohortLibrary.declinedCovidTest(), "startDate=${startDate}"));
 	}
 }

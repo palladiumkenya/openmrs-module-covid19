@@ -220,7 +220,7 @@
                 <ref bean="covid.app.providerHome"/>
 			</set>
 		</property>
-        <property name="showIfCalculation" value="org.openmrs.module.covid19.calculation.library.covid.PositiveRDTPendingClinicalReviewTestCalculation"/>
+        <property name="showIfCalculation" value="org.openmrs.module.covid19.calculation.library.covid.AwaitingCovidClinicalReviewTestCalculation"/>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="covid19:covidClinicalReview.html" />
 		<property name="order" value="201005" />

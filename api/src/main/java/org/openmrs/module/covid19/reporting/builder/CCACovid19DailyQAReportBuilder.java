@@ -79,6 +79,12 @@ public class CCACovid19DailyQAReportBuilder extends AbstractReportBuilder {
 		cohortDsd.addColumn("Clients eligible for Covid testing", "",
 		    ReportUtils.map(covid19VaccinationIndicatorLibrary.eligibleForCovidTest(), indParams), "");
 		
+		cohortDsd.addColumn("Clients consented for Covid testing", "",
+		    ReportUtils.map(covid19VaccinationIndicatorLibrary.consentedForCovidTest(), indParams), "");
+		
+		cohortDsd.addColumn("Clients who declined Covid testing", "",
+		    ReportUtils.map(covid19VaccinationIndicatorLibrary.declinedCovidTest(), indParams), "");
+		
 		cohortDsd.addColumn("Clients tested for COVID using Ag RDT", "",
 		    ReportUtils.map(covid19VaccinationIndicatorLibrary.testedUsingAgRDT(), indParams), "");
 		

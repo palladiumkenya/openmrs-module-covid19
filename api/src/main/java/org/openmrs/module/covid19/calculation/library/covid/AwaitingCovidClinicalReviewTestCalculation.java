@@ -31,16 +31,17 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 /**
- * Calculates not vaccinated status
+ * Evaluates clients who have been tested for COVID-19 and have been referred to a clinician for
+ * review
  */
-public class PositiveRDTPendingClinicalReviewTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class AwaitingCovidClinicalReviewTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 	
 	/**
 	 * @see PatientFlagCalculation#getFlagMessage()
 	 */
 	@Override
 	public String getFlagMessage() {
-		return "Positive RDT: Needs clinical review";
+		return "Awaiting COVID clinical review";
 	}
 	
 	/**
