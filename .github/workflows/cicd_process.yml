@@ -28,6 +28,7 @@ jobs:
           git status
           mvn clean install -DskipTests
   deploy:
+    needs: build
     name: Deploy to test instance
     runs-on: ubuntu-latest
     steps:
