@@ -5,7 +5,7 @@ on:
 jobs:
 
   build:
-    name: Deploy
+    name: Clone and Build
     runs-on: ubuntu-latest
     steps:
     - name: executing remote connection
@@ -27,6 +27,19 @@ jobs:
           sudo chown -R cicd2:cicd2 /apps/github-workflows/kenyaemr-modules/openmrs-module-covid19
           git status
           mvn clean install -DskipTests
+  deploy:
+    name: Deploy to test instance
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote connection
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.CICD_SECRET }}
+        port: ${{ secrets.PORT }}
+        command_timeout: 200m
+        script: |
           sudo rm -rf /var/lib/OpenMRS/modules/covid19-*.omod
           sudo cp /apps/github-workflows/kenyaemr-modules/openmrs-module-covid19/omod/target/covid19-*.omod /var/lib/OpenMRS/modules/
           sudo chown -R tomcat:tomcat /var/lib/OpenMRS/modules/
