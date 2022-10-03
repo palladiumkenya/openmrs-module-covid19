@@ -158,7 +158,7 @@
             if (val == 1065){
                 jq('#tbl-test-results').show();
             }
-            if (val == 1066){
+            if (val == 1066 || val == 1067){
 
                 jq('#tbl-test-results').hide();
                 jq('#tbl-positive-results').hide();
@@ -318,15 +318,15 @@
             var vaccineDate = getValue('vaccination-date.value');
             var vaccineDate2 = getValue('vaccine-2-date.value');
 
-            if (pAge &gt; 14 &amp;&amp; patientVaccinated == "" &amp;&amp; completionStatus != 5585) {
+            if (pAge &gt; 11 &amp;&amp; patientVaccinated == "" &amp;&amp; completionStatus != 5585) {
                 getField('patient-vaccinated.error').html('Vaccination status should not be empty').show();
                 return false;
             }
-            if (pAge &gt; 14 &amp;&amp; completionStatus == "" &amp;&amp; patientVaccinated == 1065) {
+            if (pAge &gt; 11 &amp;&amp; completionStatus == "" &amp;&amp; patientVaccinated == 1065) {
                 getField('completion-status.error').html('Final vaccination status should not be empty').show();
                 return false;
             }
-            if (patientVaccinated == 1065 &amp;&amp; firstVaccineManufacture == false &amp;&amp; vaccineType1.val() == "" &amp;&amp; completionStatus != 5585) {
+            if (patientVaccinated == 1065 &amp;&amp; firstVaccineManufacture == false &amp;&amp; vaccineType1.val() == "") {
                 getField('vaccine-type-1.error').html('Vaccine type should not be empty').show();
                 return false;
             }
@@ -356,11 +356,11 @@
                 getField('vaccine-2-date.error').html('Second vaccination date, should not be before first vaccinaton date').show();
                 return false;
             }
-            if (pAge &gt; 14 &amp;&amp; boosterStatus == "" &amp;&amp; patientVaccinated == 1065) {
+            if (pAge &gt; 11 &amp;&amp; boosterStatus == "" &amp;&amp; patientVaccinated == 1065) {
                 getField('booster-dose-given.error').html('Booster vaccination status should not be empty').show();
                 return false;
             }
-            if (pAge &gt; 14 &amp;&amp; boosterStatus == "" &amp;&amp; completionStatus == 5585) {
+            if (pAge &gt; 11 &amp;&amp; boosterStatus == "" &amp;&amp; completionStatus == 5585) {
                 getField('booster-dose-given.error').html('Booster vaccination status should not be empty').show();
                 return false;
             }
@@ -454,12 +454,12 @@
                                     jq('#tbl-vaccine-2').show();
                                     jq('#tbl-completion-status').show();
                                     jq('#tbl-fully-vaccinated').show();
-                                }
-                              else if (patientVaccinated == 1065 &amp;&amp; completionStatus == 166192){
+                                } else if (patientVaccinated == 1065 &amp;&amp; completionStatus == 166192){
                                 jq('#tbl-vaccine-1').show();
                                 jq('#tbl-vaccine-2').show();
                                 jq('#tbl-completion-status').show();
-                            }else{
+                                jq('#tbl-fully-vaccinated').hide();
+                               }else{
                                     jq('#tbl-vaccine-1').hide();
                                     jq('#tbl-vaccine-2').hide();
                                     jq('#tbl-completion-status').hide();
@@ -476,7 +476,7 @@
                                     jq('#tbl-test-results').show();
                                     jq('#tbl-positive-results').show();
                                 }else{
-                                    jq('#tbl-test-results').show();
+                                    jq('#tbl-test-results').hide();
                                    // jq('#tbl-positive-results').hide();
                                 }
 
@@ -528,7 +528,7 @@
 					</tr>
 				</table>
 		</fieldset>
-	  <includeIf velocityTest="$patient.age &gt; 14">
+	  <includeIf velocityTest="$patient.age &gt; 11">
 	  <fieldset id="vaccination">
 				   <legend>
 					   Vaccination
@@ -581,7 +581,7 @@
 										   Unknown
 										   Other(Specify)"
 							 style="dropdown" id="vaccine-type-1"/>
-
+						<span style="color:red;"><strong>*</strong></span>
 						<table id="tbl-other-vaccine-1" style="display: inline-block;" >
 							<tr>
 								<td> Vaccine name
@@ -743,8 +743,8 @@
 					</td>
 					<td>
 						<obs conceptId="165852AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Yes,No" style="radio" id="test-status"/>
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes,No,Unknown" style="radio" id="test-status"/>
 					</td>
 				</tr>
 			</table>

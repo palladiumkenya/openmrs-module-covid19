@@ -105,10 +105,10 @@ public class Covid19VaccinationCohortLibrary {
 		return cd;
 	}
 	
-	// Covid vaccine age for now is 15+ , this can be adjusted accordingly depending on the recommended age limits
+	// Covid vaccine age for now is 12+ , this can be adjusted accordingly depending on the recommended age limits
 	public CohortDefinition covidVaccineAgeCohort() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_demographics where timestampdiff(YEAR ,dob,date(:endDate))>= 15;\n";
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_demographics where timestampdiff(YEAR ,dob,date(:endDate))>= 12;\n";
 		cd.setName("covidVaccineAgeCohort");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -270,11 +270,11 @@ public class Covid19VaccinationCohortLibrary {
 	}
 	
 	/**
-	 * Patients OnArt and 15 years and above
+	 * Patients OnArt and 12 years and above
 	 * 
 	 * @return the cohort definition
 	 */
-	public CohortDefinition onArtAged15AndAbove() {
+	public CohortDefinition onArtAged12AndAbove() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
