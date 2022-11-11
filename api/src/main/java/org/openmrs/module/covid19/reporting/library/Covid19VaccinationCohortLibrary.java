@@ -59,7 +59,7 @@ public class Covid19VaccinationCohortLibrary {
 	public CohortDefinition fullyVaccinatedBeforeReportingPeriod() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
 		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment a where a.final_vaccination_status = 5585\n"
-		        + "and a.visit_date < date(:startDate);";
+		        + "and a.visit_date <= date(:endDate);";
 		cd.setName("fullyVaccinated");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -72,7 +72,7 @@ public class Covid19VaccinationCohortLibrary {
 	public CohortDefinition partiallyVaccinatedBeforeReportingPeriod() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
 		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment a\n"
-		        + "  where a.visit_date < date(:startDate) group by patient_id\n"
+		        + "  where a.visit_date <= date(:endDate) group by patient_id\n"
 		        + "having mid(max(concat(visit_date,final_vaccination_status)),11) = 166192;";
 		cd.setName("partiallyVaccinated;");
 		cd.setQuery(sqlQuery);
