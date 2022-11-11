@@ -78,7 +78,7 @@ public class NotVaccinatedCalculation extends AbstractPatientCalculation impleme
 						eligible = true;
 					}
 				}
-			} else if (inHivProgram.contains(ptId) && service.getPerson(ptId).getAge() >= 15) {
+			} else if (inHivProgram.contains(ptId) && service.getPerson(ptId).getAge() >= 12) {
 				eligible = true;
 			}
 			

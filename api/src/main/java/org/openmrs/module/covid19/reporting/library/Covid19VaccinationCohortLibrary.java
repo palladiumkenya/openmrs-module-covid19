@@ -31,7 +31,8 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition fullyVaccinated() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment a where a.final_vaccination_status = 5585 and a.visit_date <= date(:endDate)";
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment a where a.final_vaccination_status = 5585\n"
+		        + " and a.visit_date between date(:startDate) and date(:endDate);";
 		cd.setName("fullyVaccinated");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -44,8 +45,8 @@ public class Covid19VaccinationCohortLibrary {
 	public CohortDefinition partiallyVaccinated() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
 		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment group by patient_id\n"
-		        + "        having mid(max(concat(visit_date,final_vaccination_status)),11) = 166192\n"
-		        + "        and max(visit_date) <= date(:endDate);";
+		        + "having mid(max(concat(visit_date,final_vaccination_status)),11) = 166192\n"
+		        + "and max(visit_date) between date(:startDate) and date(:endDate);";
 		cd.setName("partiallyVaccinated;");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -69,7 +70,7 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition everInfected() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where ever_tested_covid_19_positive = 703 and ever_vaccinated is not null and visit_date <= date(:endDate)\n"
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where ever_tested_covid_19_positive = 703 and ever_vaccinated is not null and visit_date between date(:startDate) and date(:endDate)\n"
 		        + "group by patient_id;";
 		cd.setName("everInfected;");
 		cd.setQuery(sqlQuery);
@@ -82,7 +83,7 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition everHospitalised() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where hospital_admission = 1065 and visit_date <= date(:endDate);\n";
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where hospital_admission = 1065 and visit_date between date(:startDate) and date(:endDate);\n";
 		cd.setName("everHospitalised");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -95,7 +96,7 @@ public class Covid19VaccinationCohortLibrary {
 	public CohortDefinition diedDueToCovid() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
 		String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_program_discontinuation where discontinuation_reason =160034 and specific_death_cause=165609\n"
-		        + "and coalesce(date(date_died),coalesce(date(effective_discontinuation_date),date(visit_date))) <= date(:endDate);";
+		        + "and coalesce(date(date_died),coalesce(date(effective_discontinuation_date),date(visit_date))) between date(:startDate) and date(:endDate);";
 		cd.setName("diedDueToCovid");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -105,10 +106,10 @@ public class Covid19VaccinationCohortLibrary {
 		return cd;
 	}
 	
-	// Covid vaccine age for now is 15+ , this can be adjusted accordingly depending on the recommended age limits
+	// Covid vaccine age for now is 12+ , this can be adjusted accordingly depending on the recommended age limits
 	public CohortDefinition covidVaccineAgeCohort() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_demographics where timestampdiff(YEAR ,dob,date(:endDate))>= 15;\n";
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_demographics where timestampdiff(YEAR ,dob,date(:endDate))>= 12;\n";
 		cd.setName("covidVaccineAgeCohort");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -120,8 +121,8 @@ public class Covid19VaccinationCohortLibrary {
 	
 	public CohortDefinition firstDoseVerifiedSQl() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = " select patient_id from kenyaemr_etl.etl_covid19_assessment where first_vaccination_verified = 164134 and\n"
-		        + "        visit_date <= date(:endDate);";
+		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where first_vaccination_verified = 164134\n"
+		        + "  and  visit_date between date(:startDate) and date(:endDate);";
 		cd.setName("firstDose");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -134,7 +135,7 @@ public class Covid19VaccinationCohortLibrary {
 	public CohortDefinition secondDoseVerifiedSQL() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
 		String sqlQuery = "select patient_id from kenyaemr_etl.etl_covid19_assessment where second_vaccination_verified = 164134 and\n"
-		        + "        visit_date <= date(:endDate);";
+		        + "visit_date between date(:startDate) and date(:endDate);";
 		cd.setName("secondDose");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -147,7 +148,7 @@ public class Covid19VaccinationCohortLibrary {
 	public CohortDefinition boosterDoseVerifiedSQL() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
 		String sqlQuery = " select patient_id from kenyaemr_etl.etl_covid19_assessment where booster_dose_verified = 164134 and\n"
-		        + "        visit_date <= date(:endDate);";
+		        + "        visit_date between date(:startDate) and date(:endDate);";
 		cd.setName("boosterDose");
 		cd.setQuery(sqlQuery);
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -270,11 +271,11 @@ public class Covid19VaccinationCohortLibrary {
 	}
 	
 	/**
-	 * Patients OnArt and 15 years and above
+	 * Patients OnArt and 12 years and above
 	 * 
 	 * @return the cohort definition
 	 */
-	public CohortDefinition onArtAged15AndAbove() {
+	public CohortDefinition onArtAged12AndAbove() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
