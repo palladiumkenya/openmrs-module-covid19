@@ -31,16 +31,17 @@ import java.util.Set;
 
 /**
  * Calculates fully vaccination status
+ * Retired flag
  */
-public class FullyVaccinatedCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class FullyVaccinatedCalculation extends AbstractPatientCalculation  {
 	
 	/**
 	 * @see PatientFlagCalculation#getFlagMessage()
 	 */
-	@Override
-	public String getFlagMessage() {
-		return "Fully COVID-19 Vaccinated";
-	}
+//	@Override
+//	public String getFlagMessage() {
+//		return "Fully COVID-19 Vaccinated";
+//	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(Collection, Map,
