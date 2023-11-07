@@ -31,16 +31,17 @@ import java.util.Set;
 
 /**
  * Calculates partial vaccination status
+ * Retired flag
  */
-public class PartiallyVaccinatedCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class PartiallyVaccinatedCalculation extends AbstractPatientCalculation  {
 	
 	/**
 	 * @see PatientFlagCalculation#getFlagMessage()
 	 */
-	@Override
-	public String getFlagMessage() {
-		return "Partially COVID-19 Vaccinated";
-	}
+//	@Override
+//	public String getFlagMessage() {
+//		return "Partially COVID-19 Vaccinated";
+//	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(Collection, Map,
