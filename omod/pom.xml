@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>covid19</artifactId>
-		<version>1.0.4</version>
+		<version>1.0.5</version>
 	</parent>
 
 	<artifactId>covid19-omod</artifactId>
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>covid19-api</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
         </dependency>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
