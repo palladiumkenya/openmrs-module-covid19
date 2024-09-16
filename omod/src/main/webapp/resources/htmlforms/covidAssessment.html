@@ -111,6 +111,13 @@
             getField('patient-vaccinated.error').html('Vaccination status should not be empty').hide();
             var completionStatus = getValue('completion-status.value');
             var val = jq(this).val();
+             var tblBooster=jq('#tbl-booster');
+             var tblVaccine1=jq('#tbl-vaccine-1');
+             var tblVaccine2=jq('#tbl-vaccine-2');
+             var tblCompletionStatus=jq('#tbl-completion-status');
+             var tblVaccineBooster=jq('#tbl-vaccine-booster');
+             var tblFullyVaccinated=jq('#tbl-fully-vaccinated');
+
             // No selected
             if (val == 1065 &amp;&amp; completionStatus == 5585){
                 jq('#tbl-vaccine-1').hide();
@@ -118,12 +125,14 @@
                 jq('#tbl-completion-status').show();
                 jq('#tbl-fully-vaccinated').show();
                 jq('#tbl-booster').show();
+                clearHiddenSections([tblVaccine1,tblVaccine2]);
             }else if(val == 1065 &amp;&amp; (completionStatus == 166192)){
                 jq('#tbl-vaccine-1').hide();
                 jq('#tbl-vaccine-2').show();
                 jq('#tbl-completion-status').show();
                 jq('#tbl-fully-vaccinated').hide();
                 jq('#tbl-booster').show();
+                clearHiddenSections([tblVaccine1,tblFullyVaccinated]);
             }else if(val == 1065 &amp;&amp; (completionStatus == "")){
                 jq('#tbl-vaccine-1').show();
                 jq('#tbl-vaccine-2').show();
@@ -134,6 +143,8 @@
                 jq('#tbl-vaccine-2').hide();
                 jq('#tbl-completion-status').hide();
                 jq('#tbl-vaccine-booster').hide();
+                jq('#tbl-booster').hide();
+                clearHiddenSections([tblBooster,tblVaccine1,tblVaccine2,tblCompletionStatus,tblVaccineBooster]);
 			}
         }
 
@@ -504,67 +515,67 @@
 			<legend>
 				Vaccination History
 			</legend>
-		          <!-- Previously recorded Vaccinations    -->
-				<table class="simple-table">
-					<tr>
-						<th align="left">Vaccine</th>
-						<th align="left">Dose</th>
-						<th align="left">Date</th>
-					</tr>
-					<tr id="firstVaccine">
-						<td><input type="text" name="firstDoseVaccineName" id="firstDoseVaccineName" readonly="True" style="border: none"/></td>
-						<td><input type="text" name="firstDose" id="firstDose" readonly="True" style="border: none" /></td>
-						<td><input type="text" name="firstDoseDate" id="firstDoseDate" readonly="True"  style="border: none"/></td>
-					</tr>
-					<tr id="secondVaccine">
-						<td><input type="text" name="secondDoseVaccineName" id="secondDoseVaccineName" readonly="True" style="border: none" /></td>
-						<td><input type="text" name="secondDose" id="secondDose" readonly="True"  style="border: none"/></td>
-						<td><input type="text" name="secondDoseDate" id="secondDoseDate" readonly="True" style="border: none" /></td>
-					</tr>
-					<tr id="boosterVaccine">
-						<td><input type="text" name="boosterDoseVaccineName" id="boosterDoseVaccineName" readonly="True" style="border: none" /></td>
-						<td><input type="text" name="boosterDose" id="boosterDose" readonly="True" style="border: none" /></td>
-						<td><input type="text" name="boosterDoseDate" id="boosterDoseDate" readonly="True" style="border: none" /></td>
-					</tr>
-				</table>
+			<!-- Previously recorded Vaccinations    -->
+			<table class="simple-table">
+				<tr>
+					<th align="left">Vaccine</th>
+					<th align="left">Dose</th>
+					<th align="left">Date</th>
+				</tr>
+				<tr id="firstVaccine">
+					<td><input type="text" name="firstDoseVaccineName" id="firstDoseVaccineName" readonly="True" style="border: none"/></td>
+					<td><input type="text" name="firstDose" id="firstDose" readonly="True" style="border: none" /></td>
+					<td><input type="text" name="firstDoseDate" id="firstDoseDate" readonly="True"  style="border: none"/></td>
+				</tr>
+				<tr id="secondVaccine">
+					<td><input type="text" name="secondDoseVaccineName" id="secondDoseVaccineName" readonly="True" style="border: none" /></td>
+					<td><input type="text" name="secondDose" id="secondDose" readonly="True"  style="border: none"/></td>
+					<td><input type="text" name="secondDoseDate" id="secondDoseDate" readonly="True" style="border: none" /></td>
+				</tr>
+				<tr id="boosterVaccine">
+					<td><input type="text" name="boosterDoseVaccineName" id="boosterDoseVaccineName" readonly="True" style="border: none" /></td>
+					<td><input type="text" name="boosterDose" id="boosterDose" readonly="True" style="border: none" /></td>
+					<td><input type="text" name="boosterDoseDate" id="boosterDoseDate" readonly="True" style="border: none" /></td>
+				</tr>
+			</table>
 		</fieldset>
-	  <includeIf velocityTest="$patient.age &gt; 11">
-	  <fieldset id="vaccination">
-				   <legend>
-					   Vaccination
-				   </legend>
-	   <table class="simple-table">
+		<includeIf velocityTest="$patient.age &gt; 11">
+			<fieldset id="vaccination">
+				<legend>
+					Vaccination
+				</legend>
+				<table class="simple-table">
 
-		<table class="simple-table">
-			<tr id="vaccination-question">
-				<td>
-					<div id="first-visit">
-						Have you ever been vaccinated?
-					</div>
-					<div id="further-visits">
-						Have you been vaccinated since your last visit?
-					</div>
-				</td>
-					<td>
-					<obs conceptId="163100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabel="" style="radio" id="patient-vaccinated"/>
-				    </td>
-			</tr>
-		</table>
-		<table class="simple-table" id="tbl-vaccine-1">
-					<tr>
-						<th>Vaccine</th>
-						<th>Dose</th>
-						<th>Date/Estimated</th>
-						<th>Verified</th>
-					</tr>
+					<table class="simple-table">
+						<tr id="vaccination-question">
+							<td>
+								<div id="first-visit">
+									Have you ever been vaccinated?
+								</div>
+								<div id="further-visits">
+									Have you been vaccinated since your last visit?
+								</div>
+							</td>
+							<td>
+								<obs conceptId="163100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabel="" style="radio" id="patient-vaccinated"/>
+							</td>
+						</tr>
+					</table>
+					<table class="simple-table" id="tbl-vaccine-1">
+						<tr>
+							<th>Vaccine</th>
+							<th>Dose</th>
+							<th>Date/Estimated</th>
+							<th>Verified</th>
+						</tr>
 
-			     <obsgroup groupingConceptId="1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-			    	<tr class="tr-vaccine-type-1">
-					<td>
-						<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+						<obsgroup groupingConceptId="1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr class="tr-vaccine-type-1">
+								<td>
+									<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166155AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -572,7 +583,7 @@
 												                   166379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                    5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Astrazeneca,
+										 answerLabels="Astrazeneca,
 										   Johnson and Johnson,
 									       Moderna,
 										   Pfizer,
@@ -580,36 +591,36 @@
 										   Sinopharm,
 										   Unknown
 										   Other(Specify)"
-							 style="dropdown" id="vaccine-type-1"/>
-						<span style="color:red;"><strong>*</strong></span>
-						<table id="tbl-other-vaccine-1" style="display: inline-block;" >
-							<tr>
-								<td> Vaccine name
-									<obs id="other-vaccine-1" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-									&#160;&#160;&#160;
+										 style="dropdown" id="vaccine-type-1"/>
+									<span style="color:red;"><strong>*</strong></span>
+									<table id="tbl-other-vaccine-1" style="display: inline-block;" >
+										<tr>
+											<td> Vaccine name
+												<obs id="other-vaccine-1" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+												&#160;&#160;&#160;
+											</td>
+										</tr>
+									</table>
+								</td>
+								<td><obs class="dose"  conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" answers="1,2" answerLabels="First,Second" style="dropdown" id="dose-sequence" /> </td>
+								<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " id="vaccination-date"/></td>
+
+								<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabel="" style="checkbox" id="verified"/>
 								</td>
 							</tr>
-						</table>
-					</td>
-					<td><obs class="dose"  conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" answers="1,2" answerLabels="First,Second" style="dropdown" id="dose-sequence" /> </td>
-					<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " id="vaccination-date"/></td>
+						</obsgroup>
+						<br/>
+					</table>
+					<table class="simple-table" id="tbl-vaccine-2">
+						<obsgroup groupingConceptId="1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<!-- Second dose -->
+							<tr class="tr-vaccine-type-2">
 
-					<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabel="" style="checkbox" id="verified"/>
-					</td>
-				</tr>
-		 	</obsgroup>
-				<br/>
-		</table>
-		<table class="simple-table" id="tbl-vaccine-2">
-			<obsgroup groupingConceptId="1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-			<!-- Second dose -->
-				<tr class="tr-vaccine-type-2">
-
-					<td>
-						<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+								<td>
+									<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                                       166355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166155AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -617,7 +628,7 @@
 												                   166379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                    5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Astrazeneca,
+										 answerLabels="Astrazeneca,
 							               Johnson and Johnson,
 									       Moderna,
 										   Pfizer,
@@ -625,76 +636,76 @@
 										   Sinopharm,
 										   Unknown
 										   Other(Specify)"
-							 style="dropdown" id="vaccine-type-2"/>
-						<table id="tbl-other-vaccine-2" style="display: inline-block;">
-							<tr>
-								<td> Vaccine name :
-									<obs id="other-vaccine-2" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-									&#160;&#160;&#160;
+										 style="dropdown" id="vaccine-type-2"/>
+									<table id="tbl-other-vaccine-2" style="display: inline-block;">
+										<tr>
+											<td> Vaccine name :
+												<obs id="other-vaccine-2" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+												&#160;&#160;&#160;
+											</td>
+										</tr>
+									</table>
+
 								</td>
+								<td><obs class="dose"  conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" answers="1,2" answerLabels="First,Second" style="dropdown" id="dose-2" /> </td>
+
+								<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " id="vaccine-2-date" /></td>
+
+								<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabel="" style="checkbox" id="verified-2"/>
+								</td>
+
 							</tr>
-						</table>
-
-					</td>
-					<td><obs class="dose"  conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" answers="1,2" answerLabels="First,Second" style="dropdown" id="dose-2" /> </td>
-
-					<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " id="vaccine-2-date" /></td>
-
-					<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabel="" style="checkbox" id="verified-2"/>
-					</td>
-
-				</tr>
-			</obsgroup>
-		</table>
-		<table class="simple-table" id="tbl-completion-status">
-		<tr>
-			<td> Vaccination Status </td>
-		   <td>
-				<obs conceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					 answerConceptIds="166192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					 answerLabels="Partially Vaccinated,Fully Vaccinated" style="radio" id="completion-status"/>
-			 </td>
-	    	</tr>
-		</table>
-		<table id="tbl-fully-vaccinated">
-		<tr>
-			<td>
-				<div id="fully-vaccinated" style="width: 100%; float: left; overflow: auto; text-align: left; background-color: green; color: white; padding: 5px"><span>This client is fully COVID-19 vaccinated</span> </div>
-			</td>
-		</tr>
-		</table>
-		<table class="simple-table" id="tbl-booster">
-			<tr>
-				<td>
-					<div id="first-visit-booster">
-						Have you received a booster COVID -19 dose?
-					</div>
-					<div id="further-visits-booster">
-						Have you received a booster COVID -19 dose since your last visit?
-					</div>
-				</td>
-				<td>
-					<obs conceptId="166063AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabels="Yes,No" style="radio" id="booster-dose-given"/>
-				</td>
-			</tr>
-		</table>
-	  <table class="simple-table" id="tbl-vaccine-booster">
-			<tr>
-							<tr>
-								<th>Vaccine</th>
-								<th>Dose No.</th>
-								<th>Date/Estimated</th>
-								<th>Verified</th>
-							</tr>
-								<tr>
-									<obsgroup groupingConceptId="1184AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-									<td>
-										<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-											 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+						</obsgroup>
+					</table>
+					<table class="simple-table" id="tbl-completion-status">
+						<tr>
+							<td> Vaccination Status </td>
+							<td>
+								<obs conceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="166192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Partially Vaccinated,Fully Vaccinated" style="radio" id="completion-status"/>
+							</td>
+						</tr>
+					</table>
+					<table id="tbl-fully-vaccinated">
+						<tr>
+							<td>
+								<div id="fully-vaccinated" style="width: 100%; float: left; overflow: auto; text-align: left; background-color: green; color: white; padding: 5px"><span>This client is fully COVID-19 vaccinated</span> </div>
+							</td>
+						</tr>
+					</table>
+					<table class="simple-table" id="tbl-booster">
+						<tr>
+							<td>
+								<div id="first-visit-booster">
+									Have you received a booster COVID -19 dose?
+								</div>
+								<div id="further-visits-booster">
+									Have you received a booster COVID -19 dose since your last visit?
+								</div>
+							</td>
+							<td>
+								<obs conceptId="166063AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Yes,No" style="radio" id="booster-dose-given"/>
+							</td>
+						</tr>
+					</table>
+					<table class="simple-table" id="tbl-vaccine-booster">
+						<tr>
+						<tr>
+							<th>Vaccine</th>
+							<th>Dose No.</th>
+							<th>Date/Estimated</th>
+							<th>Verified</th>
+						</tr>
+						<tr>
+							<obsgroup groupingConceptId="1184AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<td>
+									<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="166156AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   166155AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -702,7 +713,7 @@
 												                   166379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 												                   1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                    5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-											 answerLabels="Astrazeneca,
+										 answerLabels="Astrazeneca,
 										   Johnson and Johnson,
 									       Moderna,
 										   Pfizer,
@@ -710,22 +721,22 @@
 										   Sinopharm,
 										   Unknown
 										   Other(Specify)"
-											 style="dropdown" id="booster-type"/>
-									</td>
-									<td><obs class="dose" conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	 style="dropdown"	id="booster-dose"/></td>
+										 style="dropdown" id="booster-type"/>
+								</td>
+								<td><obs class="dose" conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"	 style="dropdown"	id="booster-dose"/></td>
 
-									<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false"  labelText=" " id="booster-date" /></td>
+								<td><obs class="vaccine-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false"  labelText=" " id="booster-date" /></td>
 
-									<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-											 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-											 answerLabel="" style="checkbox" id="booster-verified"/>
-									</td>
-									</obsgroup>
-								</tr>
-			     </tr>
-		</table>
-	</table>
-		</fieldset>
+								<td><obs conceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabel="" style="checkbox" id="booster-verified"/>
+								</td>
+							</obsgroup>
+						</tr>
+						</tr>
+					</table>
+				</table>
+			</fieldset>
 		</includeIf>
 		<fieldset id="diagnosis-tab">
 			<legend>
@@ -784,11 +795,11 @@
 				<tr id="tbl-admission-unit">
 					<td> Admission unit</td>
 
-						<td style="text-align: left">
-							<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Isolation,HDU,ICU" style="radio" id="admission-unit" />
-						</td>
+					<td style="text-align: left">
+						<obs conceptId="161010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="165994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Isolation,HDU,ICU" style="radio" id="admission-unit" />
+					</td>
 				</tr>
 				<tr id="tbl-oxygen">
 					<td> Did you receive supplemental oxygen?</td>
@@ -800,7 +811,7 @@
 				</tr>
 			</table>
 		</fieldset>
-</div>
+	</div>
 	<div class="ke-form-footer">
 		<submit />
 	</div>
